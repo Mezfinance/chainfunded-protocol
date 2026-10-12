@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /TraderDashboard
+Disallow: /TradingTerminal
+Disallow: /LPDashboard
+Disallow: /AdminDashboard
+Disallow: /AffiliateDashboard
+Disallow: /MyAccount
+Disallow: /Payouts
+Disallow: /api/
+
+Sitemap: https://chainfunded.io/sitemap.xml

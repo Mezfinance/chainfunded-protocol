@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ChainFunded whitepaper — Diagram 9
+  Affiliate tier ladder.
+
+  Five-tier example. Real ladder is set on-chain via
+  setAffiliateTiers(thresholds, rates) — owner-configurable
+  but bounded by MAX_AFFILIATE_BPS = 2000 (20% hard cap).
+
+  Each row shows: monthly volume threshold · commission rate ·
+  example earnings on a representative fee. Cap row at the
+  bottom is the contract's MAX_AFFILIATE_BPS = 2000 rule.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <style><![CDATA[
+    .bg          { fill: #f7faf8; }
+    .row         { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+    .row-active  { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+    .tier        { fill: #15803d; font-size: 12px; font-weight: 800; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.12em; }
+    .vol         { fill: #142019; font-size: 16px; font-weight: 700; }
+    .vol-sub     { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .rate        { fill: #15803d; font-size: 36px; font-weight: 800; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: end; }
+    .rate-sub    { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: end; }
+    .fill-bar    { fill: #15803d; opacity: 0.18; }
+    .col-h       { fill: #536b5e; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.12em; }
+    .title       { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+    .subtitle    { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+    .cap-bg      { fill: #fef7e6; stroke: #b88a00; stroke-width: 1.5; }
+    .cap-tag     { fill: #b88a00; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.14em; }
+    .cap-text    { fill: #4a3a00; font-size: 13px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .footnote    { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+
+  <text class="subtitle" x="64" y="56">Figure 9 · Affiliate commission ladder</text>
+  <text class="title"    x="64" y="88">Tiered by rolling 30-day referral volume — example schedule</text>
+
+  <!-- Column headers -->
+  <text class="col-h" x="100" y="148">TIER · 30-DAY VOLUME</text>
+  <text class="col-h" x="800" y="148">COMMISSION RATE</text>
+  <text class="col-h" x="1180" y="148" text-anchor="end">FEE-PROPORTIONAL FILL</text>
+
+  <!-- ── Row 1 — Tier 1 ─────────────────────────────────────────── -->
+  <rect class="row" x="80" y="170" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="170" width="224" height="80" rx="10"/>
+  <text class="tier" x="100" y="200">TIER 01</text>
+  <text class="vol"  x="100" y="226">$0 – $10k</text>
+  <text class="vol-sub" x="100" y="244">starter</text>
+  <text class="rate" x="1080" y="225">8%</text>
+  <text class="rate-sub" x="1080" y="244">800 BPS</text>
+
+  <!-- Row 2 -->
+  <rect class="row" x="80" y="260" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="260" width="280" height="80" rx="10"/>
+  <text class="tier" x="100" y="290">TIER 02</text>
+  <text class="vol"  x="100" y="316">$10k – $50k</text>
+  <text class="vol-sub" x="100" y="334">growing</text>
+  <text class="rate" x="1080" y="315">10%</text>
+  <text class="rate-sub" x="1080" y="334">1000 BPS</text>
+
+  <!-- Row 3 -->
+  <rect class="row" x="80" y="350" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="350" width="336" height="80" rx="10"/>
+  <text class="tier" x="100" y="380">TIER 03</text>
+  <text class="vol"  x="100" y="406">$50k – $200k</text>
+  <text class="vol-sub" x="100" y="424">active</text>
+  <text class="rate" x="1080" y="405">12%</text>
+  <text class="rate-sub" x="1080" y="424">1200 BPS</text>
+
+  <!-- Row 4 -->
+  <rect class="row" x="80" y="440" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="440" width="420" height="80" rx="10"/>
+  <text class="tier" x="100" y="470">TIER 04</text>
+  <text class="vol"  x="100" y="496">$200k – $1M</text>
+  <text class="vol-sub" x="100" y="514">power affiliate</text>
+  <text class="rate" x="1080" y="495">15%</text>
+  <text class="rate-sub" x="1080" y="514">1500 BPS</text>
+
+  <!-- Row 5 — at cap -->
+  <rect class="row-active" x="80" y="530" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="530" width="560" height="80" rx="10"/>
+  <text class="tier" x="100" y="560">TIER 05 · AT CAP</text>
+  <text class="vol"  x="100" y="586">$1M+</text>
+  <text class="vol-sub" x="100" y="604">institutional · bound by MAX_AFFILIATE_BPS</text>
+  <text class="rate" x="1080" y="585">20%</text>
+  <text class="rate-sub" x="1080" y="604">2000 BPS · cap</text>
+
+  <!-- ── Cap-rule note ──────────────────────────────────────────── -->
+  <rect class="cap-bg" x="80" y="640" width="1120" height="80" rx="10"/>
+  <text class="cap-tag" x="100" y="664">CONTRACT-ENFORCED CEILING</text>
+  <text class="cap-text" x="100" y="686">  · MAX_AFFILIATE_BPS = 2000 — owner cannot raise the cap without redeploying the pool implementation</text>
+  <text class="cap-text" x="100" y="706">  · ladder thresholds + rates set via setAffiliateTiers(thresholds, rates) — adjustable, but each rate ≤ MAX</text>
+
+  <text class="footnote" x="64" y="744">Numbers above are illustrative. The on-chain ladder is set by the pool owner via setAffiliateTiers(); thresholds and rates may differ at launch.</text>
+</svg>

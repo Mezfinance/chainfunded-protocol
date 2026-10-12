@@ -1,0 +1,48 @@
+# fly.toml — ChainFunded position monitor worker
+# Deploy with: cd worker && fly deploy
+#
+# Multi-region active-standby: machines run in all regions but only the
+# elected leader processes ticks. Standbys keep caches warm and take over
+# within ~30s if the leader dies.
+#
+# After first deploy, add machines in other regions:
+#   fly machine clone --region iad    # US East (Ashburn)
+#   fly machine clone --region lhr    # London
+#   fly machine clone --region sin    # Singapore
+
+app = "chainfunded-worker"
+primary_region = "syd"
+
+[build]
+
+[env]
+  NODE_ENV = "production"
+  WORKER_API_PORT = "3001"
+  # Restrict to your frontend origin in production, e.g. https://app.chainfunded.io
+  # WORKER_CORS_ORIGIN = "*"
+  # BASE44_APP_ID and BASE44_APP_BASE_URL must be set as Fly secrets:
+  # fly secrets set BASE44_APP_ID=<your-app-id> BASE44_APP_BASE_URL=https://chainfunded.base44.app
+
+[http_service]
+  internal_port = 3001
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+
+[processes]
+  app = "node index.js"
+
+[deploy]
+  strategy = "immediate"
+  auto_rollback = true
+
+# Keep exactly 1 machine running per region, never auto-stop
+[[machines]]
+  auto_stop_machines = "off"
+  min_machines_running = 1

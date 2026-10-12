@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 1: Classic shield with pointed base, bolt centered -->
+  <rect width="512" height="512" rx="80" fill="#e6f5ec"/>
+  <path d="M256 48C176 48 96 96 96 96v176c0 80 160 176 160 176s160-96 160-176V96S336 48 256 48z" fill="#e6f5ec" stroke="#1a9e4a" stroke-width="20" stroke-linejoin="round"/>
+  <polygon points="272 128 160 280 232 280 216 400 336 248 264 248 272 128" fill="#1a9e4a"/>
+</svg>

@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ChainFunded whitepaper — Diagram 2
+  Trader happy-path lifecycle.
+
+  Hand-authored SVG using the ChainFunded brand palette (Evergreen).
+  Dark canvas to match the protocol's web identity. Light-mode
+  variant is a recolour, not a redraw — swap the .bg / .fg / .border
+  tokens in the <style> block.
+
+  Coordinate system: viewBox 0 0 1280 1480.
+  Five lifelines at x ∈ {180, 380, 620, 880, 1100}.
+  Step bands run vertically; arrows are 1.5px stroke. USDC-moving
+  arrows render in primary green so the reader's eye traces money.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1480" width="1280" height="1480" font-family="'Inter', 'Helvetica Neue', system-ui, sans-serif">
+  <defs>
+    <!-- Standard arrowhead (slate) -->
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <!-- Primary-green arrowhead (USDC flows) -->
+    <marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <!-- Dotted return arrowhead -->
+    <marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a89b"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+    .bg          { fill: #f7faf8; }
+    .step-band   { fill: #eef4f0; }
+    .lifeline    { stroke: #c4d4cb; stroke-width: 1.5; stroke-dasharray: 3 5; fill: none; }
+    .p-box       { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+    .p-onchain   { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+    .p-label     { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+    .p-sub       { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .step-num    { fill: #15803d; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
+    .step-title  { fill: #142019; font-size: 15px; font-weight: 700; }
+    .arrow       { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+    .arrow-p     { stroke: #15803d; stroke-width: 2.25; fill: none; }
+    .arrow-ret   { stroke: #94a89b; stroke-width: 1.25; fill: none; stroke-dasharray: 4 3; }
+    .arrow-label { fill: #2a3d34; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .arrow-label-p { fill: #15803d; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; font-weight: 700; }
+    .note-bg     { fill: #ecfdf5; stroke: #15803d; stroke-width: 1; }
+    .note-text   { fill: #142019; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .callout-bg  { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+    .callout-title { fill: #15803d; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+    .callout-text  { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .title       { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+    .subtitle    { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+  ]]></style>
+
+  <!-- Canvas -->
+  <rect class="bg" x="0" y="0" width="1280" height="1480"/>
+
+  <!-- Title block -->
+  <text class="subtitle" x="64" y="56">Figure 2 · Protocol user flow</text>
+  <text class="title" x="64" y="88">Trader lifecycle — fee to payout</text>
+
+  <!-- Step bands (subtle alternating tint) -->
+  <rect class="step-band" x="0" y="200"  width="1280" height="290"/>
+  <rect class="step-band" x="0" y="510"  width="1280" height="140" opacity="0.5"/>
+  <rect class="step-band" x="0" y="670"  width="1280" height="200"/>
+  <rect class="step-band" x="0" y="890"  width="1280" height="470" opacity="0.5"/>
+
+  <!-- ── Participant headers ─────────────────────────────────────────── -->
+  <!-- Trader -->
+  <rect class="p-box" x="120" y="130" width="120" height="50" rx="6"/>
+  <text class="p-label" x="180" y="155">Trader</text>
+  <text class="p-sub"   x="180" y="172">EOA</text>
+  <!-- USDC -->
+  <rect class="p-onchain" x="320" y="130" width="120" height="50" rx="6"/>
+  <text class="p-label" x="380" y="155">USDC</text>
+  <text class="p-sub"   x="380" y="172">ERC-20</text>
+  <!-- Pool -->
+  <rect class="p-onchain" x="540" y="130" width="160" height="50" rx="6"/>
+  <text class="p-label" x="620" y="155">ChainFundedPool</text>
+  <text class="p-sub"   x="620" y="172">on-chain · UUPS</text>
+  <!-- Trading Engine -->
+  <rect class="p-box" x="800" y="130" width="160" height="50" rx="6"/>
+  <text class="p-label" x="880" y="155">Trading Engine</text>
+  <text class="p-sub"   x="880" y="172">off-chain</text>
+  <!-- Payout Signers -->
+  <rect class="p-box" x="1020" y="130" width="160" height="50" rx="6"/>
+  <text class="p-label" x="1100" y="155">Payout Signers</text>
+  <text class="p-sub"   x="1100" y="172">N-of-M multisig</text>
+
+  <!-- ── Lifelines ───────────────────────────────────────────────────── -->
+  <line class="lifeline" x1="180"  y1="180" x2="180"  y2="1380"/>
+  <line class="lifeline" x1="380"  y1="180" x2="380"  y2="1380"/>
+  <line class="lifeline" x1="620"  y1="180" x2="620"  y2="1380"/>
+  <line class="lifeline" x1="880"  y1="180" x2="880"  y2="1380"/>
+  <line class="lifeline" x1="1100" y1="180" x2="1100" y2="1380"/>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 1 — Buy an evaluation
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="225">STEP 01</text>
+  <text class="step-title" x="64" y="245">Buy an evaluation</text>
+
+  <!-- T → USDC: approve(Pool, fee) -->
+  <line class="arrow" x1="180" y1="280" x2="380" y2="280" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="190" y="272">approve(Pool, fee)</text>
+
+  <!-- T → Pool: registerChallenge(...) -->
+  <line class="arrow" x1="180" y1="320" x2="620" y2="320" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="190" y="312">registerChallenge(fee, accountId, size, …)</text>
+
+  <!-- Pool → USDC: transferFrom (PRIMARY) -->
+  <line class="arrow-p" x1="620" y1="360" x2="380" y2="360" marker-end="url(#ahp)"/>
+  <text class="arrow-label-p" x="400" y="352">transferFrom(T → Pool, fee)</text>
+
+  <!-- Pool → Pool: self-call (split) — small loop just right of the
+       Pool lifeline, label aligned to its right. -->
+  <path class="arrow" d="M 620 400 H 690 V 420 H 620" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="710" y="406">
+    <tspan x="710" dy="0">split fee → 24% protocol · 6% LP yield ·</tspan>
+    <tspan x="710" dy="16">0–20% affiliate · rest stays as LP capital (Fig. 6)</tspan>
+  </text>
+
+  <!-- Pool → T: ChallengeRegistered event (dotted return) -->
+  <line class="arrow-ret" x1="620" y1="460" x2="180" y2="460" marker-end="url(#ahd)"/>
+  <text class="arrow-label" x="200" y="452">ChallengeRegistered event</text>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 2 — Trade simulated capital
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="535">STEP 02</text>
+  <text class="step-title" x="64" y="555">Trade simulated capital — off-chain</text>
+
+  <!-- T → Sim: trades -->
+  <line class="arrow" x1="180" y1="590" x2="880" y2="590" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="190" y="582">place / close trades · positions managed in the terminal</text>
+
+  <!-- Sim → T: P&L (dotted) -->
+  <line class="arrow-ret" x1="880" y1="625" x2="180" y2="625" marker-end="url(#ahd)"/>
+  <text class="arrow-label" x="200" y="617">P&amp;L tracked · rules enforced off-chain</text>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 3 — Phase transitions signed by multisig
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="695">STEP 03</text>
+  <text class="step-title" x="64" y="715">Phase transitions are signed by the multisig</text>
+
+  <!-- Sim → Sig: pass attestation -->
+  <line class="arrow" x1="880" y1="755" x2="1100" y2="755" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="890" y="747">Phase 1 passed</text>
+
+  <!-- Sig → T: signed proof -->
+  <line class="arrow-ret" x1="1100" y1="795" x2="180" y2="795" marker-end="url(#ahd)"/>
+  <text class="arrow-label" x="200" y="787">signed Phase 2 proof (off-chain)</text>
+
+  <!-- T → Pool: registerPhase2 -->
+  <line class="arrow" x1="180" y1="835" x2="620" y2="835" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="190" y="827">registerPhase2(accountId, signatures)</text>
+
+  <!-- Pool → T: phase 2 active (dotted) -->
+  <line class="arrow-ret" x1="620" y1="868" x2="180" y2="868" marker-end="url(#ahd)"/>
+  <text class="arrow-label" x="200" y="860">Phase 2 active · same shape used for Phase 2 → Funded</text>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 4 — Claim payout
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="915">STEP 04</text>
+  <text class="step-title" x="64" y="935">Request a payout — settlement is final</text>
+
+  <!-- T → Sig: payout request -->
+  <line class="arrow" x1="180" y1="975" x2="1100" y2="975" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="190" y="967">payout request (off-chain)</text>
+
+  <!-- Sig self-call: verify. Small stub loop just left of the Signers
+       lifeline, label aligned to its left edge. -->
+  <path class="arrow" d="M 1100 1010 H 1050 V 1024 H 1100" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="1020" y="1018" text-anchor="end">
+    <tspan x="1020" dy="0">verify performance</tspan>
+    <tspan x="1020" dy="16">+ rule compliance</tspan>
+  </text>
+
+  <!-- Sig → T: N signed proofs -->
+  <line class="arrow-ret" x1="1100" y1="1070" x2="180" y2="1070" marker-end="url(#ahd)"/>
+  <text class="arrow-label" x="200" y="1062">N signed payout proofs</text>
+
+  <!-- T → Pool: claimPayout -->
+  <line class="arrow" x1="180" y1="1110" x2="620" y2="1110" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="190" y="1102">claimPayout(payoutId, signatures, …)</text>
+
+  <!-- ─── Callout: on-chain re-verification ─────────────────────────── -->
+  <rect class="callout-bg" x="660" y="1135" width="580" height="160" rx="6"/>
+  <text class="callout-title" x="680" y="1160">ON-CHAIN RE-VERIFICATION · BELT &amp; BRACES</text>
+  <text class="callout-text" x="680" y="1183">Pool reverts the entire payout if any one of:</text>
+  <text class="callout-text" x="680" y="1203">  · dailyLoss     &gt; maxDailyLossBps     → RuleBreachedDailyLoss</text>
+  <text class="callout-text" x="680" y="1221">  · drawdown      &gt; maxTotalLossBps     → RuleBreachedTotalLoss</text>
+  <text class="callout-text" x="680" y="1239">  · tradingDays   &lt; minTradingDays      → RuleBreachedMinDays</text>
+  <text class="callout-text" x="680" y="1257">  · profit        &lt; profitTarget        → RuleBreachedProfitTarget</text>
+  <text class="callout-text" x="680" y="1275">  · bestDay       &gt; maxBestDayBps       → RuleBreachedBestDay</text>
+
+  <!-- Pool → USDC: trader share (PRIMARY) -->
+  <line class="arrow-p" x1="620" y1="1320" x2="380" y2="1320" marker-end="url(#ahp)"/>
+  <text class="arrow-label-p" x="400" y="1312">transfer(T, trader share — 80%)</text>
+
+  <!-- Pool → USDC: firm cut split (PRIMARY) -->
+  <line class="arrow-p" x1="620" y1="1352" x2="380" y2="1352" marker-end="url(#ahp)"/>
+  <text class="arrow-label-p" x="400" y="1344">transfer(firm cut → labsWallet 80% · LP yield 20%)</text>
+
+  <!-- ─── Caption strip ─────────────────────────────────────────────── -->
+  <rect x="0" y="1400" width="1280" height="80" fill="#f7faf8"/>
+  <text class="subtitle" x="64" y="1428">Legend</text>
+  <!-- Five items. Even spacing: ~24 units between each arrow tip and
+       its label, ~40+ units between the end of one label and the next
+       item. With per-figure CSS scoping in place, the markers render
+       at their actual size and don't need the inflated gaps. -->
+  <line class="arrow-p" x1="64" y1="1450" x2="112" y2="1450" marker-end="url(#ahp)"/>
+  <text class="arrow-label" x="136" y="1454">USDC flow</text>
+  <line class="arrow"   x1="240" y1="1450" x2="276" y2="1450" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="300" y="1454">contract call</text>
+  <line class="arrow-ret" x1="440" y1="1450" x2="476" y2="1450" marker-end="url(#ahd)"/>
+  <text class="arrow-label" x="500" y="1454">event / response</text>
+  <!-- Participant chips — the bordered rect encapsulates the full
+       label so the green-bordered (on-chain) vs neutral-bordered
+       (off-chain) treatment matches the chips used on each
+       participant card at the top of the diagram. -->
+  <rect class="p-onchain" x="720" y="1438" width="180" height="26" rx="6"/>
+  <text class="arrow-label" x="810" y="1456" text-anchor="middle">on-chain participant</text>
+  <rect class="p-box" x="920" y="1438" width="180" height="26" rx="6"/>
+  <text class="arrow-label" x="1010" y="1456" text-anchor="middle">off-chain participant</text>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Lightning bolt on light green rounded square -->
+  <rect width="512" height="512" rx="96" fill="#e6f5ec"/>
+  <polygon points="278 72 96 278 240 278 220 440 416 232 272 232 278 72" fill="#1a9e4a"/>
+</svg>

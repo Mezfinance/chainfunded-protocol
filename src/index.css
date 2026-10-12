@@ -1,0 +1,569 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ── Light mode (default) — "Evergreen" ─────────────────────────── */
+  :root {
+    --background: 140 30% 98%;
+    --foreground: 150 25% 10%;
+    --card: 0 0% 100%;
+    --card-foreground: 150 25% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 150 25% 10%;
+    --primary: 142 72% 36%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 140 25% 94%;
+    --secondary-foreground: 150 25% 10%;
+    --muted: 140 20% 95%;
+    --muted-foreground: 150 15% 38%;
+    --accent: 142 72% 36%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 46%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 140 20% 88%;
+    --input: 140 20% 88%;
+    --ring: 142 72% 36%;
+    --radius: 0.75rem;
+    --font-inter: 'Inter', sans-serif;
+    --font-grotesk: 'Space Grotesk', sans-serif;
+
+    /* Chart-specific tokens */
+    --chart-text: 150 15% 38%;
+    --chart-grid: 140 20% 92%;
+    --chart-crosshair: 150 15% 55%;
+    --chart-tooltip-bg: 0 0% 100%;
+    --chart-tooltip-border: 140 20% 88%;
+
+    /* Semantic green (vibrant forest) & red (clean) for light mode */
+    --green-300: 100 192 130;
+    --green-400: 56 162 95;
+    --green-500: 34 139 69;
+    --green-600: 22 115 52;
+    --red-300: 239 130 130;
+    --red-400: 220 75 75;
+    --red-500: 200 55 55;
+    --red-600: 170 40 40;
+  }
+
+  /* ── Dark mode ──────────────────────────────────────────────────── */
+  .dark {
+    /* Settlement Field — a near-neutral black base (#0a0a0a) lets the single
+       brand green do all the talking (accent on neutral out-punches accent on
+       a tinted ground). The app-wide grid + glow + grain lives in
+       SettlementField; surfaces keep a faint evergreen warmth for depth. */
+    --background: 0 0% 4%;
+    --foreground: 150 24% 96%;
+    --card: 154 22% 8%;
+    --card-foreground: 150 24% 96%;
+    --popover: 154 22% 9%;
+    --popover-foreground: 150 24% 96%;
+    --primary: 142 76% 46%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 153 18% 13%;
+    --secondary-foreground: 150 24% 96%;
+    --muted: 153 16% 14%;
+    --muted-foreground: 150 14% 58%;
+    --accent: 142 76% 46%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 150 24% 96%;
+    --border: 153 22% 15%;
+    --input: 153 20% 13%;
+    --ring: 142 76% 46%;
+
+    /* Chart-specific tokens */
+    --chart-text: 0 0% 100%;
+    --chart-grid: 0 0% 100%;
+    --chart-crosshair: 0 0% 100%;
+    --chart-tooltip-bg: 240 6% 10%;
+    --chart-tooltip-border: 0 0% 100%;
+
+    /* Semantic green (bright) & red (bright) for dark mode */
+    --green-300: 134 239 172;
+    --green-400: 74 222 128;
+    --green-500: 34 197 94;
+    --green-600: 22 163 74;
+    --red-300: 252 165 165;
+    --red-400: 248 113 113;
+    --red-500: 239 68 68;
+    --red-600: 220 38 38;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-inter;
+  }
+  /* Smooth theme transition */
+  html {
+    transition: color-scheme 0.2s;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
+/* Terminal surfaces are opaque + isolated, so the global SettlementField can't
+   show through — give the terminal its own matching ground (grid + glow). */
+.dark .terminal-shell::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(110% 72% at 50% 6%, hsl(var(--primary) / 0.13), transparent 60%),
+    linear-gradient(hsl(var(--primary) / 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.04) 1px, transparent 1px);
+  background-size: 100% 100%, 50px 50px, 50px 50px;
+}
+
+/* The app root forms its own stacking context so the fixed SettlementField
+   (z-index:-10) paints *inside* it — above the body's opaque base background,
+   below the app content. Without this, body's in-flow background paints over a
+   negative-z layer in the root context and the field is never visible. */
+#root {
+  isolation: isolate;
+}
+
+/* ── Settlement Field — the app-wide backdrop (see SettlementField.jsx) ─────
+   A fixed, behind-everything layer: the grid is the chain, the green glow is
+   capital in the protocol, the grain gives depth. The Layout root is
+   transparent so this shows through behind content. */
+.settlement-field {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  overflow: hidden;
+}
+.settlement-grid,
+.settlement-glow,
+.settlement-grain { position: absolute; inset: 0; }
+/* Grid — both themes (replaces the old .grid-bg). Ignites (fades in) on load. */
+.settlement-grid {
+  background-image:
+    linear-gradient(hsl(var(--primary) / 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.10) 1px, transparent 1px);
+  background-size: 50px 50px;
+  /* Uniform across the viewport (like the affiliate reference) so the field
+     reads in every gutter and margin — only a soft fade at the bottom edge so
+     it doesn't hard-line. The glow (below) supplies the top "horizon". */
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+  animation: settlement-grid-in 1.3s ease-out both;
+}
+/* Glow + grain + ignition sweep + pulses — dark mode only. */
+.settlement-glow,
+.settlement-grain,
+.settlement-ignite,
+.settlement-pulses { display: none; }
+.dark .settlement-glow {
+  display: block;
+  /* Bloom in the content zone (below the nav + banner), wider and a touch
+     stronger, so it actually reads instead of hiding behind the chrome. */
+  background: radial-gradient(125% 85% at 50% 8%, hsl(var(--primary) / 0.26), transparent 62%);
+  transform-origin: 50% 12%;
+  /* Ignite once on load, then breathe forever. */
+  animation: settlement-ignite-glow 1.4s ease-out, settlement-breathe 11s ease-in-out 1.4s infinite;
+}
+.dark .settlement-grain {
+  display: block;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+}
+/* Ignition — a soft band of light sweeps down once as the field powers on. */
+.dark .settlement-ignite {
+  display: block;
+  position: absolute;
+  left: 0; right: 0; top: 0;
+  height: 50%;
+  background: linear-gradient(to bottom, transparent, hsl(var(--primary) / 0.16), transparent);
+  animation: settlement-sweep 1.5s ease-out forwards;
+}
+/* Settlement pulses — light travels along a grid line and blooms: capital
+   settling on-chain. Three ambient loops; window `cf:settlement` events spawn
+   extra one-shot bursts (wire these to real payout/trade events). */
+.dark .settlement-pulses { display: block; position: absolute; inset: 0; overflow: hidden; }
+.settlement-pulse {
+  position: absolute;
+  left: 0;
+  height: 2px;
+  width: 300px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0) 42%, hsl(var(--primary) / 0.85) 92%, hsl(var(--primary)) 100%);
+  filter: drop-shadow(0 0 10px hsl(var(--primary) / 0.85));
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: settlement-pulse-x 11s linear infinite;
+}
+/* Bright comet head at the leading edge. */
+.settlement-pulse::after {
+  content: "";
+  position: absolute;
+  right: -3px;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin-top: -5.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle, hsl(var(--primary)), transparent 70%);
+  filter: drop-shadow(0 0 9px hsl(var(--primary)));
+}
+.settlement-pulse--burst { animation: settlement-pulse-x 6s linear forwards; }
+
+@keyframes settlement-grid-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes settlement-ignite-glow {
+  from { opacity: 0; transform: scale(0.65); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes settlement-sweep {
+  0%   { transform: translateY(-60%); opacity: 0; }
+  25%  { opacity: 1; }
+  100% { transform: translateY(260%); opacity: 0; }
+}
+@keyframes settlement-pulse-x {
+  0%        { transform: translateX(-280px); opacity: 0; }
+  3%        { opacity: 1; }
+  26%       { transform: translateX(100vw); opacity: 1; }
+  30%, 100% { transform: translateX(100vw); opacity: 0; }
+}
+@keyframes settlement-breathe {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .settlement-grid { animation: none; opacity: 1; }
+  .settlement-glow { animation: none; }
+  .settlement-ignite { display: none; }
+  .settlement-pulse { display: none; }
+}
+
+/* ── Intro sequence — "First Settlement" (see IntroSequence.jsx) ─────────────
+   Opens in the Settlement Field's own grid/pulse vocabulary and resolves into
+   it. Timeline (s): grid in 0–1.0 · pulse-1 0.5–1.5 · bolt pops 1.2 · phrase-1
+   1.5–3.1 · pulse-2 2.4–3.4 · phrase-2 3.1–4.7 · bolt fills 3.3–4.7 · phrase-3
+   4.7–6.4 · glow blooms 3.5–5.8 · overlay fades out 6.1–7.0. */
+.cf-intro {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0a0a0a;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden; cursor: pointer;
+  animation: cf-intro-out 0.9s ease-in 6.1s forwards;
+}
+.cf-intro-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(hsl(var(--primary) / 0.10) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.10) 1px, transparent 1px);
+  background-size: 50px 50px;
+  -webkit-mask-image: radial-gradient(120% 100% at 50% 50%, #000 50%, transparent 100%);
+          mask-image: radial-gradient(120% 100% at 50% 50%, #000 50%, transparent 100%);
+  opacity: 0; animation: cf-intro-fade-in 1.0s ease-out both;
+}
+.cf-intro-glow {
+  position: absolute; inset: 0;
+  background: radial-gradient(55% 45% at 50% 50%, hsl(var(--primary) / 0.22), transparent 70%);
+  opacity: 0; transform: scale(0.5); transform-origin: 50% 50%;
+  animation: cf-intro-glow-bloom 2.3s ease-out 3.5s forwards;
+}
+.cf-intro-pulse {
+  position: absolute; top: 50%; height: 2px; width: 46vw; border-radius: 2px;
+  filter: drop-shadow(0 0 10px hsl(var(--primary) / 0.9));
+}
+.cf-intro-pulse::after {
+  content: ""; position: absolute; top: 50%; width: 12px; height: 12px;
+  margin-top: -6px; border-radius: 50%;
+  background: radial-gradient(circle, hsl(var(--primary)), transparent 70%);
+  filter: drop-shadow(0 0 10px hsl(var(--primary)));
+}
+.cf-intro-pulse-1 { left: 0; background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.9)); animation: cf-intro-pulse-l 1.0s ease-in 0.5s both; }
+.cf-intro-pulse-1::after { right: -3px; }
+.cf-intro-pulse-2 { right: 0; background: linear-gradient(270deg, transparent, hsl(var(--primary) / 0.9)); animation: cf-intro-pulse-r 1.0s ease-in 2.4s both; }
+.cf-intro-pulse-2::after { left: -3px; }
+
+.cf-intro-stage { position: relative; display: flex; flex-direction: column; align-items: center; gap: 30px; }
+.cf-intro-bolt { width: clamp(120px, 22vw, 210px); height: auto; overflow: visible; opacity: 0; animation: cf-intro-bolt-in 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) 1.2s forwards; }
+.cf-intro-bolt-outline { fill: none; stroke: hsl(var(--primary)); stroke-width: 10; stroke-linejoin: round; filter: drop-shadow(0 0 10px hsl(var(--primary) / 0.55)); }
+.cf-intro-bolt-solid { fill: hsl(var(--primary)); filter: drop-shadow(0 0 18px hsl(var(--primary) / 0.85)); }
+.cf-intro-fill { transform: translateY(0); animation: cf-intro-fill 1.4s cubic-bezier(0.3, 0, 0, 1) 3.3s forwards; }
+
+.cf-intro-phrases { position: relative; height: 40px; width: 90vw; max-width: 640px; text-align: center; }
+.cf-intro-phrase {
+  position: absolute; left: 0; right: 0; opacity: 0;
+  font-family: 'Space Grotesk', system-ui, sans-serif; font-weight: 700;
+  font-size: clamp(18px, 3vw, 28px); letter-spacing: -0.01em; color: #faf8f6;
+}
+.cf-intro-phrase-1 { animation: cf-intro-phrase 1.6s ease-out 1.5s both; }
+.cf-intro-phrase-2 { animation: cf-intro-phrase 1.6s ease-out 3.1s both; }
+.cf-intro-phrase-3 { animation: cf-intro-phrase 1.7s ease-out 4.7s both; color: hsl(var(--primary)); }
+
+.cf-intro-skip {
+  position: absolute; bottom: 24px; right: 24px;
+  font: 600 11px/1 'Space Grotesk', system-ui, sans-serif; letter-spacing: 0.18em; text-transform: uppercase;
+  color: hsl(var(--muted-foreground)); background: none; border: none; cursor: pointer;
+  padding: 8px; opacity: 0; animation: cf-intro-fade-in 0.4s ease 1.6s forwards;
+}
+.cf-intro-skip:hover { color: hsl(var(--foreground)); }
+
+@keyframes cf-intro-fade-in { to { opacity: 1; } }
+@keyframes cf-intro-glow-bloom { to { opacity: 1; transform: scale(1); } }
+@keyframes cf-intro-pulse-l { 0% { transform: translateX(-46vw); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(4vw); opacity: 0; } }
+@keyframes cf-intro-pulse-r { 0% { transform: translateX(46vw); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateX(-4vw); opacity: 0; } }
+@keyframes cf-intro-bolt-in { 0% { opacity: 0; transform: scale(0.7); } 100% { opacity: 1; transform: scale(1); } }
+@keyframes cf-intro-fill { to { transform: translateY(-512px); } }
+@keyframes cf-intro-phrase {
+  0%   { opacity: 0; transform: translateY(14px); }
+  22%  { opacity: 1; transform: translateY(0); }
+  78%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-14px); }
+}
+@keyframes cf-intro-out { to { opacity: 0; transform: scale(1.06); visibility: hidden; } }
+
+/* ── Hybrid frosted surfaces ────────────────────────────────────────────────
+   Big surfaces (cards, dropdowns/menus) go translucent + blurred so the
+   Settlement Field reads *through* the UI — the interface floats on the field
+   instead of sitting on a black sheet. Dense terminal surfaces stay solid for
+   legibility and performance. Dark mode only; light mode is untouched.
+   Note: bare `bg-card`/`bg-popover` only — surfaces that already opt into an
+   opacity (e.g. `bg-card/60`, the nav's `bg-card/80`) keep their own value. */
+.dark .bg-card {
+  background-color: hsl(var(--card) / 0.6);
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+          backdrop-filter: blur(10px) saturate(1.15);
+}
+/* Translucent card variants (/50../80) get the same frosted blur as bare
+   bg-card so every panel reads consistently — opacity stays as authored, only
+   the blur is unified. Subtle tints (/20../40) and near-solid (/90,/95, e.g.
+   the cookie banner) are intentionally left sharp/solid. */
+.dark .bg-card\/50, .dark .bg-card\/60, .dark .bg-card\/70, .dark .bg-card\/80 {
+  -webkit-backdrop-filter: blur(10px) saturate(1.15);
+          backdrop-filter: blur(10px) saturate(1.15);
+}
+/* Dense data (the terminal) stays solid/sharp. */
+.dark .terminal-shell .bg-card,
+.dark .terminal-shell .bg-card\/50, .dark .terminal-shell .bg-card\/60,
+.dark .terminal-shell .bg-card\/70, .dark .terminal-shell .bg-card\/80 {
+  background-color: hsl(var(--card));
+  -webkit-backdrop-filter: none;
+          backdrop-filter: none;
+}
+/* Dropdowns / menus / popovers stay SOLID — a translucent menu over a chart
+   (or any busy content) is illegible. They portal out of .terminal-shell, so
+   they can't be scoped by ancestor; keep them opaque everywhere. */
+
+/* Full-page wrappers (Landing, Claim, Funded, geo/sanction screens) use
+   `min-h-screen bg-background`, an opaque fill that paints over the
+   SettlementField. Make those full-page fills transparent in dark mode so the
+   field shows through. Scoped to .min-h-screen so modals, inputs and the solid
+   terminal (h-full / h-[100dvh]) are untouched; the body/html still paint the
+   base canvas colour beneath the field. */
+.dark .min-h-screen.bg-background {
+  background-color: transparent;
+}
+
+.glow-green {
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.15);
+}
+
+.neon-text {
+  color: hsl(var(--primary));
+  text-shadow:
+    0 0 4px hsl(var(--primary) / 0.9),
+    0 0 12px hsl(var(--primary) / 0.7),
+    0 0 28px hsl(var(--primary) / 0.5),
+    0 0 56px hsl(var(--primary) / 0.3);
+}
+
+/* Tone down neon glow in light mode */
+:root:not(.dark) .neon-text {
+  text-shadow: none;
+  font-weight: 700;
+}
+
+.glow-green-sm {
+  box-shadow: 0 0 10px hsl(var(--primary) / 0.1);
+}
+
+/* Light mode: replace glow with subtle shadow */
+:root:not(.dark) .glow-green {
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.08);
+}
+:root:not(.dark) .glow-green-sm {
+  box-shadow: 0 1px 4px hsl(var(--foreground) / 0.06);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary) / 0.7));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.grid-bg {
+  background-image: linear-gradient(hsl(var(--primary) / 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--primary) / 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* ── Presale bar ─────────────────────────────────────────────────────────── */
+.cfg-presale-bar {
+  background-image:
+    radial-gradient(120% 180% at 12% 50%, hsl(152 70% 30% / 0.35), transparent 55%),
+    linear-gradient(90deg, #04140c 0%, #0b2e1c 50%, #04140c 100%);
+  box-shadow: 0 6px 30px rgba(34, 197, 94, 0.22);
+}
+.cfg-presale-cta { box-shadow: 0 0 20px rgba(46, 224, 111, 0.5); }
+
+.cfg-bolt { width: 40px; height: 40px; overflow: visible; transform-origin: 50% 55%; animation: cfgZap 1.8s ease-in-out infinite; }
+@media (min-width: 640px) { .cfg-bolt { width: 46px; height: 46px; } }
+.cfg-bolt .b-xl    { fill: #22c55e; filter: blur(8px); animation: cfgBreathe 1.8s ease-in-out infinite; }
+.cfg-bolt .b-l     { fill: #3bef7a; filter: blur(3px); animation: cfgBreathe 1.8s ease-in-out infinite; }
+.cfg-bolt .b-core  { fill: #ffffff; animation: cfgFlicker 1.8s linear infinite; }
+.cfg-bolt .b-flash { fill: #eafff2; filter: blur(5px); opacity: 0; animation: cfgStrike 1.8s ease-in-out infinite; }
+.cfg-bolt .b-spark { fill: #7df3a6; transform-box: fill-box; transform-origin: center; animation: cfgSpark 1.8s ease-in-out infinite; }
+
+/* Glow breathes harder + brighter */
+@keyframes cfgBreathe { 0%, 100% { opacity: .3 }  50% { opacity: .95 } }
+/* Two strikes per loop — a sharp white discharge that snaps off */
+@keyframes cfgStrike {
+  0%, 14% { opacity: 0 }  18% { opacity: 1 }  26% { opacity: .15 }
+  60% { opacity: 0 }  64% { opacity: .95 }  72% { opacity: .12 }  100% { opacity: 0 }
+}
+/* Whole bolt jolts/scales on each strike */
+@keyframes cfgZap {
+  0%, 14% { transform: scale(1) rotate(0) }
+  18% { transform: scale(1.12) rotate(-3deg) }
+  28% { transform: scale(1) rotate(0) }
+  60% { transform: scale(1) rotate(0) }
+  64% { transform: scale(1.08) rotate(2deg) }
+  74% { transform: scale(1) rotate(0) }
+}
+/* Electric flicker on the white core */
+@keyframes cfgFlicker {
+  0%, 100% { opacity: 1 }  6% { opacity: .65 }  9% { opacity: 1 }
+  17% { opacity: .55 }  20% { opacity: 1 }  48% { opacity: .8 }
+  51% { opacity: 1 }  63% { opacity: .5 }  66% { opacity: 1 }  85% { opacity: .85 }
+}
+/* Sparks pop + scatter outward */
+@keyframes cfgSpark {
+  0%, 100% { opacity: .1; transform: scale(.6) }
+  18% { opacity: 1; transform: scale(1.3) }
+  40% { opacity: .2; transform: scale(.8) }
+  64% { opacity: .9; transform: scale(1.2) }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cfg-bolt, .cfg-bolt .b-xl, .cfg-bolt .b-l, .cfg-bolt .b-core, .cfg-bolt .b-flash, .cfg-bolt .b-spark { animation: none; transform: none; }
+  .cfg-bolt .b-xl { opacity: .55; }
+  .cfg-bolt .b-l  { opacity: .75; }
+  .cfg-bolt .b-flash { opacity: 0; }
+}
+
+/* ── Banner slide rotation ───────────────────────────────────────────────── */
+@keyframes banner-slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes banner-slide-in-left {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes banner-slide-out-left {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+@keyframes banner-slide-out-right {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+.banner-slide-in-right  { animation: banner-slide-in-right  900ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.banner-slide-in-left   { animation: banner-slide-in-left   900ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.banner-slide-out-left  { animation: banner-slide-out-left  900ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.banner-slide-out-right { animation: banner-slide-out-right 900ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+/* ── Whitepaper print styles ──────────────────────────────────────────────
+   Activated when the user hits Cmd/Ctrl+P or clicks 'Save as PDF' on
+   /whitepaper. Strips site chrome, forces a light palette regardless of
+   theme, and adds page breaks between sections so the resulting PDF reads
+   like a paper rather than a screenshot of the app.
+*/
+@media print {
+  /* Hide site chrome — top nav, sticky banners, sidebar, modals */
+  nav.sticky,
+  aside,
+  [role="banner"],
+  .banner-slide-in-right,
+  .banner-slide-in-left,
+  .banner-slide-out-right,
+  .banner-slide-out-left {
+    display: none !important;
+  }
+
+  /* Force light palette and full-bleed content on the whitepaper page */
+  .whitepaper-page {
+    background: #ffffff !important;
+    color: #142019 !important;
+  }
+  .whitepaper-content {
+    max-width: none !important;
+    padding: 0 !important;
+    gap: 0 !important;
+    display: block !important;
+  }
+  .whitepaper-page main {
+    flex: none !important;
+    width: 100% !important;
+  }
+
+  /* Section page breaks — every section after the first starts on a
+     new page. Sibling selector instead of :first-of-type + override
+     because some user agents bail on the override pair when the
+     parent has display:block forced via !important. */
+  .whitepaper-page section + section {
+    break-before: page;
+    page-break-before: always;
+  }
+  /* Belt + braces: also break after every section. The browser
+     coalesces adjacent break-after + break-before into one break. */
+  .whitepaper-page section {
+    break-after: page;
+    page-break-after: always;
+  }
+  .whitepaper-page section:last-of-type {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  /* Don't break a figure across pages */
+  figure {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Tighter typographic colour for ink */
+  .whitepaper-page h1, .whitepaper-page h2, .whitepaper-page h3 {
+    color: #142019 !important;
+  }
+  .whitepaper-page p, .whitepaper-page li, .whitepaper-page td {
+    color: #1f2a25 !important;
+  }
+  .whitepaper-page code {
+    background: #f3f4f6 !important;
+    color: #142019 !important;
+  }
+
+  /* Page size + margins */
+  @page {
+    size: A4;
+    margin: 18mm 20mm;
+  }
+}

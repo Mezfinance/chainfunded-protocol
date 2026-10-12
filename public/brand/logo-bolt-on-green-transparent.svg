@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <clipPath id="bolt">
+      <path d="M0 80C0 35.8 35.8 0 80 0h352c44.2 0 80 35.8 80 80v352c0 44.2-35.8 80-80 80H80C35.8 512 0 476.2 0 432V80z"/>
+    </clipPath>
+    <mask id="m">
+      <rect width="512" height="512" fill="white"/>
+      <polygon points="278 72 96 278 240 278 220 440 416 232 272 232 278 72" fill="black"/>
+    </mask>
+  </defs>
+  <g clip-path="url(#bolt)">
+    <rect width="512" height="512" fill="#4CAF50" mask="url(#m)"/>
+  </g>
+</svg>

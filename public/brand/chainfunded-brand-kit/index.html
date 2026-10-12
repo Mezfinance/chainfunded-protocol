@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChainFunded — Brand Kit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter',sans-serif;color:#13201a;background:#f8fbf9;line-height:1.65;-webkit-font-smoothing:antialiased}
+    h1,h2,h3{font-family:'Space Grotesk',sans-serif;line-height:1.2}
+    .container{max-width:960px;margin:0 auto;padding:48px 24px}
+    .section{margin-bottom:64px}
+    .section h2{font-size:28px;font-weight:700;margin-bottom:8px}
+    .section .sub{font-size:15px;color:#526f61;margin-bottom:32px}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px}
+    .asset-card{background:#fff;border:1px solid #dae7de;border-radius:12px;padding:32px;text-align:center;position:relative}
+    .asset-card .preview{height:120px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+    .asset-card .preview.dark{background:#0a0f0c;border-radius:8px}
+    .asset-card .label{font-weight:600;font-size:14px;margin-bottom:4px}
+    .asset-card .desc{font-size:12px;color:#526f61;margin-bottom:12px}
+    .btn-dl{display:inline-block;padding:8px 20px;border-radius:8px;font-size:13px;font-weight:600;text-decoration:none;border:1.5px solid #dae7de;color:#13201a;transition:all .2s}
+    .btn-dl:hover{border-color:#1a9e4a;color:#1a9e4a}
+    .color-row{display:flex;gap:16px;flex-wrap:wrap}
+    .swatch{width:100px;border-radius:10px;overflow:hidden;border:1px solid #dae7de}
+    .swatch .block{height:64px}
+    .swatch .info{padding:8px;font-size:11px;text-align:center;background:#fff}
+    .swatch .info strong{display:block;font-size:12px}
+    .rule-card{background:#fff;border:1px solid #dae7de;border-radius:12px;padding:24px;margin-bottom:16px}
+    .rule-card h3{font-size:16px;margin-bottom:8px}
+    .rule-card p,.rule-card ul{font-size:14px;color:#526f61}
+    .rule-card ul{padding-left:18px}
+    .rule-card li{margin-bottom:4px}
+    .do-dont{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    .do{border-left:3px solid #1a9e4a;padding-left:16px}
+    .dont{border-left:3px solid #dc4b4b;padding-left:16px}
+    .do h4{color:#1a9e4a;font-size:14px;margin-bottom:6px}
+    .dont h4{color:#dc4b4b;font-size:14px;margin-bottom:6px}
+    .do li,.dont li{font-size:13px;color:#526f61;margin-bottom:4px}
+    @media(max-width:600px){.grid{grid-template-columns:1fr}.do-dont{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="section" style="text-align:center">
+    <div style="display:inline-flex;align-items:center;gap:14px;margin-bottom:24px">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px">Chain<span style="color:#1a9e4a">Funded</span></span>
+    </div>
+    <h1 style="font-size:36px;margin-bottom:12px">Brand Kit</h1>
+    <p style="font-size:16px;color:#526f61;max-width:500px;margin:0 auto">Official brand assets for partners, press, and integrations. Please follow the usage guidelines below.</p>
+  </div>
+
+  <!-- Logo Assets -->
+  <div class="section">
+    <h2>Logo</h2>
+    <p class="sub">The ChainFunded logo is a lightning bolt representing speed, power, and on-chain execution.</p>
+    <div class="grid">
+
+      <div class="asset-card">
+        <div class="preview">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#1a9e4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        </div>
+        <div class="label">Logo Mark — Outline</div>
+        <div class="desc">Green stroke on transparent. Primary mark.</div>
+        <a href="../logo-mark.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+      <div class="asset-card">
+        <div class="preview">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#1a9e4a"/></svg>
+        </div>
+        <div class="label">Logo Mark — Filled</div>
+        <div class="desc">Solid green bolt on transparent.</div>
+        <a href="../logo-bolt-filled.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+      <div class="asset-card">
+        <div class="preview">
+          <svg width="80" height="80" viewBox="0 0 512 512" fill="none"><rect width="512" height="512" rx="96" fill="#1a9e4a"/><polygon points="278 72 96 278 240 278 220 440 416 232 272 232 278 72" fill="#fff"/></svg>
+        </div>
+        <div class="label">Logo Mark — On Green</div>
+        <div class="desc">White bolt on green rounded square.</div>
+        <a href="../logo-mark-on-green.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+      <div class="asset-card">
+        <div class="preview">
+          <svg width="80" height="80" viewBox="0 0 512 512" fill="none"><rect width="512" height="512" rx="96" fill="#e6f5ec"/><polygon points="278 72 96 278 240 278 220 440 416 232 272 232 278 72" fill="#1a9e4a"/></svg>
+        </div>
+        <div class="label">Logo Mark — On Light</div>
+        <div class="desc">Green bolt on light green square.</div>
+        <a href="../logo-mark-on-light.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+      <div class="asset-card">
+        <div class="preview dark">
+          <svg width="80" height="80" viewBox="0 0 512 512" fill="none"><defs><clipPath id="bolt-clip"><path d="M0 80C0 35.8 35.8 0 80 0h352c44.2 0 80 35.8 80 80v352c0 44.2-35.8 80-80 80H80C35.8 512 0 476.2 0 432V80z"/></clipPath><mask id="bolt-mask"><rect width="512" height="512" fill="white"/><polygon points="278 72 96 278 240 278 220 440 416 232 272 232 278 72" fill="black"/></mask></defs><g clip-path="url(#bolt-clip)"><rect width="512" height="512" fill="#4CAF50" mask="url(#bolt-mask)"/></g></svg>
+        </div>
+        <div class="label">Logo Mark — Transparent Cutout</div>
+        <div class="desc">Green square, bolt punched through as transparent.</div>
+        <a href="../logo-bolt-on-green-transparent.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Wordmark -->
+  <div class="section">
+    <h2>Wordmark</h2>
+    <p class="sub">The wordmark uses Space Grotesk Bold. "Chain" in the primary text colour, "Funded" in the brand green.</p>
+    <div class="grid">
+
+      <div class="asset-card">
+        <div class="preview">
+          <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;color:#13201a">Chain<span style="color:#1a9e4a">Funded</span></span>
+        </div>
+        <div class="label">Wordmark — Light Mode</div>
+        <div class="desc">Dark text + green accent for light backgrounds.</div>
+        <a href="../wordmark.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+      <div class="asset-card">
+        <div class="preview dark">
+          <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;color:#fff">Chain<span style="color:#22c55e">Funded</span></span>
+        </div>
+        <div class="label">Wordmark — Dark Mode</div>
+        <div class="desc">White text + green accent for dark backgrounds.</div>
+        <a href="../wordmark-white.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+      <div class="asset-card" style="grid-column:span 2">
+        <div class="preview" style="height:80px">
+          <div style="display:flex;align-items:center;gap:14px">
+            <svg width="44" height="44" viewBox="0 0 512 512" fill="none"><rect width="512" height="512" rx="96" fill="#e6f5ec"/><polygon points="278 72 96 278 240 278 220 440 416 232 272 232 278 72" fill="#1a9e4a"/></svg>
+            <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:28px;color:#13201a">Chain<span style="color:#1a9e4a">Funded</span></span>
+          </div>
+        </div>
+        <div class="label">Full Logo — Mark + Wordmark</div>
+        <div class="desc">Horizontal lockup for headers and partner pages.</div>
+        <a href="../logo-full.svg" download class="btn-dl">Download SVG</a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Colours -->
+  <div class="section">
+    <h2>Colours</h2>
+    <p class="sub">The ChainFunded palette is built on forest greens with a clean, institutional feel.</p>
+    <div class="color-row">
+      <div class="swatch"><div class="block" style="background:#1a9e4a"></div><div class="info"><strong>Primary</strong>#1a9e4a</div></div>
+      <div class="swatch"><div class="block" style="background:#167334"></div><div class="info"><strong>Primary Dark</strong>#167334</div></div>
+      <div class="swatch"><div class="block" style="background:#22c55e"></div><div class="info"><strong>Accent</strong>#22c55e</div></div>
+      <div class="swatch"><div class="block" style="background:#e6f5ec"></div><div class="info"><strong>Light Green</strong>#e6f5ec</div></div>
+      <div class="swatch"><div class="block" style="background:#ecf4ee"></div><div class="info"><strong>Secondary</strong>#ecf4ee</div></div>
+      <div class="swatch"><div class="block" style="background:#f8fbf9"></div><div class="info"><strong>Background</strong>#f8fbf9</div></div>
+      <div class="swatch"><div class="block" style="background:#13201a"></div><div class="info"><strong>Text</strong>#13201a</div></div>
+      <div class="swatch"><div class="block" style="background:#526f61"></div><div class="info"><strong>Muted</strong>#526f61</div></div>
+    </div>
+  </div>
+
+  <!-- Typography -->
+  <div class="section">
+    <h2>Typography</h2>
+    <p class="sub">Two fonts for a clear hierarchy.</p>
+    <div class="grid" style="grid-template-columns:1fr 1fr">
+      <div class="rule-card">
+        <h3 style="font-family:'Space Grotesk',sans-serif">Space Grotesk</h3>
+        <p>Headings, display text, wordmark, buttons. Weights: 500, 600, 700.</p>
+        <p style="font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;margin-top:12px;color:#13201a">Aa Bb Cc 123</p>
+      </div>
+      <div class="rule-card">
+        <h3>Inter</h3>
+        <p>Body text, labels, descriptions, UI elements. Weights: 400, 500, 600, 700.</p>
+        <p style="font-size:24px;font-weight:700;margin-top:12px;color:#13201a">Aa Bb Cc 123</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Usage Guidelines -->
+  <div class="section">
+    <h2>Usage Guidelines</h2>
+    <p class="sub">Keep the brand consistent across all touchpoints.</p>
+
+    <div class="do-dont">
+      <div class="do">
+        <h4>Do</h4>
+        <ul>
+          <li>Use the provided SVGs at any scale</li>
+          <li>Maintain clear space around the logo (min 50% of logo height)</li>
+          <li>Use the green bolt on white/light backgrounds</li>
+          <li>Use the white bolt on green/dark backgrounds</li>
+          <li>Use "ChainFunded" as one word, capital C and F</li>
+        </ul>
+      </div>
+      <div class="dont">
+        <h4>Don't</h4>
+        <ul>
+          <li>Don't stretch, skew, or rotate the logo</li>
+          <li>Don't change the logo colours</li>
+          <li>Don't add drop shadows, outlines, or effects</li>
+          <li>Don't use the logo smaller than 24px</li>
+          <li>Don't write "Chain Funded", "Chainfunded", or "chain funded"</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center;padding:32px 0;border-top:1px solid #dae7de;font-size:13px;color:#526f61">
+    &copy; 2026 ChainFunded. All logos and brand assets are trademarks of their respective owners.<br>
+    For press inquiries: press@chainfunded.io
+  </div>
+
+</div>
+</body>
+</html>

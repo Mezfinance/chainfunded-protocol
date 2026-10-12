@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 5: Rounded/softer shield shape, green fill with light bolt, no outer square -->
+  <rect width="512" height="512" rx="80" fill="#e6f5ec"/>
+  <path d="M256 52C180 52 104 96 104 96v148c0 72 152 180 152 180s152-108 152-180V96S332 52 256 52z" fill="#1a9e4a" stroke="#167334" stroke-width="8" stroke-linejoin="round"/>
+  <polygon points="274 124 172 268 236 268 218 384 340 240 272 240 274 124" fill="#e6f5ec"/>
+  <!-- Subtle inner glow line on shield -->
+  <path d="M256 76C192 76 128 112 128 112v132c0 60 128 156 128 156s128-96 128-156V112S320 76 256 76z" fill="none" stroke="#ffffff" stroke-width="4" stroke-linejoin="round" stroke-opacity="0.15"/>
+</svg>

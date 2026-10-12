@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ChainFunded whitepaper — Diagram 4
+  Liquidity Provider lifecycle — light-mode sequence diagram.
+
+  Companion to Diagram 2 (Trader lifecycle). Same visual idiom:
+  rounded outer frame, section header + sentence-case subtitle,
+  participant cards with Lucide icons, numbered step bands,
+  green-tinted on-chain participants, USDC flows in primary
+  green, return arrows dotted-grey, callout boxes for the
+  passive-yield and NAV-risk notes.
+
+  Palette sourced from src/index.css (light mode):
+    background       #f7faf8   (canvas)
+    foreground       #142019   (dark text)
+    primary          #15803d   (saturated green for legibility)
+    muted            #eef4f0   (step bands)
+    muted-foreground #536b5e   (subdued labels)
+    border           #c4d4cb   (lifelines, off-chain cards)
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1320" width="1280" height="1320" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="ahd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a89b"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+    .bg          { fill: #f7faf8; }
+    .step-band   { fill: #eef4f0; }
+    .lifeline    { stroke: #c4d4cb; stroke-width: 1.5; stroke-dasharray: 3 5; fill: none; }
+    .p-box       { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+    .p-onchain   { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+    .p-label     { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+    .p-sub       { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .icon-stroke { stroke: #15803d; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    .step-num    { fill: #15803d; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
+    .step-title  { fill: #142019; font-size: 15px; font-weight: 700; }
+    .arrow       { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+    .arrow-p     { stroke: #15803d; stroke-width: 2.25; fill: none; }
+    .arrow-ret   { stroke: #94a89b; stroke-width: 1.25; fill: none; stroke-dasharray: 4 3; }
+    .arrow-label { fill: #2a3d34; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .arrow-label-p { fill: #15803d; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; font-weight: 700; }
+    .callout-bg  { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+    .callout-title { fill: #15803d; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+    .callout-text  { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .note-bg     { fill: #fef7e6; stroke: #b88a00; stroke-width: 1.5; }
+    .note-title  { fill: #b88a00; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+    .note-text   { fill: #4a3a00; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .title       { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+    .subtitle    { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="1320"/>
+
+  <!-- Title -->
+  <text class="subtitle" x="64" y="56">Figure 4 · Liquidity Provider flow</text>
+  <text class="title"    x="64" y="88">LP lifecycle — deposit, yield, withdraw</text>
+
+  <!-- Step bands -->
+  <rect class="step-band" x="0" y="290" width="1280" height="290"/>
+  <rect class="step-band" x="0" y="600" width="1280" height="180" opacity="0.5"/>
+  <rect class="step-band" x="0" y="800" width="1280" height="160"/>
+  <rect class="step-band" x="0" y="980" width="1280" height="320" opacity="0.5"/>
+
+  <!-- ── Participant headers ─────────────────────────────────────── -->
+  <!-- LP -->
+  <rect class="p-box" x="140" y="160" width="120" height="100" rx="8"/>
+  <g transform="translate(186, 178) scale(1.167)">
+    <path class="icon-stroke" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+    <circle class="icon-stroke" cx="12" cy="7" r="4"/>
+  </g>
+  <text class="p-label" x="200" y="230">LP</text>
+  <text class="p-sub"   x="200" y="248">EOA</text>
+
+  <!-- USDC -->
+  <rect class="p-onchain" x="380" y="160" width="120" height="100" rx="8"/>
+  <g transform="translate(426, 178) scale(1.167)">
+    <line class="icon-stroke" x1="12" x2="12" y1="2" y2="22"/>
+    <path class="icon-stroke" d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+  </g>
+  <text class="p-label" x="440" y="230">USDC</text>
+  <text class="p-sub"   x="440" y="248">ERC-20</text>
+
+  <!-- ChainFundedPool -->
+  <rect class="p-onchain" x="640" y="160" width="160" height="100" rx="8"/>
+  <g transform="translate(706, 178) scale(1.167)">
+    <path class="icon-stroke" d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/>
+    <path class="icon-stroke" d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/>
+    <path class="icon-stroke" d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>
+  </g>
+  <text class="p-label" x="720" y="230">ChainFundedPool</text>
+  <text class="p-sub"   x="720" y="248">on-chain · UUPS</text>
+
+  <!-- CFND token -->
+  <rect class="p-onchain" x="940" y="160" width="120" height="100" rx="8"/>
+  <g transform="translate(986, 178) scale(1.167)">
+    <circle class="icon-stroke" cx="8" cy="8" r="6"/>
+    <path class="icon-stroke" d="M18.09 10.37A6 6 0 1 1 10.34 18"/>
+    <path class="icon-stroke" d="M7 6h1v4"/>
+    <path class="icon-stroke" d="m16.71 13.88.7.71-2.82 2.82"/>
+  </g>
+  <text class="p-label" x="1000" y="230">CFND</text>
+  <text class="p-sub"   x="1000" y="248">LP share token</text>
+
+  <!-- Lifelines -->
+  <line class="lifeline" x1="200"  y1="270" x2="200"  y2="1170"/>
+  <line class="lifeline" x1="440"  y1="270" x2="440"  y2="1170"/>
+  <line class="lifeline" x1="720"  y1="270" x2="720"  y2="1170"/>
+  <line class="lifeline" x1="1000" y1="270" x2="1000" y2="1170"/>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 01 — Deposit capital · mint CFND
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="312">STEP 01</text>
+  <text class="step-title" x="64" y="332">Deposit capital, mint CFND</text>
+
+  <!-- LP → USDC: approve -->
+  <line class="arrow" x1="200" y1="368" x2="440" y2="368" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="212" y="360">approve(Pool, amount)</text>
+
+  <!-- LP → Pool: deposit -->
+  <line class="arrow" x1="200" y1="406" x2="720" y2="406" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="212" y="398">deposit(amount, gasReimbursementUsdc)</text>
+
+  <!-- Pool → USDC: transferFrom (primary) -->
+  <line class="arrow-p" x1="720" y1="444" x2="440" y2="444" marker-end="url(#ahp)"/>
+  <text class="arrow-label-p" x="460" y="436">transferFrom(LP → Pool, amount)</text>
+
+  <!-- Pool → CFND: mint -->
+  <line class="arrow" x1="720" y1="482" x2="1000" y2="482" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="732" y="474">mint(LP, amount) · CFND priced 1:1 at NAV</text>
+
+  <!-- Pool → LP: receipt (dotted) -->
+  <line class="arrow-ret" x1="720" y1="520" x2="200" y2="520" marker-end="url(#ahd)"/>
+  <text class="arrow-label" x="212" y="512">Deposited event · LP holds amount × CFND</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 02 — Yield accrual (passive)
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="622">STEP 02</text>
+  <text class="step-title" x="64" y="642">Yield accrual — passive, tracked per-CFND</text>
+
+  <rect class="callout-bg" x="200" y="668" width="900" height="96" rx="8"/>
+  <text class="callout-title" x="220" y="692">YIELD SOURCES · ACC'D AS USDC IN PROFIT POOL</text>
+  <text class="callout-text"  x="220" y="714">  · 6% of every challenge fee (FEE_PROFIT_POOL_BPS)</text>
+  <text class="callout-text"  x="220" y="732">  · 20% of every funded-payout firm cut</text>
+  <text class="callout-text"  x="220" y="750">  → split pro-rata across all CFND holders via accProfitPerToken accumulator</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 03 — Claim profit
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="822">STEP 03</text>
+  <text class="step-title" x="64" y="842">Claim profit — capital stays deposited</text>
+
+  <!-- LP → Pool: claimProfit -->
+  <line class="arrow" x1="200" y1="888" x2="720" y2="888" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="212" y="880">claimProfit(gasReimbursementUsdc)</text>
+
+  <!-- Pool → USDC → LP: transfer (primary) -->
+  <line class="arrow-p" x1="720" y1="926" x2="200" y2="926" marker-end="url(#ahp)"/>
+  <text class="arrow-label-p" x="212" y="918">transfer(Pool → LP, pendingProfit USDC)</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 04 — Withdraw capital
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="1002">STEP 04</text>
+  <text class="step-title" x="64" y="1022">Withdraw capital — burn CFND for USDC at current NAV</text>
+
+  <!-- LP → Pool: withdraw -->
+  <line class="arrow" x1="200" y1="1062" x2="720" y2="1062" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="212" y="1054">withdraw(cfndAmount, gasReimbursementUsdc)</text>
+
+  <!-- Pool → CFND: burn -->
+  <line class="arrow" x1="720" y1="1098" x2="1000" y2="1098" marker-end="url(#ah)"/>
+  <text class="arrow-label" x="732" y="1090">burn(LP, cfndAmount)</text>
+
+  <!-- Pool → USDC → LP: transfer (primary) -->
+  <line class="arrow-p" x1="720" y1="1136" x2="200" y2="1136" marker-end="url(#ahp)"/>
+  <text class="arrow-label-p" x="212" y="1128">transfer(Pool → LP, cfndAmount × NAV)</text>
+
+  <!-- NAV-risk note — moved BELOW the step-4 arrows so it doesn't
+       overlap the burn / transfer arrows that span the lifelines.
+       Spans the full width of the lifeline area for visual weight. -->
+  <rect class="note-bg" x="80" y="1190" width="1120" height="100" rx="10"/>
+  <text class="note-title" x="100" y="1216">NAV-RISK NOTE</text>
+  <text class="note-text"  x="100" y="1240">NAV can fall below 1.00 if cumulative trader payouts exceed cumulative challenge fees +</text>
+  <text class="note-text"  x="100" y="1260">funded-payout firm cuts in the LP's holding window. LPs carry the residual trader-PnL exposure.</text>
+  <text class="note-text"  x="100" y="1280">claimPayout reverts with InsufficientLPCapital once lpCapitalBalance() falls to zero.</text>
+</svg>

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 3: Filled shield (green), bolt knocked out as light green -->
+  <rect width="512" height="512" rx="80" fill="#e6f5ec"/>
+  <path d="M256 56C168 56 80 104 80 104v160c0 88 176 192 176 192s176-104 176-192V104S344 56 256 56z" fill="#1a9e4a"/>
+  <polygon points="276 128 164 276 236 276 216 396 344 244 268 244 276 128" fill="#e6f5ec"/>
+</svg>

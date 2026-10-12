@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en" style="background:#0a0a0a">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#22c55e" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ChainFunded" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Primary meta -->
+    <title>ChainFunded | On-Chain Prop Trading Evaluation Platform</title>
+    <meta name="description" content="ChainFunded is the world's first fully on-chain prop trading evaluation platform. Prove your skills, get funded up to $200,000, and receive automatic USDC payouts — no middlemen, enforced by smart contracts." />
+    <meta name="keywords" content="prop trading, funded trader, on-chain trading, crypto prop firm, USDC payouts, trading challenge, DeFi, blockchain trading" />
+    <meta name="author" content="ChainFunded" />
+    <meta name="robots" content="index, follow" />
+    <!-- canonical and og:url are set per-page by react-helmet-async (SEO component) -->
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="ChainFunded" />
+    <meta property="og:title" content="ChainFunded | On-Chain Prop Trading Evaluation Platform" />
+    <meta property="og:description" content="Prove your trading skills, get funded up to $200,000, and receive automatic on-chain USDC payouts. No middlemen — rules and payouts enforced by smart contracts." />
+    <meta property="og:image" content="https://chainfunded.io/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="ChainFunded — On-Chain Prop Trading Evaluation" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@chainfunded" />
+    <meta name="twitter:title" content="ChainFunded | On-Chain Prop Trading" />
+    <meta name="twitter:description" content="Prove your trading skills, get funded up to $200,000, receive automatic on-chain USDC payouts. Smart contract enforced — no middlemen." />
+    <meta name="twitter:image" content="https://chainfunded.io/og-image.png" />
+    <meta name="twitter:image:alt" content="ChainFunded — On-Chain Prop Trading Evaluation" />
+
+    <!-- JSON-LD: Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "ChainFunded",
+      "url": "https://chainfunded.io",
+      "logo": "https://chainfunded.io/apple-touch-icon.png",
+      "description": "ChainFunded is a decentralised on-chain prop trading evaluation platform. Traders prove their skills through two challenge phases and receive automatic USDC payouts enforced by smart contracts.",
+      "email": "support@chainfunded.io",
+      "sameAs": [
+        "https://twitter.com/chainfunded"
+      ],
+      "foundingDate": "2025",
+      "applicationCategory": "FinanceApplication"
+    }
+    </script>
+
+    <!-- JSON-LD: WebApplication -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ChainFunded",
+      "url": "https://chainfunded.io",
+      "description": "On-chain prop trading evaluation platform with automatic USDC payouts via smart contracts.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "AggregateOffer",
+        "priceCurrency": "USD",
+        "lowPrice": "30",
+        "highPrice": "1080",
+        "offerCount": "6"
+      }
+    }
+    </script>
+  </head>
+  <body>
+    <!-- Prevent white flash: apply saved theme (or dark default) before React loads -->
+    <script>
+      (function() {
+        // Default to the dark background; only switch to light when the user has
+        // explicitly saved 'light'. Bg hexes mirror --background in index.css
+        // (dark 0 0% 4% ≈ #0a0a0a, light 140 30% 98% ≈ #f7faf8).
+        var saved = localStorage.getItem('chainfunded-theme');
+        var isDark = saved !== 'light';
+        if (isDark) document.documentElement.classList.add('dark');
+        document.documentElement.style.background = isDark ? '#0a0a0a' : '#f7faf8';
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

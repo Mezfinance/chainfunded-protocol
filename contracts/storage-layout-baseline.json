@@ -1,0 +1,122 @@
+{
+  "0": {
+    "label": "defaultPhase1ProfitTargetBps",
+    "type": "t_uint256"
+  },
+  "1": {
+    "label": "defaultPhase2ProfitTargetBps",
+    "type": "t_uint256"
+  },
+  "2": {
+    "label": "defaultMaxDailyLossBps",
+    "type": "t_uint256"
+  },
+  "3": {
+    "label": "defaultMaxTotalLossBps",
+    "type": "t_uint256"
+  },
+  "4": {
+    "label": "defaultMinTradingDays",
+    "type": "t_uint256"
+  },
+  "5": {
+    "label": "defaultTraderShareBps",
+    "type": "t_uint256"
+  },
+  "6": {
+    "label": "defaultMaxBestDayBps",
+    "type": "t_uint256"
+  },
+  "7": {
+    "label": "challengeTierFee",
+    "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  "8": {
+    "label": "challengeTierTvlThreshold",
+    "type": "t_mapping(t_uint256,t_uint256)"
+  },
+  "9": {
+    "label": "challengeTierSizes",
+    "type": "t_array(t_uint256)dyn_storage"
+  },
+  "10": {
+    "label": "affiliateTierThresholds",
+    "type": "t_array(t_uint256)dyn_storage"
+  },
+  "11": {
+    "label": "affiliateTierRates",
+    "type": "t_array(t_uint256)dyn_storage"
+  },
+  "12": {
+    "label": "affiliateMonthlyVolume",
+    "type": "t_mapping(t_address,t_mapping(t_uint256,t_uint256))"
+  },
+  "13": {
+    "label": "affiliateHasReferred",
+    "type": "t_mapping(t_address,t_mapping(t_address,t_bool))"
+  },
+  "14": {
+    "label": "challenges",
+    "type": "t_mapping(t_string_memory_ptr,t_struct(Challenge)23854_storage)"
+  },
+  "15": {
+    "label": "profitPoolBalance",
+    "type": "t_uint256"
+  },
+  "16": {
+    "label": "accProfitPerToken",
+    "type": "t_uint256"
+  },
+  "17": {
+    "label": "rewardDebt",
+    "type": "t_mapping(t_address,t_uint256)"
+  },
+  "18": {
+    "label": "lastDepositBlock",
+    "type": "t_mapping(t_address,t_uint256)"
+  },
+  "19": {
+    "label": "usdc",
+    "type": "t_contract(IERC20)8084"
+  },
+  "20": {
+    "label": "cfndToken",
+    "type": "t_contract(CFNDToken)23638"
+  },
+  "21": {
+    "label": "authorizedSigners",
+    "type": "t_mapping(t_address,t_bool)"
+  },
+  "22": {
+    "label": "signerCount",
+    "type": "t_uint256"
+  },
+  "23": {
+    "label": "signatureThreshold",
+    "type": "t_uint256"
+  },
+  "24": {
+    "label": "labsWallet",
+    "type": "t_address"
+  },
+  "25": {
+    "label": "settledPayouts",
+    "type": "t_mapping(t_string_memory_ptr,t_bool)"
+  },
+  "26": {
+    "label": "cfndTransferWhitelist",
+    "type": "t_mapping(t_address,t_bool)"
+  },
+  "27": {
+    "label": "adminRegisterDisabled",
+    "type": "t_bool"
+  },
+  "28": {
+    "label": "emergencyRequests",
+    "type": "t_mapping(t_bytes32,t_struct(EmergencyRequest)23920_storage)"
+  },
+  "29": {
+    "label": "emergencyRequestNonce",
+    "type": "t_uint256"
+  }
+}

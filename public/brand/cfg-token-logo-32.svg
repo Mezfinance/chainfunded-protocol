@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512" fill="none">
+  <!-- CFG token logo — declared 32x32, vector (viewBox 512) so it stays crisp at any size.
+       White lightning bolt on solid brand-green rounded square. -->
+  <rect width="512" height="512" rx="96" fill="#1a9e4a"/>
+  <polygon points="278 72 96 278 240 278 220 440 416 232 272 232 278 72" fill="#ffffff"/>
+</svg>

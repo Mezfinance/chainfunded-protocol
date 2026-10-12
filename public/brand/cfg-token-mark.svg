@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- ChainFunded CFG token mark — web3 style: bright bolt on dark green tile.
+       Self-contained, opaque, background-independent. Brand green #1CCE8D
+       (dark-theme --primary, hsl(142 76% 46%)). -->
+  <rect x="8" y="8" width="496" height="496" rx="112" fill="#072014" stroke="#1CCE8D" stroke-width="16"/>
+  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#1CCE8D" transform="translate(112 112) scale(12)"/>
+</svg>

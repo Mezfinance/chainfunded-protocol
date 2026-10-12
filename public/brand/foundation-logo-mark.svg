@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- ChainFunded DAO foundation mark — transparent background.
+       Green shield with the lightning bolt knocked out via a mask, so the
+       page/card background shows through the bolt. Reads correctly on both
+       light and dark surfaces. Derived from foundation-logo-v5. -->
+  <mask id="cf-dao-bolt">
+    <rect width="512" height="512" fill="white"/>
+    <polygon points="274 124 172 268 236 268 218 384 340 240 272 240 274 124" fill="black"/>
+  </mask>
+  <path d="M256 52C180 52 104 96 104 96v148c0 72 152 180 152 180s152-108 152-180V96S332 52 256 52z"
+        fill="#1a9e4a" mask="url(#cf-dao-bolt)"/>
+</svg>

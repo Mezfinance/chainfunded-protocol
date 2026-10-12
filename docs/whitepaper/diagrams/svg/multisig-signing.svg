@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ChainFunded whitepaper — Diagram 8
+  N-of-M payout signing flow.
+
+  Re-laid out so the broadcast representation does not bunch arrows
+  through the signer cards. Single thick arrow from Trader to a
+  broadcast tag immediately to its right; signer cards arrayed to
+  the right of that, with each card's border style communicating
+  participation (green = active and signs; grey dashed = idle / did
+  not sign). No individual per-signer arrows.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1100" width="1280" height="1100" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+    .bg          { fill: #f7faf8; }
+    .step-band   { fill: #eef4f0; }
+    .actor       { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+    .signer-active { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+    .signer-idle   { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; stroke-dasharray: 4 4; }
+    .pool        { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+    .actor-title { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+    .actor-sub   { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .actor-sub-idle { fill: #94a89b; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .step-num    { fill: #15803d; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
+    .step-title  { fill: #142019; font-size: 15px; font-weight: 700; }
+    .edge        { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+    .edge-thick  { stroke: #5a6b62; stroke-width: 2.5; fill: none; }
+    .edge-p      { stroke: #15803d; stroke-width: 2.5; fill: none; }
+    .edge-label  { fill: #2a3d34; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .edge-label-p { fill: #15803d; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .broadcast-tag { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.5; }
+    .broadcast-text { fill: #15803d; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.06em; }
+    .sig-pill    { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.5; }
+    .sig-text    { fill: #15803d; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .none-text   { fill: #94a89b; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; font-style: italic; }
+    .threshold-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+    .threshold-title { fill: #15803d; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+    .threshold-text  { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .title       { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+    .subtitle    { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+    .legend-key  { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="1100"/>
+
+  <text class="subtitle" x="64" y="56">Figure 8 · Multi-signature payouts</text>
+  <text class="title"    x="64" y="88">N-of-M payout signing — example with N=3, M=5</text>
+
+  <!-- Step bands -->
+  <rect class="step-band" x="0" y="170" width="1280" height="270"/>
+  <rect class="step-band" x="0" y="460" width="1280" height="200" opacity="0.5"/>
+  <rect class="step-band" x="0" y="680" width="1280" height="220"/>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 01 — Broadcast payout request to all M signers
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="200">STEP 01</text>
+  <text class="step-title" x="64" y="220">Trader broadcasts a payout request to the signer set</text>
+
+  <!-- Trader -->
+  <rect class="actor" x="80" y="290" width="160" height="80" rx="10"/>
+  <text class="actor-title" x="160" y="326">Trader</text>
+  <text class="actor-sub"   x="160" y="346">EOA · funded account</text>
+
+  <!-- Single broadcast arrow with broadcast tag -->
+  <line class="edge-thick" x1="240" y1="330" x2="332" y2="330" marker-end="url(#ah)"/>
+  <rect class="broadcast-tag" x="340" y="312" width="160" height="40" rx="20"/>
+  <text class="broadcast-text" x="420" y="337">BROADCAST · 1 TX</text>
+
+  <!-- Signer row — 5 cards, top edge at y=290 -->
+  <!-- Each card 130px wide, 80px tall, with 22px gaps between -->
+  <!-- Active set (3): Signers 1–3, green border -->
+  <!-- Idle set (2):   Signers 4–5, dashed grey border -->
+
+  <rect class="signer-active" x="540" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="605" y="326">Signer 1</text>
+  <text class="actor-sub"   x="605" y="346">authorised</text>
+
+  <rect class="signer-active" x="690" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="755" y="326">Signer 2</text>
+  <text class="actor-sub"   x="755" y="346">authorised</text>
+
+  <rect class="signer-active" x="840" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="905" y="326">Signer 3</text>
+  <text class="actor-sub"   x="905" y="346">authorised</text>
+
+  <rect class="signer-idle" x="990" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="1055" y="326">Signer 4</text>
+  <text class="actor-sub-idle" x="1055" y="346">offline</text>
+
+  <rect class="signer-idle" x="1140" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="1205" y="326">Signer 5</text>
+  <text class="actor-sub-idle" x="1205" y="346">declined</text>
+
+  <!-- Legend below cards -->
+  <rect class="signer-active" x="80" y="402" width="14" height="14" rx="3"/>
+  <text class="legend-key" x="100" y="414">authorised &amp; participating</text>
+  <rect class="signer-idle" x="320" y="402" width="14" height="14" rx="3"/>
+  <text class="legend-key" x="340" y="414">authorised but did not sign this round</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 02 — Each active signer independently re-checks rules
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="490">STEP 02</text>
+  <text class="step-title" x="64" y="510">Each active signer independently re-derives P&amp;L and signs</text>
+
+  <!-- Sig pills under active signers -->
+  <rect class="sig-pill" x="540" y="540" width="130" height="36" rx="8"/>
+  <text class="sig-text" x="605" y="563">sig₁ · ECDSA</text>
+
+  <rect class="sig-pill" x="690" y="540" width="130" height="36" rx="8"/>
+  <text class="sig-text" x="755" y="563">sig₂ · ECDSA</text>
+
+  <rect class="sig-pill" x="840" y="540" width="130" height="36" rx="8"/>
+  <text class="sig-text" x="905" y="563">sig₃ · ECDSA</text>
+
+  <text class="none-text" x="1055" y="563">no signature</text>
+  <text class="none-text" x="1205" y="563">no signature</text>
+
+  <rect class="threshold-bg" x="80" y="600" width="1190" height="50" rx="10"/>
+  <text class="threshold-title" x="100" y="622">EACH SIGNER VERIFIES OFF-CHAIN</text>
+  <text class="threshold-text"  x="100" y="640">P&amp;L from trading engine · accountId active in pool · payout amount within tier · rules not breached</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 03 — Trader submits aggregated proof to claimPayout
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="710">STEP 03</text>
+  <text class="step-title" x="64" y="730">Trader submits the aggregated signature set in a single tx</text>
+
+  <!-- Trader -->
+  <rect class="actor" x="80" y="780" width="160" height="80" rx="10"/>
+  <text class="actor-title" x="160" y="816">Trader</text>
+  <text class="actor-sub"   x="160" y="836">submits in 1 tx</text>
+
+  <!-- Pool -->
+  <rect class="pool" x="1010" y="780" width="240" height="80" rx="12"/>
+  <text class="actor-title" x="1130" y="808">ChainFundedPool</text>
+  <text class="actor-sub"   x="1130" y="826">verifies threshold + sig validity</text>
+  <text class="actor-sub"   x="1130" y="844">reverts on either failure</text>
+
+  <!-- Single primary arrow -->
+  <line class="edge-p" x1="240" y1="820" x2="1010" y2="820" marker-end="url(#ahp)"/>
+  <text class="edge-label-p" x="300" y="804">claimPayout(payoutId, [sig₁, sig₂, sig₃], …)</text>
+  <text class="edge-label" x="300" y="846">N=3 ≥ signatureThreshold · all sigs ∈ authorisedSigners[]</text>
+
+  <!-- ── Threshold callout (final) ──────────────────────────── -->
+  <rect class="threshold-bg" x="80" y="920" width="1190" height="100" rx="10"/>
+  <text class="threshold-title" x="100" y="944">ON-CHAIN VERIFICATION · CONTRACT REVERTS IF</text>
+  <text class="threshold-text"  x="100" y="966">  · sigs.length &lt; signatureThreshold      → InsufficientSignatures</text>
+  <text class="threshold-text"  x="100" y="986">  · any signer ∉ authorizedSigners[]      → UnauthorizedSigner</text>
+  <text class="threshold-text"  x="100" y="1006">  · duplicate or unsorted sigs             → DuplicateOrUnsortedSignature</text>
+</svg>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — ChainFunded</title>
+  <meta name="description" content="ChainFunded is the world's first fully on-chain prop trading evaluation platform.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2322c55e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#f8fbf9;--card:#fff;--primary:#1a9e4a;--primary-dark:#167334;--primary-light:#e6f5ec;--border:#dae7de;--text:#13201a;--muted:#526f61;--secondary:#ecf4ee}
+    body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.65;-webkit-font-smoothing:antialiased}
+    h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;line-height:1.2}
+    a{color:var(--primary);text-decoration:none}a:hover{text-decoration:underline}
+    .container{max-width:900px;margin:0 auto;padding:0 24px}
+    nav{background:rgba(248,251,249,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);position:fixed;top:0;left:0;right:0;z-index:100;height:64px;display:flex;align-items:center}
+    nav .inner{max-width:900px;margin:0 auto;padding:0 24px;width:100%;display:flex;align-items:center;justify-content:space-between}
+    .nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+    .nav-brand svg{width:32px;height:32px}
+    .nav-brand span{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px;color:var(--text)}
+    .nav-brand .a{color:var(--primary)}
+    .nav-links{display:flex;gap:8px}
+    .nav-links a{font-size:14px;font-weight:500;color:var(--muted);padding:6px 14px;border-radius:8px;text-decoration:none}
+    .nav-links a:hover{color:var(--text);background:var(--secondary)}
+    .hero{padding:140px 0 80px;text-align:center}
+    .hero h1{font-size:44px;font-weight:700;margin-bottom:16px;background:linear-gradient(135deg,var(--text),var(--primary-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero p{font-size:20px;color:var(--muted);max-width:600px;margin:0 auto}
+    .section{padding:64px 0}
+    .section-alt{background:var(--card)}
+    .section h2{font-size:28px;font-weight:700;margin-bottom:24px;text-align:center}
+    .section .sub{text-align:center;font-size:15px;color:var(--muted);margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:28px;box-shadow:0 2px 8px rgba(19,32,26,0.06)}
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+    .step{text-align:center;padding:24px 16px}
+    .step-num{width:48px;height:48px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;color:var(--primary)}
+    .step h3{font-size:16px;margin-bottom:8px}
+    .step p{font-size:13.5px;color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:10px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px;border:none;cursor:pointer;text-decoration:none;transition:all .2s}
+    .btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-dark);text-decoration:none}
+    .btn-outline{background:transparent;color:var(--text);border:1.5px solid var(--border)}.btn-outline:hover{border-color:var(--primary);color:var(--primary);text-decoration:none}
+    .badge{display:inline-block;background:var(--primary-light);color:var(--primary-dark);font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:4px 14px;border-radius:100px;margin-bottom:16px}
+    footer{border-top:1px solid var(--border);padding:32px 0;text-align:center;font-size:13px;color:var(--muted)}
+    footer a{color:var(--primary);margin:0 8px}
+    @media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.hero h1{font-size:32px}}
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="inner">
+    <a href="/" class="nav-brand">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#1a9e4a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      <span>Chain<span class="a">Funded</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/">App</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#brand">Brand Kit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="container">
+    <div class="badge">On-Chain Prop Trading</div>
+    <h1>About ChainFunded</h1>
+    <p>The world's first fully on-chain prop trading evaluation platform. Rules enforced by code. Payouts executed by smart contracts.</p>
+  </div>
+</section>
+
+<!-- What Is ChainFunded -->
+<section class="section section-alt">
+  <div class="container">
+    <h2>What Is ChainFunded?</h2>
+    <p class="sub">ChainFunded lets skilled traders prove their ability and earn funded capital — with every rule, every payout, and every fee split enforced transparently on Ethereum.</p>
+    <div class="grid-2">
+      <div class="card">
+        <h3 style="font-size:18px;margin-bottom:10px;">The Problem</h3>
+        <p style="font-size:14px;color:var(--muted);">Traditional prop firms operate as black boxes. Payouts are denied arbitrarily, rules change without notice, and firms collapse overnight. Traders have no way to verify that the firm will actually pay them.</p>
+      </div>
+      <div class="card">
+        <h3 style="font-size:18px;margin-bottom:10px;">The Solution</h3>
+        <p style="font-size:14px;color:var(--muted);">ChainFunded replaces trust with code. Smart contracts enforce the rules, execute payouts automatically, and hold capital non-custodially. Every transaction is verifiable on Ethereum. No human discretion. No delays.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section class="section" id="how-it-works">
+  <div class="container">
+    <h2>How It Works</h2>
+    <p class="sub">Three steps from evaluation to funded payouts — all on-chain.</p>
+    <div class="grid-3">
+      <div class="card step">
+        <div class="step-num">1</div>
+        <h3>Pay &amp; Trade</h3>
+        <p>Choose an account size and pay the one-time evaluation fee in USDC. Trade through two phases — hit the profit targets while respecting the drawdown rules.</p>
+      </div>
+      <div class="card step">
+        <div class="step-num">2</div>
+        <h3>Pass &amp; Get Funded</h3>
+        <p>Pass both phases and receive a funded account. The smart contract verifies your results cryptographically — no manual review, no forms, no waiting period.</p>
+      </div>
+      <div class="card step">
+        <div class="step-num">3</div>
+        <h3>Trade &amp; Get Paid</h3>
+        <p>Trade your funded account and keep the majority of your profits, settled directly to your wallet in USDC. Your evaluation fee is refunded on your first payout.</p>
+      </div>
+    </div>
+    <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:20px;">Account sizes, fees, profit splits, and challenge rules are set on-chain and governed by CFG token holders. See the <a href="https://vote.chainfundeddao.org" target="_blank">governance portal</a> for current parameters.</p>
+  </div>
+</section>
+
+<!-- For Traders & LPs -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="grid-2">
+      <div class="card" style="border-top:3px solid var(--primary);">
+        <h3 style="font-size:18px;margin-bottom:12px;">For Traders</h3>
+        <ul style="font-size:14px;color:var(--muted);padding-left:18px;line-height:1.8;">
+          <li>Multiple account sizes — from entry-level to institutional</li>
+          <li>Majority profit split on all funded trading profits</li>
+          <li>Full fee refund on your first funded payout</li>
+          <li>Multi-asset: crypto, FX, and stock indices</li>
+          <li>Automatic USDC settlement — no forms, no delays</li>
+          <li>Wallet-based auth — no email, no passwords, no KYC at protocol level</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--primary);">
+        <h3 style="font-size:18px;margin-bottom:12px;">For Liquidity Providers</h3>
+        <ul style="font-size:14px;color:var(--muted);padding-left:18px;line-height:1.8;">
+          <li>Deposit USDC into the non-custodial LP pool</li>
+          <li>Earn yield from evaluation fees and funded trader profit-sharing</li>
+          <li>Withdraw at any time (subject to pool liquidity)</li>
+          <li>LP token (CFND) represents your pool position, verifiable on-chain</li>
+          <li>All yield rates determined by protocol fee parameters, governed by CFG holders</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- The Protocol -->
+<section class="section">
+  <div class="container">
+    <h2>The Protocol</h2>
+    <p class="sub">Built on production-grade Web3 infrastructure. Every component is transparent and verifiable.</p>
+    <div class="grid-3">
+      <div class="card" style="text-align:center;">
+        <h4 style="font-size:15px;margin-bottom:8px;">Ethereum</h4>
+        <p style="font-size:13px;color:var(--muted);">Smart contracts deployed on Ethereum mainnet. Deepest liquidity, strongest security guarantees.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <h4 style="font-size:15px;margin-bottom:8px;">USDC Settlement</h4>
+        <p style="font-size:13px;color:var(--muted);">All fees, payouts, and LP deposits use USDC — the most regulated stablecoin, issued by Circle.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <h4 style="font-size:15px;margin-bottom:8px;">ECDSA Payouts</h4>
+        <p style="font-size:13px;color:var(--muted);">Payout proofs are cryptographically signed. The smart contract verifies and executes — no human approval.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <h4 style="font-size:15px;margin-bottom:8px;">Non-Custodial</h4>
+        <p style="font-size:13px;color:var(--muted);">All funds held in smart contracts, not bank accounts. LPs verify their position on-chain at any time.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <h4 style="font-size:15px;margin-bottom:8px;">OFAC Compliance</h4>
+        <p style="font-size:13px;color:var(--muted);">3-layer sanctions screening: hardcoded SDN list, Chainalysis on-chain oracle, and Chainalysis REST API.</p>
+      </div>
+      <div class="card" style="text-align:center;">
+        <h4 style="font-size:15px;margin-bottom:8px;">Governance</h4>
+        <p style="font-size:13px;color:var(--muted);">Protocol parameters controlled by CFG token holders through on-chain governance with a 2-day timelock.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Brand Kit -->
+<section class="section section-alt" id="brand">
+  <div class="container">
+    <h2>Brand Kit</h2>
+    <p class="sub">Official logos, wordmarks, and guidelines for partners, press, and integrations.</p>
+    <div class="grid-2">
+      <div class="card" style="text-align:center;padding:40px 28px;">
+        <div style="margin-bottom:20px;">
+          <svg width="56" height="56" viewBox="0 0 24 24" fill="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" fill="#1a9e4a"/></svg>
+        </div>
+        <h3 style="font-size:18px;margin-bottom:8px;">ChainFunded Brand Kit</h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Lightning bolt logo, wordmark variants, colour palette, typography, and usage guidelines.</p>
+        <a href="/brand/chainfunded-brand-kit/" class="btn btn-primary" style="font-size:14px;">Download Brand Kit</a>
+      </div>
+      <div class="card" style="text-align:center;padding:40px 28px;">
+        <div style="margin-bottom:20px;">
+          <svg width="56" height="56" viewBox="0 0 512 512" fill="none"><rect width="512" height="512" rx="80" fill="#e6f5ec"/><path d="M256 56C168 56 80 104 80 104v160c0 88 176 192 176 192s176-104 176-192V104S344 56 256 56z" fill="#1a9e4a"/><polygon points="276 128 164 276 236 276 216 396 344 244 268 244 276 128" fill="#e6f5ec"/></svg>
+        </div>
+        <h3 style="font-size:18px;margin-bottom:8px;">DAO Brand Kit</h3>
+        <p style="font-size:14px;color:var(--muted);margin-bottom:20px;">Shield + bolt logo, DAO wordmark, and entity-specific usage guidelines.</p>
+        <a href="/brand/foundation-brand-kit/" class="btn btn-outline" style="font-size:14px;">Download DAO Kit</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Links -->
+<section class="section">
+  <div class="container" style="text-align:center;">
+    <h2>Links</h2>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:24px;">
+      <a href="/" class="btn btn-primary">Launch App</a>
+      <a href="https://chainfundeddao.org" target="_blank" class="btn btn-outline">DAO</a>
+      <a href="https://vote.chainfundeddao.org" target="_blank" class="btn btn-outline">Governance</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    &copy; 2026 ChainFunded
+    <a href="/">App</a>
+    <a href="https://chainfundeddao.org" target="_blank">DAO</a>
+    <a href="/terms-of-service">Terms</a>
+    <a href="/privacy-policy">Privacy</a>
+  </div>
+</footer>
+
+</body>
+</html>

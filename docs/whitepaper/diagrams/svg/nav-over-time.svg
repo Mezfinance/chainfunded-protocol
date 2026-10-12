@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ChainFunded whitepaper — Diagram 5
+  CFND NAV over time — illustrative chart.
+
+  X-axis: time (months) · Y-axis: NAV in USDC per CFND.
+  Anchored at 1.00 USDC at deposit; trends up via fee inflows
+  and firm-cut accruals; can dip below 1.00 in a stress event
+  where payouts spike. Two scenario lines: steady accumulation
+  (primary green) and a stress event with brief NAV-loss
+  (amber). Annotations call out the specific moments.
+
+  Schematic — not real data. Y/X labels are illustrative.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+    .bg          { fill: #f7faf8; }
+    .axis        { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+    .grid        { stroke: #c4d4cb; stroke-width: 0.75; stroke-dasharray: 2 4; fill: none; }
+    .baseline    { stroke: #94a89b; stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
+    .axis-label  { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .axis-tick   { fill: #142019; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .axis-tick-y { fill: #142019; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: end; }
+    .line-steady { stroke: #15803d; stroke-width: 2.5; fill: none; }
+    .line-stress { stroke: #b88a00; stroke-width: 2.5; fill: none; stroke-dasharray: 6 4; }
+    .point       { fill: #15803d; stroke: #f7faf8; stroke-width: 1.5; }
+    .point-stress { fill: #b88a00; stroke: #f7faf8; stroke-width: 1.5; }
+    .point-bad   { fill: #b91c1c; stroke: #f7faf8; stroke-width: 1.5; }
+    .annot-line  { stroke: #5a6b62; stroke-width: 1; fill: none; stroke-dasharray: 2 3; }
+    .annot       { fill: #2a3d34; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .annot-warn  { fill: #b88a00; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+    .legend-box  { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1; }
+    .legend-text { fill: #142019; font-size: 12px; }
+    .title       { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+    .subtitle    { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+    .equation-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.5; }
+    .equation-text { fill: #142019; font-size: 13px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="800"/>
+
+  <text class="subtitle" x="64" y="56">Figure 5 · NAV mechanics</text>
+  <text class="title"    x="64" y="88">CFND NAV over time — illustrative</text>
+
+  <!-- Plot area: x = 140..1180, y = 160..560 -->
+  <!-- 0,0 = bottom-left of plot at (140, 560); right is t increasing; up is NAV increasing -->
+
+  <!-- Y-axis ticks at NAV = 0.94, 0.98, 1.00, 1.04, 1.08, 1.12 -->
+  <!-- Map NAV → y: 1.00 = y=400 (centre), each 0.02 unit = 50px -->
+  <!-- 1.12 = 100 · 1.08 = 200 · 1.04 = 300 · 1.00 = 400 · 0.98 = 450 · 0.94 = 550 -->
+
+  <!-- Gridlines -->
+  <line class="grid" x1="140" y1="100" x2="1180" y2="100"/>
+  <line class="grid" x1="140" y1="200" x2="1180" y2="200"/>
+  <line class="grid" x1="140" y1="300" x2="1180" y2="300"/>
+  <line class="baseline" x1="140" y1="400" x2="1180" y2="400"/>
+  <line class="grid" x1="140" y1="500" x2="1180" y2="500"/>
+
+  <!-- Axes -->
+  <line class="axis" x1="140" y1="160" x2="140" y2="560" marker-end="url(#ah)"/>
+  <line class="axis" x1="140" y1="560" x2="1180" y2="560" marker-end="url(#ah)"/>
+
+  <!-- Axis labels -->
+  <text class="axis-label" x="148" y="148">NAV · USDC per CFND</text>
+  <text class="axis-label" x="1190" y="556">time</text>
+
+  <!-- Y ticks -->
+  <text class="axis-tick-y" x="130" y="105">1.12</text>
+  <text class="axis-tick-y" x="130" y="205">1.08</text>
+  <text class="axis-tick-y" x="130" y="305">1.04</text>
+  <text class="axis-tick-y" x="130" y="405">1.00</text>
+  <text class="axis-tick-y" x="130" y="505">0.96</text>
+
+  <!-- X ticks (months) -->
+  <text class="axis-tick" x="140" y="580">M0</text>
+  <text class="axis-tick" x="348" y="580">M3</text>
+  <text class="axis-tick" x="556" y="580">M6</text>
+  <text class="axis-tick" x="764" y="580">M9</text>
+  <text class="axis-tick" x="972" y="580">M12</text>
+  <text class="axis-tick" x="1180" y="580">M15</text>
+
+  <!-- ── Steady-accumulation scenario (primary green) ──────────── -->
+  <!-- Mostly upward with small step ticks (each tick is a fee inflow) -->
+  <polyline class="line-steady"
+    points="140,400 200,395 260,388 320,378 380,372 440,360 500,355 560,343 620,340 680,328 740,322 800,308 860,302 920,290 980,283 1040,272 1100,265 1180,253"/>
+
+  <!-- Steady scenario marker (end point). Label anchored to the marker
+       so it stays inside the chart — the previous "@ M15 · steady
+       scenario" version overran the SVG viewBox at x=1280. -->
+  <circle class="point" cx="1180" cy="253" r="5"/>
+  <text class="annot" x="1170" y="244" text-anchor="end">~1.075 NAV @ M15</text>
+
+  <!-- ── Stress scenario (amber dashed) ────────────────────────── -->
+  <!-- Same path until M9, then a big payout dip below 1.00 -->
+  <polyline class="line-stress"
+    points="140,400 200,395 260,388 320,378 380,372 440,360 500,355 560,343 620,340 680,328 740,322 800,308 860,302 880,475 920,460 980,440 1040,400 1100,378 1180,355"/>
+
+  <!-- Stress event marker -->
+  <circle class="point-bad" cx="880" cy="475" r="6"/>
+  <line class="annot-line" x1="880" y1="475" x2="780" y2="640"/>
+  <text class="annot-warn" x="600" y="660">STRESS EVENT — large funded-trader payout</text>
+  <text class="annot" x="600" y="678">NAV falls to ~0.985 in a single block.</text>
+  <text class="annot" x="600" y="696">recovers as fees + future firm cuts flow in.</text>
+
+  <!-- Recovery point -->
+  <circle class="point-stress" cx="1180" cy="355" r="5"/>
+  <text class="annot-warn" x="1010" y="350">recovered to ~1.04 by M15</text>
+
+  <!-- ── 1.00 NAV baseline annotation ──────────────────────────── -->
+  <text class="annot" x="148" y="394">NAV = 1.00 — initial deposit ratio · LP capital + earned yield breakeven</text>
+
+  <!-- ── Equation block ─────────────────────────────────────────── -->
+  <rect class="equation-bg" x="80" y="710" width="1120" height="64" rx="10"/>
+  <text class="equation-text" x="100" y="738">  NAV(t) = ( totalUSDC(t) − profitPoolBalance(t) ) / cfndTotalSupply(t)</text>
+  <text class="equation-text" x="100" y="760">  Profit pool is the LP-yield accumulator — kept separate from capital so claimProfit() doesn't move NAV.</text>
+
+  <!-- ── Legend ─────────────────────────────────────────────────── -->
+  <rect class="legend-box" x="940" y="120" width="240" height="86" rx="8"/>
+  <line class="line-steady" x1="956" y1="142" x2="996" y2="142"/>
+  <text class="legend-text" x="1004" y="146">Steady accumulation</text>
+  <line class="line-stress" x1="956" y1="166" x2="996" y2="166"/>
+  <text class="legend-text" x="1004" y="170">Stress + recovery</text>
+  <line class="baseline"    x1="956" y1="190" x2="996" y2="190"/>
+  <text class="legend-text" x="1004" y="194">NAV = 1.00 baseline</text>
+</svg>

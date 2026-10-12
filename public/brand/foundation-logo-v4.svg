@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 4: Double-line shield (outer + inner), bolt centered -->
+  <rect width="512" height="512" rx="80" fill="#e6f5ec"/>
+  <!-- Outer shield -->
+  <path d="M256 40C164 40 72 92 72 92v168c0 92 184 200 184 200s184-108 184-200V92S348 40 256 40z" fill="none" stroke="#1a9e4a" stroke-width="12" stroke-linejoin="round"/>
+  <!-- Inner shield -->
+  <path d="M256 72C180 72 108 112 108 112v144c0 76 148 168 148 168s148-92 148-168V112S332 72 256 72z" fill="none" stroke="#1a9e4a" stroke-width="8" stroke-linejoin="round" stroke-opacity="0.4"/>
+  <polygon points="276 132 168 276 240 276 220 392 340 244 268 244 276 132" fill="#1a9e4a"/>
+</svg>

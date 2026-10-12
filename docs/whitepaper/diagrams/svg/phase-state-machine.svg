@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ChainFunded whitepaper — Diagram 3
+  Challenge phase state machine.
+
+  Redesigned to clear two label-vs-line overlaps from the prior
+  layout: per-curve breach labels were rendered on top of the
+  dashed failure curves, and the re-register loop's horizontal
+  return line crashed through its own label. The breach labels
+  are consolidated into a single annotation on the Failed terminal,
+  and the loop is routed over the top of the cards as a clean arc.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+    .bg          { fill: #f7faf8; }
+    .state-active { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+    .state-fail  { fill: #fef2f2; stroke: #b91c1c; stroke-width: 1.75; }
+    .state-paid  { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+    .state-title { fill: #142019; font-size: 16px; font-weight: 700; text-anchor: middle; }
+    .state-sub   { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .state-tag   { fill: #15803d; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+    .state-tag-fail { fill: #b91c1c; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+    .state-trigger { fill: #b91c1c; font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.04em; }
+    .edge        { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+    .edge-p      { stroke: #15803d; stroke-width: 2; fill: none; }
+    .edge-fail   { stroke: #b91c1c; stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; }
+    .tx-label    { fill: #15803d; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .tx-sub      { fill: #536b5e; font-size: 10px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .loop-label-strong { fill: #2a3d34; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .loop-label  { fill: #536b5e; font-size: 10px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+    .title       { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+    .subtitle    { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+    .legend-bg   { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1; }
+    .legend-text { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+
+  <text class="subtitle" x="64" y="56">Figure 3 · Phase state machine</text>
+  <text class="title"    x="64" y="88">Challenge lifecycle — five states, six transitions</text>
+
+  <!-- ── Re-register loop (above the cards, single smooth arc) ───── -->
+  <!-- Routed in the empty band between the title and the transition labels
+       so it doesn't have to draw a giant U-shape below the Failed terminal -->
+  <path class="edge" d="M 1090 200 C 1090 120 190 120 190 200" marker-end="url(#ah)"/>
+  <text class="loop-label-strong" x="640" y="148">registerPostPayout(settledAccountId, freshAccountId, signatures)</text>
+  <text class="loop-label"        x="640" y="162">re-register a fresh Phase 1 challenge for the same trader · no new fee</text>
+
+  <!-- ── Transition labels (above arrows, below the loop) ────────── -->
+  <text class="tx-label" x="330" y="180">registerPhase2(sigs)</text>
+  <text class="tx-sub"   x="330" y="195">advances to Phase 2</text>
+
+  <text class="tx-label" x="630" y="180">registerFunded(sigs)</text>
+  <text class="tx-sub"   x="630" y="195">advances to Funded</text>
+
+  <text class="tx-label" x="930" y="180">claimPayout(sigs)</text>
+  <text class="tx-sub"   x="930" y="195">on-chain rule re-check</text>
+
+  <!-- ── Active states (top row, y=200..320) ─────────────────────── -->
+  <rect class="state-active" x="80" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="190" y="228">PHASE 1</text>
+  <text class="state-title" x="190" y="256">Active · evaluation</text>
+  <text class="state-sub"   x="190" y="280">phase=1 · settled=false</text>
+  <text class="state-sub"   x="190" y="298">profit target · loss caps</text>
+
+  <rect class="state-active" x="380" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="490" y="228">PHASE 2</text>
+  <text class="state-title" x="490" y="256">Active · verification</text>
+  <text class="state-sub"   x="490" y="280">phase=2 · settled=false</text>
+  <text class="state-sub"   x="490" y="298">tighter profit target</text>
+
+  <rect class="state-active" x="680" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="790" y="228">FUNDED</text>
+  <text class="state-title" x="790" y="256">Live · trading on capital</text>
+  <text class="state-sub"   x="790" y="280">phase=3 · settled=false</text>
+  <text class="state-sub"   x="790" y="298">payouts on demand</text>
+
+  <rect class="state-paid" x="980" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="1090" y="228">SETTLED</text>
+  <text class="state-title" x="1090" y="256">USDC paid · final</text>
+  <text class="state-sub"   x="1090" y="280">settled=true</text>
+  <text class="state-sub"   x="1090" y="298">re-register for next round</text>
+
+  <!-- ── Primary transition arrows (between cards) ───────────────── -->
+  <line class="edge-p" x1="300" y1="260" x2="380" y2="260" marker-end="url(#ahp)"/>
+  <line class="edge-p" x1="600" y1="260" x2="680" y2="260" marker-end="url(#ahp)"/>
+  <line class="edge-p" x1="900" y1="260" x2="980" y2="260" marker-end="url(#ahp)"/>
+
+  <!-- ── Failure curves — straight clean drops from each card to Failed -->
+  <!-- No per-curve labels: breach origin is implicit from the card the
+       curve starts at, and the consolidated annotation in the Failed
+       terminal below names every triggering phase. -->
+  <path class="edge-fail" d="M 190 320 C 190 420 460 460 520 540" marker-end="url(#ahr)"/>
+  <path class="edge-fail" d="M 490 320 C 490 400 600 460 620 540" marker-end="url(#ahr)"/>
+  <path class="edge-fail" d="M 790 320 C 790 400 740 460 720 540" marker-end="url(#ahr)"/>
+
+  <!-- ── Failed terminal state ───────────────────────────────────── -->
+  <rect class="state-fail" x="380" y="540" width="520" height="130" rx="12"/>
+  <text class="state-tag-fail" x="640" y="568">FAILED · TERMINAL</text>
+  <text class="state-title" x="640" y="596">Account flagged off-chain</text>
+  <text class="state-sub"   x="640" y="618">no further phase transitions or payout proofs signed.</text>
+  <text class="state-sub"   x="640" y="634">trader's loss bounded to the evaluation fee paid.</text>
+  <text class="state-trigger" x="640" y="654">triggered by rule breach in Phase 1 · Phase 2 · Funded</text>
+
+  <!-- ── Legend ──────────────────────────────────────────────────── -->
+  <rect class="legend-bg" x="64" y="700" width="1152" height="44" rx="8"/>
+  <line class="edge-p" x1="84" y1="722" x2="124" y2="722" marker-end="url(#ahp)"/>
+  <text class="legend-text" x="132" y="726">primary transition · on-chain (multisig-signed)</text>
+  <line class="edge-fail" x1="540" y1="722" x2="580" y2="722" marker-end="url(#ahr)"/>
+  <text class="legend-text" x="588" y="726">off-chain failure flag</text>
+  <line class="edge" x1="900" y1="722" x2="940" y2="722" marker-end="url(#ah)"/>
+  <text class="legend-text" x="948" y="726">on-chain re-registration loop</text>
+</svg>

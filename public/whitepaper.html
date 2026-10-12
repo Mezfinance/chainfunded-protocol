@@ -1,0 +1,3350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>ChainFunded — Protocol Whitepaper</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" />
+  <style>
+    /* ── Page setup ──────────────────────────────────────────────── */
+    @page {
+      size: A4;
+      margin: 24mm 22mm 26mm 22mm;
+      @bottom-center {
+        content: counter(page);
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 8.5pt;
+        color: #6f8478;
+      }
+    }
+    @page :first { @bottom-center { content: none; } }
+
+    /* ── Base ────────────────────────────────────────────────────── */
+    * { box-sizing: border-box; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.55;
+      color: #181f1c;
+      background: #ffffff;
+      font-feature-settings: 'kern' 1, 'liga' 1, 'calt' 1, 'tnum' 0;
+    }
+
+    a { color: #15803d; text-decoration: none; border-bottom: 0.5pt solid #15803d40; }
+    a:hover { border-bottom-color: #15803d; }
+
+    /* ── Section breaks ──────────────────────────────────────────
+       Cover and TOC each get their own page. Body sections flow
+       naturally — a short section can be followed by the start of
+       the next on the same page. The orphan/widow + h1
+       break-after:avoid rules keep titles from stranding alone at
+       the bottom of a page. */
+    section { break-before: auto; page-break-before: auto; }
+    .cover, .toc {
+      break-after: page;
+      page-break-after: always;
+    }
+    section.body + section.body {
+      /* Visual separation between consecutive body sections that
+         share a page. Margin collapses with H1 margin-top so we
+         don't end up with double-spacing. */
+      margin-top: 14mm;
+    }
+
+    /* ── Cover ───────────────────────────────────────────────────── */
+    .cover {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 247mm;
+      padding-top: 6mm;
+    }
+    .cover-mark {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      letter-spacing: 0.22em;
+      color: #15803d;
+      font-weight: 700;
+    }
+    .cover-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 32mm;
+    }
+    .cover-body h1 {
+      font-size: 48pt;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.05;
+      margin: 0 0 8mm 0;
+      padding: 0;
+      color: #0c1411;
+      border: none;
+    }
+    .cover-body h1::after {
+      content: '';
+      display: block;
+      width: 64mm;
+      border-top: 3pt solid #15803d;
+      margin-top: 8mm;
+    }
+    .cover-body p { text-align: left; hyphens: none; }
+    .cover-body p strong:first-of-type {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 8.5pt;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #6f8478;
+      display: inline-block;
+      min-width: 30mm;
+    }
+    .cover-body hr {
+      border: none;
+      border-top: 0.5pt solid #c4d4cb;
+      margin: 8mm 0;
+    }
+    .cover-foot {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5pt;
+      color: #6f8478;
+      letter-spacing: 0.12em;
+    }
+
+    /* ── TOC ─────────────────────────────────────────────────────── */
+    .toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 12mm 0 0 0;
+    }
+    .toc-row {
+      display: grid;
+      grid-template-columns: 16mm 1fr;
+      align-items: baseline;
+      padding: 3pt 0;
+      border-bottom: 0.25pt dotted #c4d4cb;
+      page-break-inside: avoid;
+    }
+    .toc-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      color: #15803d;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+    .toc-title {
+      font-size: 11pt;
+      color: #181f1c;
+      font-weight: 500;
+    }
+
+    /* ── Body sections ───────────────────────────────────────────── */
+    .body { padding-top: 4mm; }
+    .section-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      letter-spacing: 0.18em;
+      color: #15803d;
+      font-weight: 700;
+      margin: 0 0 4mm 0;
+      text-transform: uppercase;
+      /* keep tag, H1 and first body paragraph together so a section
+         never starts at the very bottom of a page with content
+         flowing onto the next page */
+      break-after: avoid;
+      page-break-after: avoid;
+    }
+    h1.section-h1 {
+      font-size: 22pt;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      margin: 0 0 8mm 0;
+      padding-bottom: 4mm;
+      border-bottom: 0.5pt solid #c4d4cb;
+      color: #0c1411;
+      break-after: avoid;
+      page-break-after: avoid;
+      /* push a section start onto a new page if there's less than
+         ~50mm left in the current page — avoids titles stranded at
+         the very bottom. */
+      orphans: 4;
+      widows: 4;
+    }
+    h2 {
+      font-size: 13pt;
+      font-weight: 700;
+      margin: 8mm 0 3mm 0;
+      color: #0c1411;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+    h3 {
+      font-size: 11pt;
+      font-weight: 700;
+      margin: 6mm 0 2mm 0;
+      color: #15803d;
+      font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.04em;
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+    p {
+      margin: 0 0 3mm 0;
+      text-align: justify;
+      hyphens: auto;
+      -webkit-hyphens: auto;
+      orphans: 3;
+      widows: 3;
+    }
+
+    /* ── Lists ───────────────────────────────────────────────────── */
+    ul, ol {
+      padding-left: 6mm;
+      margin: 0 0 3mm 0;
+    }
+    li {
+      margin: 0 0 1.2mm 0;
+      text-align: justify;
+      hyphens: auto;
+    }
+    li::marker { color: #15803d; }
+    ol > li::marker { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+
+    /* ── Code ────────────────────────────────────────────────────── */
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      background: #f1f5f3;
+      color: #142019;
+      padding: 0.5pt 1.5pt;
+      border-radius: 1.5pt;
+      hyphens: none;
+      word-break: break-word;
+    }
+    pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+      line-height: 1.45;
+      background: #f1f5f3;
+      border: 0.5pt solid #c4d4cb;
+      border-left: 2pt solid #15803d;
+      padding: 3mm 4mm;
+      margin: 3mm 0 4mm 0;
+      /* Wrap long lines onto the next line instead of clipping at the
+         right margin — overflow-x: auto only works on screen, not in
+         the printed PDF where the viewport is fixed at the @page size. */
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    pre > code { background: transparent; padding: 0; }
+
+    /* ── Tables ──────────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 4mm 0;
+      font-size: 9.5pt;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    thead { background: #ecfdf5; }
+    th, td {
+      text-align: left;
+      vertical-align: top;
+      padding: 1.5mm 2mm;
+      border-bottom: 0.5pt solid #c4d4cb;
+    }
+    th {
+      font-weight: 700;
+      font-size: 8.5pt;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #15803d;
+      border-bottom: 1pt solid #15803d;
+      /* Headers don't wrap — auto column-sizing minimises narrow columns
+         to fit short body values and ends up shrinking the header to
+         "PH AS E". Forcing nowrap keeps each column at least as wide
+         as its title. */
+      white-space: nowrap;
+    }
+    td code { font-size: 8.5pt; }
+
+    /* ── Keep heading with following figure / table / pre ───────── */
+    .keep-together {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .keep-together > h2,
+    .keep-together > h3 {
+      /* margin-top already applied by the heading; cancel the keep-with-next
+         heuristics here since the wrapper handles the pairing. */
+      page-break-after: auto;
+      break-after: auto;
+    }
+
+    /* ── Figures ─────────────────────────────────────────────────── */
+    figure {
+      margin: 5mm 0;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    figure svg { width: 100%; height: auto; display: block; }
+    figcaption {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5pt;
+      color: #536b5e;
+      text-align: center;
+      margin-top: 2mm;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Misc ────────────────────────────────────────────────────── */
+    hr {
+      border: none;
+      border-top: 0.5pt solid #c4d4cb;
+      margin: 6mm 0;
+    }
+    strong { font-weight: 700; color: #0c1411; }
+    em { font-style: italic; }
+
+    blockquote {
+      margin: 3mm 0 3mm 0;
+      padding-left: 4mm;
+      border-left: 1.5pt solid #15803d;
+      color: #2a3d34;
+      font-style: italic;
+    }
+
+    /* ── Screen-only adjustments (no @media print scoping needed —
+         the file is designed for print first) ─────────────────────── */
+    @media screen {
+      body {
+        background: #f7faf8;
+      }
+      section {
+        max-width: 170mm;
+        margin: 6mm auto;
+        padding: 24mm 22mm;
+        background: #ffffff;
+        box-shadow: 0 1pt 4pt rgba(20, 32, 25, 0.08);
+        border-radius: 2pt;
+      }
+      .cover { min-height: 247mm; }
+    }
+  </style>
+</head>
+<body>
+
+    <section class="cover">
+      <div class="cover-mark">CHAINFUNDED · PROTOCOL WHITEPAPER</div>
+      <div class="cover-body"><h1>ChainFunded</h1>
+<p><strong>An on-chain prop-trading evaluation platform</strong></p>
+<blockquote>
+<p><em>A prop firm whose payout function is a smart contract cannot choose not to pay a passing trader.</em></p>
+</blockquote>
+<hr>
+<h2>TL;DR</h2>
+<p>ChainFunded turns retail prop-firm evaluations into deterministic
+on-chain settlement. Traders pay USDC evaluation fees, trade
+simulated capital across two phases, and — if they pass without
+breaching any rule — receive automatic on-chain payouts from a
+pooled liquidity reserve. Liquidity Providers deposit USDC, mint
+<code>CFND</code> share tokens at 1:1 NAV, underwrite the trader-PnL spread,
+and earn yield from challenge fees and funded-trader firm cuts.
+The payout function is permissionless, re-verifies every rule
+on-chain against the parameters snapshotted at registration, and
+either transfers USDC or reverts. There is no admin path that
+bypasses the verification.</p>
+<hr>
+<h2>Document metadata</h2>
+<p><strong>Version</strong> 1.0</p>
+<p><strong>Date</strong> 2026-05</p>
+<p><strong>Authors</strong> ChainFunded Labs</p>
+<p><strong>Canonical URL</strong> <a href="https://chainfunded.com/whitepaper" target="_blank" rel="noopener noreferrer">chainfunded.com/whitepaper</a></p>
+<p><strong>Source code</strong> <a href="https://github.com/Mezfinance/ChainFunded" target="_blank" rel="noopener noreferrer">github.com/Mezfinance/ChainFunded</a> · <a href="https://github.com/Mezfinance/ChainFunded/tree/main/contracts/contracts" target="_blank" rel="noopener noreferrer">contracts/contracts/</a></p>
+<p><strong>Deployment</strong> Ethereum mainnet · <code>ChainFundedPool</code> UUPS proxy</p>
+<p><strong>Status</strong> AI audits finalised · full third-party audit in progress</p>
+<hr>
+<h2>Mainnet contract addresses</h2>
+<table>
+<thead>
+<tr>
+<th>Contract</th>
+<th>Address</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>ChainFundedPool</code> (UUPS proxy)</td>
+<td><code>0xfbdc2592f7d8ae59d1abebb88cf33b2ac70383fc</code></td>
+</tr>
+<tr>
+<td><code>Timelock</code> (governance)</td>
+<td><code>0xdc7f1d4e9bffa8739f4b0b173700f599f7eb3ac4</code></td>
+</tr>
+<tr>
+<td><code>CFGToken</code></td>
+<td><code>0xde56217645c54f00258826f944f772117aca041b</code></td>
+</tr>
+<tr>
+<td><code>CFGGovernor</code></td>
+<td><code>0x4e8637ada57187524e30efbedd55b706f9c8be50</code></td>
+</tr>
+<tr>
+<td><code>CFGDistributor</code></td>
+<td><code>0x0576ff8c9291bf58c9c6a6a9623b98f05b913904</code></td>
+</tr>
+<tr>
+<td><code>CFGLPRewards</code></td>
+<td><code>0x0b5072a88454fa1553787bfd9cbfbe346f7d0edd</code></td>
+</tr>
+</tbody></table>
+<p>Verify any address on <a href="https://etherscan.io" target="_blank" rel="noopener noreferrer">Etherscan</a> before
+interacting. The pool address is the canonical entry point —
+every other on-chain interaction either originates from the pool
+or reads from it (§5).</p>
+</div>
+      <div class="cover-foot">v1.0 · 2026-06-10</div>
+    </section>
+
+    <section class="toc">
+      <h1 class="section-h1">Contents</h1>
+      <ol class="toc-list">
+      <li class="toc-row">
+        <span class="toc-num">§ 01</span>
+        <span class="toc-title">Abstract</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 02</span>
+        <span class="toc-title">The problem</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 03</span>
+        <span class="toc-title">The thesis</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 04</span>
+        <span class="toc-title">Architecture</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 05</span>
+        <span class="toc-title">Trader lifecycle</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 06</span>
+        <span class="toc-title">Phase progression</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 07</span>
+        <span class="toc-title">LP mechanics</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 08</span>
+        <span class="toc-title">NAV mechanics</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 09</span>
+        <span class="toc-title">Fee economics</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 10</span>
+        <span class="toc-title">Payout enforcement</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 11</span>
+        <span class="toc-title">Multi-signature payouts</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 12</span>
+        <span class="toc-title">Affiliate programme</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 13</span>
+        <span class="toc-title">CFND token</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 14</span>
+        <span class="toc-title">CFG token &amp; DAO</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 15</span>
+        <span class="toc-title">Risk surface</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 16</span>
+        <span class="toc-title">Security posture</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 17</span>
+        <span class="toc-title">Roadmap</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 18</span>
+        <span class="toc-title">Appendix A · Threat model</span>
+      </li>
+      <li class="toc-row">
+        <span class="toc-num">§ 19</span>
+        <span class="toc-title">Appendix B · Notation reference</span>
+      </li></ol>
+    </section>
+<section id="abstract" class="body"><p class="section-num">§ 01</p><h1 class="section-h1">Abstract</h1>
+<p>ChainFunded is an Ethereum protocol for the permissioned-by-rule
+evaluation of proprietary trading strategies. The on-chain surface
+consists of a single UUPS-proxied core contract,
+<code>ChainFundedPool</code>, which (i) collects evaluation fees in USDC,
+(ii) holds pooled liquidity reserves and mints the <code>CFNDToken</code>
+ERC-20 share token against deposited capital at a 1:1 NAV ratio,
+(iii) executes payouts to passing traders subject to N-of-M
+ECDSA signature aggregation over the protocol&#39;s authorised signer
+set, and (iv) emits a deterministic event log for every state
+transition.</p>
+<p>The protocol&#39;s central operational property is that
+<code>claimPayout(payoutId, signatures, …)</code> is a permissionless function
+whose pre-conditions — signature threshold, signature validity, and
+re-verification of the trading rules snapshotted at challenge
+registration — are computable from the function arguments and the
+pool&#39;s storage. The function either transfers USDC to the trader
+and emits <code>PayoutClaimed</code>, or reverts with a named custom error.
+The contract has no admin path that bypasses these pre-conditions.</p>
+<p>The remainder of this paper formalises three claims that follow
+from this construction:</p>
+<ol>
+<li><strong>Settlement is monotonic and non-discretionary.</strong> Each
+<code>claimPayout</code> invocation either advances the protocol&#39;s state
+(<code>settledPayouts[payoutId] := true</code>, USDC transferred) or
+reverts atomically. Replay protection via <code>settledPayouts</code> and
+re-entrancy protection via OpenZeppelin&#39;s <code>ReentrancyGuard</code>
+together rule out partial settlement.</li>
+<li><strong>The on-chain surface is bounded and storage-stable.</strong> The
+pool inherits from <code>Ownable2StepUpgradeable</code>, <code>ReentrancyGuard</code>,
+<code>PausableUpgradeable</code>, and <code>UUPSUpgradeable</code>. New state variables
+are append-only across upgrades and are checked against
+<code>contracts/storage-layout-baseline.json</code> in CI.</li>
+<li><strong>All economic parameters are public state.</strong> Fee splits
+(<code>FEE_PROTOCOL_BPS</code>, <code>FEE_PROFIT_POOL_BPS</code>,
+<code>MAX_AFFILIATE_BPS</code>), challenge tier prices
+(<code>challengeTierFee[size]</code>), default rules
+(<code>defaultPhase1ProfitTargetBps</code> et al.), and the per-CFND profit
+accumulator (<code>accProfitPerToken</code>) are readable from the pool
+at any block.</li>
+</ol>
+<p>CFG token mechanics and DAO governance are out of scope for this
+document and are described at
+<a href="https://chainfundeddao.org" target="_blank" rel="noopener noreferrer">chainfundeddao.org</a>.</p>
+</section>
+<section id="the-problem" class="body"><p class="section-num">§ 02</p><h1 class="section-h1">The problem</h1>
+<p>The retail proprietary-trading subclass that emerged in the
+2020–2024 cycle operates on a fixed structural template: the
+trader pays an evaluation fee to access a simulated trading
+account governed by a written rule set, the firm attests
+performance through internal systems, and — conditional on a
+passing run — the firm settles a profit-share to the trader
+either as fiat off-platform or as account credit. Every
+state-changing operation in this loop is private to the firm:
+the simulated account ledger, the rule-evaluation engine, the
+profit calculation, the funding decision, and the eventual
+settlement transfer.</p>
+<p>This template produces three identifiable failure modes that
+are enumerable from public regulatory and litigation records.</p>
+<h2>1 · Settlement is discretionary</h2>
+<p>The firm controls both the function and the timing of payout.
+Industry-public class-action filings (US 2024 — <code>My Forex Funds</code>
+proceedings; UK 2024 FCA action against multiple
+&quot;funded-trader&quot; providers; AU 2025 ASIC enforcement notices)
+document a recurring sequence: post-evaluation account closure
+on rule clauses ambiguously specified at registration, payout
+delays attributed to &quot;compliance review&quot;, and retroactive
+profit-split renegotiations. The trader&#39;s leverage is
+contractual at best and frequently substandard against the
+firm&#39;s terms-of-service unilateral-amendment provisions.</p>
+<h2>2 · Capital is unverifiable</h2>
+<p>The LP base of a traditional firm is its principals plus a
+small private syndicate. Capital balances, segregation, and
+profit-and-loss are not externally auditable. The firm&#39;s
+rational behaviour with respect to disclosure is asymmetric:
+overstate capital to attract challenge buyers, understate
+realised P&amp;L to suppress payout obligations. Public regulator
+filings have repeatedly identified this asymmetry; multiple
+firms shut down in 2024–2025 cited insufficient working capital
+to honour outstanding payouts at the moment of regulatory
+intervention.</p>
+<h2>3 · Regulatory perimeter is unstable</h2>
+<p>Whether a &quot;funded-trader evaluation&quot; with prospective
+profit-share constitutes an unregistered investment-contract
+offering is unsettled across the major financial-services
+jurisdictions. 2024–2025 enforcement actions in the US, UK, and
+Australia have produced inconsistent remedies — in some cases
+fee refunds, in others account-balance freezes pending
+adjudication. The trader&#39;s exposure to this regulatory tail is
+uncompensated and unhedgeable on the firm&#39;s existing terms.</p>
+<h2>What an on-chain protocol changes</h2>
+<p>The three failure modes share a structural property: the firm&#39;s
+state changes are mediated by software the firm operates
+unilaterally. ChainFunded relocates each state change to a
+deterministic on-chain function with a public source. Settlement
+is a function call against <code>ChainFundedPool</code> (§4, §11). LP
+capital is <code>IERC20(USDC).balanceOf(pool)</code> minus the LP profit
+pool, computable at any block. The protocol&#39;s surface is bounded
+by the deployed contract — there is no separate &quot;internal
+system&quot; that holds material state.</p>
+<p>This does not eliminate the regulatory question, which is
+external to the contract; it does eliminate the discretion and
+opacity that compound the regulatory exposure for an aggrieved
+participant.</p>
+</section>
+<section id="the-thesis" class="body"><p class="section-num">§ 03</p><h1 class="section-h1">The thesis</h1>
+<p>The protocol&#39;s payout function is fully specified on-chain. Given a
+valid <code>payoutId</code>, an N-of-M signature set over the canonical
+EIP-712 typed message, and a snapshotted challenge state in
+<code>challenges[accountId]</code>, <code>ChainFundedPool.claimPayout</code> produces
+exactly one of two outcomes: a USDC transfer to the trader and an
+emitted <code>PayoutClaimed</code> event, or a transaction-level revert
+referencing a specific named custom error. There is no third
+outcome.</p>
+<h2>On-chain pre-conditions</h2>
+<p><code>claimPayout(payoutId, signatures, ...)</code> enforces, in order:</p>
+<ol>
+<li><strong>Replay protection.</strong> <code>settledPayouts[payoutId]</code> must be <code>false</code>,
+else <code>PayoutAlreadySettled</code>.</li>
+<li><strong>Signature aggregate.</strong> <code>signatures.length &gt;= signatureThreshold</code>,
+else <code>InsufficientSignatures</code>. Each signature must be from
+<code>authorisedSigners[]</code> and the array must be sorted ascending by
+recovered signer address with no duplicates, else
+<code>UnauthorizedSigner</code> or <code>DuplicateOrUnsortedSignature</code>.</li>
+<li><strong>Deadline.</strong> <code>block.timestamp &lt;= deadline</code>, else
+<code>SignatureExpired</code>.</li>
+<li><strong>Rule re-verification.</strong> For each rule snapshotted at the
+challenge&#39;s <code>registerChallenge</code> call:<ul>
+<li><code>worstDailyLoss &gt; maxDailyLossBps</code> ⇒ <code>RuleBreachedDailyLoss</code></li>
+<li><code>maxDrawdown &gt; maxTotalLossBps</code> ⇒ <code>RuleBreachedTotalLoss</code></li>
+<li><code>tradingDays &lt; minTradingDays</code> ⇒ <code>RuleBreachedMinDays</code></li>
+<li><code>grossProfit &lt; profitTarget</code> ⇒ <code>RuleBreachedProfitTarget</code></li>
+<li><code>bestDay &gt; maxBestDayBps</code> ⇒ <code>RuleBreachedBestDay</code></li>
+</ul>
+</li>
+<li><strong>Liquidity availability.</strong> <code>lpCapitalBalance() &gt;= traderShare</code>,
+else <code>InsufficientLPCapital</code>.</li>
+</ol>
+<p>If all pre-conditions hold, <code>traderShare = grossProfit * traderShareBps / BPS</code> is transferred to the trader, the firm cut
+is split between <code>labsWallet</code> and the LP profit pool per
+<code>FIRM_CUT_PROTOCOL_BPS = 8000</code>, <code>settledPayouts[payoutId]</code> is set
+to <code>true</code>, and <code>PayoutClaimed</code> is emitted.</p>
+<h2>Independence of the two verification gates</h2>
+<p>The trading engine and the signer set produce a single artefact —
+the signed payout proof — which <code>claimPayout</code> then re-verifies
+against the rules registered at the time the trader paid the fee.
+The two computations are independent:</p>
+<ul>
+<li>The off-chain signing process is sufficient but not necessary
+to block a bad payout: signers will refuse to sign a proof for a
+breached account.</li>
+<li>The on-chain re-verification is necessary but not sufficient: it
+catches any divergence between the signed proof&#39;s claimed P&amp;L and
+the rule-bound state encoded at registration.</li>
+</ul>
+<p>Either gate alone produces a sound stop on a bad payout. Both gates
+agreeing is the precondition for a successful settlement. A
+compromise of all M signers does not produce a valid payout if the
+account&#39;s rule state is breached, because the on-chain check fails
+independently of the signature validity.</p>
+<h2>Liveness</h2>
+<p>The protocol does not impose a contract-level expiry on a valid
+proof beyond the explicit <code>deadline</code> field. A funded trader who
+fails to find N signers within the deadline window can re-request
+a payout with a new <code>deadline</code>; the pool&#39;s state for that
+challenge is unchanged until <code>settledPayouts[payoutId]</code> is set.
+There is no protocol-level mechanism that reduces a trader&#39;s
+earned payout amount as time passes.</p>
+</section>
+<section id="architecture" class="body"><p class="section-num">§ 04</p><h1 class="section-h1">Architecture</h1>
+<p>The protocol consists of two on-chain components and two off-chain
+components. The on-chain components are <code>ChainFundedPool</code> (the
+UUPS-proxied core, deployed once and upgraded in place) and a small
+satellite set: <code>CFNDToken</code> (the LP share ERC-20, owned by the
+pool) and the canonical Circle USDC ERC-20. The off-chain
+components are the trading engine (which provides the simulated
+trading environment and computes per-trader P&amp;L) and the payout
+signer set (an authorised set of EOAs that produce ECDSA
+signatures over EIP-712 typed messages required by <code>claimPayout</code>,
+<code>registerPhase2</code>, <code>registerFunded</code>, and <code>registerPostPayout</code>).</p>
+<p><code>ChainFundedPool</code> is the only contract that holds protocol funds.
+<code>CFNDToken</code> is restricted such that <code>mint</code> and <code>burn</code> are only
+callable by <code>Ownable.owner()</code>, which is set to the pool&#39;s address
+at deployment time.</p>
+<p>Mainnet contract addresses are listed on the cover page. The pool
+proxy at <code>0xfbdc…83fc</code> is the canonical entry point — anything
+that holds USDC, mints / burns <code>CFND</code>, or settles a payout
+originates there.</p>
+<h2>Storage layout</h2>
+<p><code>ChainFundedPool</code> inherits, in order, from
+<code>Ownable2StepUpgradeable</code>, <code>ReentrancyGuard</code>,
+<code>PausableUpgradeable</code>, and <code>UUPSUpgradeable</code>. The inheritance order
+is fixed by the storage-layout baseline; reordering bases would
+shift slot offsets and corrupt persisted state on upgrade.</p>
+<p>New state variables are appended at the end of the storage block
+across upgrades — each new slot is positioned after the last
+existing one and before any event declarations, where it cannot
+collide with state inherited from the OZ base contracts.</p>
+<p><code>contracts/storage-layout-baseline.json</code> records the layout of the
+deployed implementation. The deploy script compares the
+to-be-deployed implementation&#39;s layout to the baseline and aborts
+on any non-appending change.</p>
+<h2>Upgrade authorisation</h2>
+<p><code>_authorizeUpgrade(address newImplementation)</code> is <code>onlyOwner</code>. The
+pool owner is held by a 2-of-2 governance multisig at launch
+(ChainFunded Labs key + an independent guardian key). An emergency
+withdrawal path (<code>requestEmergencyWithdrawal</code> →
+<code>executeEmergencyWithdrawal</code>) is timelocked at <code>EMERGENCY_DELAY = 48 hours</code>, providing a window during which LPs may observe a
+pending withdrawal and withdraw their own positions before
+execution.</p>
+<h2>Off-chain trust assumptions</h2>
+<ul>
+<li>The trading engine is trusted to compute per-trader P&amp;L
+honestly. A trading-engine fault that overstates a trader&#39;s
+profit produces an attested P&amp;L that the on-chain check (which
+only re-evaluates rules, not raw trade execution) cannot
+detect. Mitigation is in operational engineering: independent
+signer environments, log retention, and post-hoc audit.</li>
+<li>Each signer is trusted to refuse to sign a proof for a breached
+account. Compromise of fewer than <code>signatureThreshold</code> signers
+is not sufficient to forge a valid proof. Compromise of
+<code>signatureThreshold</code> or more signers does not produce a valid
+payout for a rule-breached account because the on-chain check
+fails independently (§4, §11).</li>
+</ul>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-contract-topology" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" width="1280" height="900" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah-svg-contract-topology" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp-svg-contract-topology" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-contract-topology .bg { fill: #f7faf8; }
+#svg-contract-topology .hub { fill: #ecfdf5; stroke: #15803d; stroke-width: 2.25; }
+#svg-contract-topology .hub-title { fill: #142019; font-size: 22px; font-weight: 800; text-anchor: middle; }
+#svg-contract-topology .hub-sub { fill: #15803d; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+#svg-contract-topology .hub-meta { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-contract-topology .satellite { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+#svg-contract-topology .satellite-on { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+#svg-contract-topology .sat-title { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+#svg-contract-topology .sat-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-contract-topology .edge { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+#svg-contract-topology .edge-p { stroke: #15803d; stroke-width: 2; fill: none; }
+#svg-contract-topology .edge-label { fill: #2a3d34; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-contract-topology .edge-label-p { fill: #15803d; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-contract-topology .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-contract-topology .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+#svg-contract-topology .legend-text { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="900"/>
+
+  <text class="subtitle" x="64" y="56">Figure 1 · Contract topology</text>
+  <text class="title"    x="64" y="88">What calls what — protocol surface at a glance</text>
+
+  <!-- Hub: ChainFundedPool (center) -->
+  <rect class="hub" x="490" y="380" width="300" height="140" rx="14"/>
+  <text class="hub-sub"   x="640" y="412">ON-CHAIN · UUPS PROXY</text>
+  <text class="hub-title" x="640" y="450">ChainFundedPool</text>
+  <text class="hub-meta"  x="640" y="478">register · settle · payout</text>
+  <text class="hub-meta"  x="640" y="496">owns CFND · multisig-gated</text>
+
+  <!-- Satellites -->
+  <!-- USDC (left) -->
+  <rect class="satellite-on" x="80" y="410" width="200" height="80" rx="10"/>
+  <text class="sat-title" x="180" y="442">USDC</text>
+  <text class="sat-sub"   x="180" y="462">ERC-20 · Circle</text>
+  <text class="sat-sub"   x="180" y="478">on-chain</text>
+
+  <!-- CFND (bottom centre-left) -->
+  <rect class="satellite-on" x="380" y="640" width="200" height="80" rx="10"/>
+  <text class="sat-title" x="480" y="672">CFND token</text>
+  <text class="sat-sub"   x="480" y="692">LP share · 1:1 NAV</text>
+  <text class="sat-sub"   x="480" y="708">owned by Pool</text>
+
+  <!-- Trading Engine (top right) -->
+  <rect class="satellite" x="1000" y="180" width="200" height="80" rx="10"/>
+  <text class="sat-title" x="1100" y="212">Trading Engine</text>
+  <text class="sat-sub"   x="1100" y="232">off-chain · in-app</text>
+  <text class="sat-sub"   x="1100" y="248">P&amp;L · rule enforcement</text>
+
+  <!-- Payout Signers (right) -->
+  <rect class="satellite" x="1000" y="410" width="200" height="80" rx="10"/>
+  <text class="sat-title" x="1100" y="442">Payout Signers</text>
+  <text class="sat-sub"   x="1100" y="462">N-of-M multisig</text>
+  <text class="sat-sub"   x="1100" y="478">off-chain</text>
+
+  <!-- Trader (top left) -->
+  <rect class="satellite" x="80" y="180" width="200" height="80" rx="10"/>
+  <text class="sat-title" x="180" y="212">Trader</text>
+  <text class="sat-sub"   x="180" y="232">EOA</text>
+  <text class="sat-sub"   x="180" y="248">pays fee · claims payout</text>
+
+  <!-- LP (top centre) -->
+  <rect class="satellite" x="490" y="180" width="300" height="80" rx="10"/>
+  <text class="sat-title" x="640" y="212">Liquidity Provider</text>
+  <text class="sat-sub"   x="640" y="232">EOA</text>
+  <text class="sat-sub"   x="640" y="248">deposit / claim profit / withdraw</text>
+
+  <!-- ─── Edges ─────────────────────────────────────────────────────── -->
+  <!-- Trader → Pool -->
+  <path class="edge" d="M 280 220 L 490 380" marker-end="url(#ah-svg-contract-topology)"/>
+  <text class="edge-label" x="365" y="290">registerChallenge</text>
+  <text class="edge-label" x="365" y="306">claimPayout</text>
+
+  <!-- LP → Pool -->
+  <line class="edge" x1="640" y1="260" x2="640" y2="378" marker-end="url(#ah-svg-contract-topology)"/>
+  <text class="edge-label" x="640" y="320">deposit · claimProfit · withdraw</text>
+
+  <!-- Pool ↔ USDC (primary, two-headed) -->
+  <line class="edge-p" x1="490" y1="450" x2="280" y2="450" marker-end="url(#ahp-svg-contract-topology)" marker-start="url(#ahp-svg-contract-topology)"/>
+  <text class="edge-label-p" x="385" y="442">USDC ↔ Pool</text>
+  <text class="edge-label" x="385" y="468">transferFrom · transfer</text>
+
+  <!-- Pool ↔ CFND (mint/burn, primary) -->
+  <line class="edge-p" x1="555" y1="520" x2="480" y2="640" marker-end="url(#ahp-svg-contract-topology)"/>
+  <text class="edge-label-p" x="475" y="586">mint · burn</text>
+
+  <!-- Trading Engine → Pool (signed proof submission via signers) -->
+  <path class="edge" d="M 1000 220 C 900 250 850 320 850 378" marker-end="url(#ah-svg-contract-topology)"/>
+  <text class="edge-label" x="950" y="280">signs P&amp;L</text>
+  <text class="edge-label" x="950" y="296">to signers</text>
+
+  <!-- Payout Signers → Pool (signatures verified inside claimPayout/registerPhase2) -->
+  <line class="edge" x1="1000" y1="450" x2="790" y2="450" marker-end="url(#ah-svg-contract-topology)"/>
+  <text class="edge-label" x="895" y="442">N signatures</text>
+  <text class="edge-label" x="895" y="468">verified in-tx</text>
+
+  <!-- ── Legend ─────────────────────────────────────────────────────── -->
+  <rect class="satellite-on" x="64" y="822" width="22" height="22" rx="4"/>
+  <text class="legend-text" x="98" y="838">on-chain contract</text>
+  <rect class="satellite" x="280" y="822" width="22" height="22" rx="4"/>
+  <text class="legend-text" x="314" y="838">off-chain participant</text>
+  <line class="edge-p" x1="500" y1="833" x2="556" y2="833" marker-end="url(#ahp-svg-contract-topology)"/>
+  <text class="legend-text" x="564" y="838">USDC / token movement</text>
+  <line class="edge" x1="800" y1="833" x2="856" y2="833" marker-end="url(#ah-svg-contract-topology)"/>
+  <text class="legend-text" x="864" y="838">read / call</text>
+</svg>
+<figcaption>Figure 1 · Contract topology</figcaption></figure></div>
+</section>
+<section id="trader-lifecycle" class="body"><p class="section-num">§ 05</p><h1 class="section-h1">Trader lifecycle</h1>
+<p>A trader&#39;s interaction with the protocol consists of four discrete
+operations: register an evaluation challenge, trade simulated
+capital, advance through phase transitions verified by the
+multisig, and settle USDC payouts on-chain. Operations 1, 3, and 4
+are on-chain transactions against <code>ChainFundedPool</code>; operation 2 is
+off-chain in the trading engine.</p>
+<h2>1 · <code>registerChallenge</code></h2>
+<p>Two transactions:</p>
+<pre><code>USDC.approve(pool, fee)
+pool.registerChallenge(fee, accountId, accountSize, phase, affiliate, gasReimbursementUsdc)
+</code></pre>
+<p>The pool validates the fee against <code>challengeTierFee[accountSize]</code>,
+pulls <code>feeAmount</code> USDC, and partitions it per the on-chain
+splits: <code>FEE_PROTOCOL_BPS = 2400</code> to <code>labsWallet</code>,
+<code>FEE_PROFIT_POOL_BPS = 600</code> to the LP profit pool, an affiliate
+share per the §13 ladder if <code>affiliate != address(0)</code>, and the
+remainder to LP capital. The <code>Challenge</code> struct is written to
+<code>challenges[accountId]</code> with the rule snapshot
+(<code>profitTargetBps</code>, <code>maxDailyLossBps</code>, <code>maxTotalLossBps</code>,
+<code>minTradingDays</code>, <code>traderShareBps</code>, <code>maxBestDayBps</code>) frozen at
+this block. Subsequent owner calls to <code>setDefaultRules</code> do not
+modify already-registered challenges.</p>
+<p>Reverts on <code>feeAmount == 0</code> (<code>InvalidAmount</code>),
+<code>accountSize == 0</code> (<code>InvalidAmount</code>), <code>phase != 1</code> (<code>InvalidPhase</code>),
+duplicate <code>accountId</code> (<code>ChallengeAlreadyRegistered</code>),
+<code>affiliate == msg.sender</code> (<code>SelfReferral</code>),
+<code>cfndToken.totalSupply() == 0</code> (<code>PoolMustHaveDeposits</code>), and
+fee/tier mismatch (<code>TierNotEnabled</code>).</p>
+<h2>2 · Trading</h2>
+<p>The trader places and closes positions through the in-app terminal
+against a simulated account balance. The trading engine maintains
+real-time per-trader state — open positions, P&amp;L, daily loss,
+drawdown, trading-day count, best-day percentage — and rejects
+trades that would cross a hard limit. The pool has no visibility
+into trade execution; its next interaction with the challenge is
+the phase-transition or payout call.</p>
+<p>This separation is by construction: putting trade execution
+on-chain would impose latency and gas costs that exceed the
+operational utility, given that the contract&#39;s settlement guarantee
+does not depend on on-chain trade execution.</p>
+<h2>3 · Phase transitions</h2>
+<p>When a trader meets the phase profit target without breaching any
+loss or trading-day rule, the trading engine assembles an EIP-712
+typed message and forwards it to the signer set. Each signer
+independently re-derives the trader&#39;s P&amp;L from the trade ledger
+and signs an ECDSA proof if the rules verify. The trader collects
+N (where <code>N = signatureThreshold</code>, currently <code>3</code>) of <code>M</code> signatures
+and submits:</p>
+<pre><code>pool.registerPhase2(accountId, signatures)    // Phase 1 → Phase 2
+pool.registerFunded(accountId, signatures)    // Phase 2 → Funded
+</code></pre>
+<p>Both calls verify the signature aggregate with the same logic used
+in <code>claimPayout</code> (§11) and advance <code>challenges[accountId].phase</code>.</p>
+<h2>4 · <code>claimPayout</code></h2>
+<p>A funded trader issues a payout request off-chain, signers sign a
+proof of the asserted P&amp;L, and the trader submits:</p>
+<pre><code>pool.claimPayout(payoutId, signatures, ...)
+</code></pre>
+<p>The function re-runs the rule check against the snapshotted
+<code>Challenge</code> struct, splits the asserted profit by <code>traderShareBps</code>
+(default <code>8000</code>) into <code>traderShare</code> and <code>firmCut</code>, transfers the
+trader&#39;s share, splits the firm cut between <code>labsWallet</code> and the
+LP profit pool, sets <code>settledPayouts[payoutId] = true</code>, and emits
+<code>PayoutClaimed</code>. The function is replay-protected, re-entrancy-
+guarded, and pause-respecting.</p>
+<p>Once mined, the settlement is terminal. The pool exposes no
+function that reverses a settled payout, no admin path that
+clawbacks transferred USDC, and no upgrade path that would do
+either without breaking the storage-layout baseline.</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-trader-user-flow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1480" width="1280" height="1480" font-family="'Inter', 'Helvetica Neue', system-ui, sans-serif">
+  <defs>
+    <!-- Standard arrowhead (slate) -->
+    <marker id="ah-svg-trader-user-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <!-- Primary-green arrowhead (USDC flows) -->
+    <marker id="ahp-svg-trader-user-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <!-- Dotted return arrowhead -->
+    <marker id="ahd-svg-trader-user-flow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a89b"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-trader-user-flow .bg { fill: #f7faf8; }
+#svg-trader-user-flow .step-band { fill: #eef4f0; }
+#svg-trader-user-flow .lifeline { stroke: #c4d4cb; stroke-width: 1.5; stroke-dasharray: 3 5; fill: none; }
+#svg-trader-user-flow .p-box { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+#svg-trader-user-flow .p-onchain { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+#svg-trader-user-flow .p-label { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+#svg-trader-user-flow .p-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-trader-user-flow .step-num { fill: #15803d; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
+#svg-trader-user-flow .step-title { fill: #142019; font-size: 15px; font-weight: 700; }
+#svg-trader-user-flow .arrow { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+#svg-trader-user-flow .arrow-p { stroke: #15803d; stroke-width: 2.25; fill: none; }
+#svg-trader-user-flow .arrow-ret { stroke: #94a89b; stroke-width: 1.25; fill: none; stroke-dasharray: 4 3; }
+#svg-trader-user-flow .arrow-label { fill: #2a3d34; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-trader-user-flow .arrow-label-p { fill: #15803d; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; font-weight: 700; }
+#svg-trader-user-flow .note-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 1; }
+#svg-trader-user-flow .note-text { fill: #142019; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-trader-user-flow .callout-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+#svg-trader-user-flow .callout-title { fill: #15803d; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+#svg-trader-user-flow .callout-text { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-trader-user-flow .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-trader-user-flow .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+  ]]></style>
+
+  <!-- Canvas -->
+  <rect class="bg" x="0" y="0" width="1280" height="1480"/>
+
+  <!-- Title block -->
+  <text class="subtitle" x="64" y="56">Figure 2 · Protocol user flow</text>
+  <text class="title" x="64" y="88">Trader lifecycle — fee to payout</text>
+
+  <!-- Step bands (subtle alternating tint) -->
+  <rect class="step-band" x="0" y="200"  width="1280" height="290"/>
+  <rect class="step-band" x="0" y="510"  width="1280" height="140" opacity="0.5"/>
+  <rect class="step-band" x="0" y="670"  width="1280" height="200"/>
+  <rect class="step-band" x="0" y="890"  width="1280" height="470" opacity="0.5"/>
+
+  <!-- ── Participant headers ─────────────────────────────────────────── -->
+  <!-- Trader -->
+  <rect class="p-box" x="120" y="130" width="120" height="50" rx="6"/>
+  <text class="p-label" x="180" y="155">Trader</text>
+  <text class="p-sub"   x="180" y="172">EOA</text>
+  <!-- USDC -->
+  <rect class="p-onchain" x="320" y="130" width="120" height="50" rx="6"/>
+  <text class="p-label" x="380" y="155">USDC</text>
+  <text class="p-sub"   x="380" y="172">ERC-20</text>
+  <!-- Pool -->
+  <rect class="p-onchain" x="540" y="130" width="160" height="50" rx="6"/>
+  <text class="p-label" x="620" y="155">ChainFundedPool</text>
+  <text class="p-sub"   x="620" y="172">on-chain · UUPS</text>
+  <!-- Trading Engine -->
+  <rect class="p-box" x="800" y="130" width="160" height="50" rx="6"/>
+  <text class="p-label" x="880" y="155">Trading Engine</text>
+  <text class="p-sub"   x="880" y="172">off-chain</text>
+  <!-- Payout Signers -->
+  <rect class="p-box" x="1020" y="130" width="160" height="50" rx="6"/>
+  <text class="p-label" x="1100" y="155">Payout Signers</text>
+  <text class="p-sub"   x="1100" y="172">N-of-M multisig</text>
+
+  <!-- ── Lifelines ───────────────────────────────────────────────────── -->
+  <line class="lifeline" x1="180"  y1="180" x2="180"  y2="1380"/>
+  <line class="lifeline" x1="380"  y1="180" x2="380"  y2="1380"/>
+  <line class="lifeline" x1="620"  y1="180" x2="620"  y2="1380"/>
+  <line class="lifeline" x1="880"  y1="180" x2="880"  y2="1380"/>
+  <line class="lifeline" x1="1100" y1="180" x2="1100" y2="1380"/>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 1 — Buy an evaluation
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="225">STEP 01</text>
+  <text class="step-title" x="64" y="245">Buy an evaluation</text>
+
+  <!-- T → USDC: approve(Pool, fee) -->
+  <line class="arrow" x1="180" y1="280" x2="380" y2="280" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="190" y="272">approve(Pool, fee)</text>
+
+  <!-- T → Pool: registerChallenge(...) -->
+  <line class="arrow" x1="180" y1="320" x2="620" y2="320" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="190" y="312">registerChallenge(fee, accountId, size, …)</text>
+
+  <!-- Pool → USDC: transferFrom (PRIMARY) -->
+  <line class="arrow-p" x1="620" y1="360" x2="380" y2="360" marker-end="url(#ahp-svg-trader-user-flow)"/>
+  <text class="arrow-label-p" x="400" y="352">transferFrom(T → Pool, fee)</text>
+
+  <!-- Pool → Pool: self-call (split) — small loop just right of the
+       Pool lifeline, label aligned to its right. -->
+  <path class="arrow" d="M 620 400 H 690 V 420 H 620" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="710" y="406">
+    <tspan x="710" dy="0">split fee → 24% protocol · 6% LP yield ·</tspan>
+    <tspan x="710" dy="16">0–20% affiliate · rest stays as LP capital (Fig. 6)</tspan>
+  </text>
+
+  <!-- Pool → T: ChallengeRegistered event (dotted return) -->
+  <line class="arrow-ret" x1="620" y1="460" x2="180" y2="460" marker-end="url(#ahd-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="200" y="452">ChallengeRegistered event</text>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 2 — Trade simulated capital
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="535">STEP 02</text>
+  <text class="step-title" x="64" y="555">Trade simulated capital — off-chain</text>
+
+  <!-- T → Sim: trades -->
+  <line class="arrow" x1="180" y1="590" x2="880" y2="590" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="190" y="582">place / close trades · positions managed in the terminal</text>
+
+  <!-- Sim → T: P&L (dotted) -->
+  <line class="arrow-ret" x1="880" y1="625" x2="180" y2="625" marker-end="url(#ahd-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="200" y="617">P&amp;L tracked · rules enforced off-chain</text>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 3 — Phase transitions signed by multisig
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="695">STEP 03</text>
+  <text class="step-title" x="64" y="715">Phase transitions are signed by the multisig</text>
+
+  <!-- Sim → Sig: pass attestation -->
+  <line class="arrow" x1="880" y1="755" x2="1100" y2="755" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="890" y="747">Phase 1 passed</text>
+
+  <!-- Sig → T: signed proof -->
+  <line class="arrow-ret" x1="1100" y1="795" x2="180" y2="795" marker-end="url(#ahd-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="200" y="787">signed Phase 2 proof (off-chain)</text>
+
+  <!-- T → Pool: registerPhase2 -->
+  <line class="arrow" x1="180" y1="835" x2="620" y2="835" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="190" y="827">registerPhase2(accountId, signatures)</text>
+
+  <!-- Pool → T: phase 2 active (dotted) -->
+  <line class="arrow-ret" x1="620" y1="868" x2="180" y2="868" marker-end="url(#ahd-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="200" y="860">Phase 2 active · same shape used for Phase 2 → Funded</text>
+
+  <!-- ════════════════════════════════════════════════════════════════
+       STEP 4 — Claim payout
+       ════════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="915">STEP 04</text>
+  <text class="step-title" x="64" y="935">Request a payout — settlement is final</text>
+
+  <!-- T → Sig: payout request -->
+  <line class="arrow" x1="180" y1="975" x2="1100" y2="975" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="190" y="967">payout request (off-chain)</text>
+
+  <!-- Sig self-call: verify. Small stub loop just left of the Signers
+       lifeline, label aligned to its left edge. -->
+  <path class="arrow" d="M 1100 1010 H 1050 V 1024 H 1100" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="1020" y="1018" text-anchor="end">
+    <tspan x="1020" dy="0">verify performance</tspan>
+    <tspan x="1020" dy="16">+ rule compliance</tspan>
+  </text>
+
+  <!-- Sig → T: N signed proofs -->
+  <line class="arrow-ret" x1="1100" y1="1070" x2="180" y2="1070" marker-end="url(#ahd-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="200" y="1062">N signed payout proofs</text>
+
+  <!-- T → Pool: claimPayout -->
+  <line class="arrow" x1="180" y1="1110" x2="620" y2="1110" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="190" y="1102">claimPayout(payoutId, signatures, …)</text>
+
+  <!-- ─── Callout: on-chain re-verification ─────────────────────────── -->
+  <rect class="callout-bg" x="660" y="1135" width="580" height="160" rx="6"/>
+  <text class="callout-title" x="680" y="1160">ON-CHAIN RE-VERIFICATION · BELT &amp; BRACES</text>
+  <text class="callout-text" x="680" y="1183">Pool reverts the entire payout if any one of:</text>
+  <text class="callout-text" x="680" y="1203">  · dailyLoss     &gt; maxDailyLossBps     → RuleBreachedDailyLoss</text>
+  <text class="callout-text" x="680" y="1221">  · drawdown      &gt; maxTotalLossBps     → RuleBreachedTotalLoss</text>
+  <text class="callout-text" x="680" y="1239">  · tradingDays   &lt; minTradingDays      → RuleBreachedMinDays</text>
+  <text class="callout-text" x="680" y="1257">  · profit        &lt; profitTarget        → RuleBreachedProfitTarget</text>
+  <text class="callout-text" x="680" y="1275">  · bestDay       &gt; maxBestDayBps       → RuleBreachedBestDay</text>
+
+  <!-- Pool → USDC: trader share (PRIMARY) -->
+  <line class="arrow-p" x1="620" y1="1320" x2="380" y2="1320" marker-end="url(#ahp-svg-trader-user-flow)"/>
+  <text class="arrow-label-p" x="400" y="1312">transfer(T, trader share — 80%)</text>
+
+  <!-- Pool → USDC: firm cut split (PRIMARY) -->
+  <line class="arrow-p" x1="620" y1="1352" x2="380" y2="1352" marker-end="url(#ahp-svg-trader-user-flow)"/>
+  <text class="arrow-label-p" x="400" y="1344">transfer(firm cut → labsWallet 80% · LP yield 20%)</text>
+
+  <!-- ─── Caption strip ─────────────────────────────────────────────── -->
+  <rect x="0" y="1400" width="1280" height="80" fill="#f7faf8"/>
+  <text class="subtitle" x="64" y="1428">Legend</text>
+  <!-- Five items. Even spacing: ~24 units between each arrow tip and
+       its label, ~40+ units between the end of one label and the next
+       item. With per-figure CSS scoping in place, the markers render
+       at their actual size and don't need the inflated gaps. -->
+  <line class="arrow-p" x1="64" y1="1450" x2="112" y2="1450" marker-end="url(#ahp-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="136" y="1454">USDC flow</text>
+  <line class="arrow"   x1="240" y1="1450" x2="276" y2="1450" marker-end="url(#ah-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="300" y="1454">contract call</text>
+  <line class="arrow-ret" x1="440" y1="1450" x2="476" y2="1450" marker-end="url(#ahd-svg-trader-user-flow)"/>
+  <text class="arrow-label" x="500" y="1454">event / response</text>
+  <!-- Participant chips — the bordered rect encapsulates the full
+       label so the green-bordered (on-chain) vs neutral-bordered
+       (off-chain) treatment matches the chips used on each
+       participant card at the top of the diagram. -->
+  <rect class="p-onchain" x="720" y="1438" width="180" height="26" rx="6"/>
+  <text class="arrow-label" x="810" y="1456" text-anchor="middle">on-chain participant</text>
+  <rect class="p-box" x="920" y="1438" width="180" height="26" rx="6"/>
+  <text class="arrow-label" x="1010" y="1456" text-anchor="middle">off-chain participant</text>
+</svg>
+<figcaption>Figure 2 · Trader lifecycle — fee to payout</figcaption></figure></div>
+</section>
+<section id="phase-progression" class="body"><p class="section-num">§ 06</p><h1 class="section-h1">Phase progression</h1>
+<p>Each <code>Challenge</code> struct in <code>challenges[accountId]</code> encodes its
+state through two fields: <code>phase</code> (<code>uint8</code>, range <code>1–3</code>) and
+<code>settled</code> (<code>bool</code>). The combinations enumerate the protocol&#39;s
+finite challenge state set:</p>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th><code>phase</code></th>
+<th><code>settled</code></th>
+<th>Entered by</th>
+<th>Exited by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Phase 1 active</td>
+<td><code>1</code></td>
+<td><code>false</code></td>
+<td><code>registerChallenge</code></td>
+<td><code>registerPhase2</code> (→ Phase 2 active) · off-chain breach (→ Failed)</td>
+</tr>
+<tr>
+<td>Phase 2 active</td>
+<td><code>2</code></td>
+<td><code>false</code></td>
+<td><code>registerPhase2</code></td>
+<td><code>registerFunded</code> (→ Funded active) · off-chain breach (→ Failed)</td>
+</tr>
+<tr>
+<td>Funded active</td>
+<td><code>3</code></td>
+<td><code>false</code></td>
+<td><code>registerFunded</code></td>
+<td><code>claimPayout</code> (→ Settled) · off-chain breach (→ Failed)</td>
+</tr>
+<tr>
+<td>Settled</td>
+<td><code>*</code></td>
+<td><code>true</code></td>
+<td><code>claimPayout</code></td>
+<td><code>registerPostPayout</code> (→ new Phase 1 active for the same trader)</td>
+</tr>
+<tr>
+<td>Failed</td>
+<td><code>*</code></td>
+<td><code>true</code></td>
+<td>off-chain rule breach (no on-chain transition; the engine ceases signing)</td>
+<td>terminal</td>
+</tr>
+</tbody></table>
+<p><code>registerPhase2</code>, <code>registerFunded</code>, <code>claimPayout</code>, and
+<code>registerPostPayout</code> each accept an N-of-M signature aggregate
+over an EIP-712 typed message containing
+<code>(accountId, newPhase, trader, deadline, ...)</code>. The pool
+verifies signature validity, threshold, sorted-uniqueness, and
+deadline against the same signer set used by <code>claimPayout</code>
+(§11). Failure modes match the <code>claimPayout</code> revert table for
+signature validation; phase-transition calls additionally
+revert <code>InvalidPhase</code> if the requested transition is not a
+valid <code>(currentPhase, newPhase)</code> adjacency.</p>
+<h2>Re-registration loop</h2>
+<p><code>registerPostPayout(settledAccountId, freshAccountId, ...)</code>
+allows a trader to roll a settled challenge into a fresh Phase 1
+challenge for a new accountId without paying a new fee. The
+function requires:</p>
+<ul>
+<li><code>challenges[settledAccountId].settled == true</code></li>
+<li><code>challenges[settledAccountId].trader == msg.sender</code></li>
+<li><code>challenges[freshAccountId].createdAt == 0</code>
+(<code>FreshAccountAlreadyRegistered</code> otherwise)</li>
+<li><code>signatures.length &gt;= signatureThreshold</code></li>
+</ul>
+<p>This is the only edge in the state machine that returns from a
+terminal state, and it produces a new <code>Challenge</code> record at a
+new accountId rather than mutating the settled record. The
+settled challenge&#39;s storage slot is preserved for downstream
+event-replay correctness.</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-phase-state-machine" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah-svg-phase-state-machine" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp-svg-phase-state-machine" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-phase-state-machine .bg { fill: #f7faf8; }
+#svg-phase-state-machine .state-active { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+#svg-phase-state-machine .state-fail { fill: #fef2f2; stroke: #b91c1c; stroke-width: 1.75; }
+#svg-phase-state-machine .state-paid { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+#svg-phase-state-machine .state-title { fill: #142019; font-size: 16px; font-weight: 700; text-anchor: middle; }
+#svg-phase-state-machine .state-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-phase-state-machine .state-tag { fill: #15803d; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+#svg-phase-state-machine .state-tag-fail { fill: #b91c1c; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+#svg-phase-state-machine .state-trigger { fill: #b91c1c; font-size: 10px; font-weight: 600; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.04em; }
+#svg-phase-state-machine .edge { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+#svg-phase-state-machine .edge-p { stroke: #15803d; stroke-width: 2; fill: none; }
+#svg-phase-state-machine .edge-fail { stroke: #b91c1c; stroke-width: 1.5; fill: none; stroke-dasharray: 4 3; }
+#svg-phase-state-machine .tx-label { fill: #15803d; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-phase-state-machine .tx-sub { fill: #536b5e; font-size: 10px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-phase-state-machine .loop-label-strong { fill: #2a3d34; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-phase-state-machine .loop-label { fill: #536b5e; font-size: 10px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-phase-state-machine .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-phase-state-machine .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+#svg-phase-state-machine .legend-bg { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1; }
+#svg-phase-state-machine .legend-text { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+
+  <text class="subtitle" x="64" y="56">Figure 3 · Phase state machine</text>
+  <text class="title"    x="64" y="88">Challenge lifecycle — five states, six transitions</text>
+
+  <!-- ── Re-register loop (above the cards, single smooth arc) ───── -->
+  <!-- Routed in the empty band between the title and the transition labels
+       so it doesn't have to draw a giant U-shape below the Failed terminal -->
+  <path class="edge" d="M 1090 200 C 1090 120 190 120 190 200" marker-end="url(#ah-svg-phase-state-machine)"/>
+  <text class="loop-label-strong" x="640" y="148">registerPostPayout(settledAccountId, freshAccountId, signatures)</text>
+  <text class="loop-label"        x="640" y="162">re-register a fresh Phase 1 challenge for the same trader · no new fee</text>
+
+  <!-- ── Transition labels (above arrows, below the loop) ────────── -->
+  <text class="tx-label" x="330" y="180">registerPhase2(sigs)</text>
+  <text class="tx-sub"   x="330" y="195">advances to Phase 2</text>
+
+  <text class="tx-label" x="630" y="180">registerFunded(sigs)</text>
+  <text class="tx-sub"   x="630" y="195">advances to Funded</text>
+
+  <text class="tx-label" x="930" y="180">claimPayout(sigs)</text>
+  <text class="tx-sub"   x="930" y="195">on-chain rule re-check</text>
+
+  <!-- ── Active states (top row, y=200..320) ─────────────────────── -->
+  <rect class="state-active" x="80" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="190" y="228">PHASE 1</text>
+  <text class="state-title" x="190" y="256">Active · evaluation</text>
+  <text class="state-sub"   x="190" y="280">phase=1 · settled=false</text>
+  <text class="state-sub"   x="190" y="298">profit target · loss caps</text>
+
+  <rect class="state-active" x="380" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="490" y="228">PHASE 2</text>
+  <text class="state-title" x="490" y="256">Active · verification</text>
+  <text class="state-sub"   x="490" y="280">phase=2 · settled=false</text>
+  <text class="state-sub"   x="490" y="298">tighter profit target</text>
+
+  <rect class="state-active" x="680" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="790" y="228">FUNDED</text>
+  <text class="state-title" x="790" y="256">Live · trading on capital</text>
+  <text class="state-sub"   x="790" y="280">phase=3 · settled=false</text>
+  <text class="state-sub"   x="790" y="298">payouts on demand</text>
+
+  <rect class="state-paid" x="980" y="200" width="220" height="120" rx="12"/>
+  <text class="state-tag"   x="1090" y="228">SETTLED</text>
+  <text class="state-title" x="1090" y="256">USDC paid · final</text>
+  <text class="state-sub"   x="1090" y="280">settled=true</text>
+  <text class="state-sub"   x="1090" y="298">re-register for next round</text>
+
+  <!-- ── Primary transition arrows (between cards) ───────────────── -->
+  <line class="edge-p" x1="300" y1="260" x2="380" y2="260" marker-end="url(#ahp-svg-phase-state-machine)"/>
+  <line class="edge-p" x1="600" y1="260" x2="680" y2="260" marker-end="url(#ahp-svg-phase-state-machine)"/>
+  <line class="edge-p" x1="900" y1="260" x2="980" y2="260" marker-end="url(#ahp-svg-phase-state-machine)"/>
+
+  <!-- ── Failure curves — straight clean drops from each card to Failed -->
+  <!-- No per-curve labels: breach origin is implicit from the card the
+       curve starts at, and the consolidated annotation in the Failed
+       terminal below names every triggering phase. -->
+  <path class="edge-fail" d="M 190 320 C 190 420 460 460 520 540" marker-end="url(#ahr)"/>
+  <path class="edge-fail" d="M 490 320 C 490 400 600 460 620 540" marker-end="url(#ahr)"/>
+  <path class="edge-fail" d="M 790 320 C 790 400 740 460 720 540" marker-end="url(#ahr)"/>
+
+  <!-- ── Failed terminal state ───────────────────────────────────── -->
+  <rect class="state-fail" x="380" y="540" width="520" height="130" rx="12"/>
+  <text class="state-tag-fail" x="640" y="568">FAILED · TERMINAL</text>
+  <text class="state-title" x="640" y="596">Account flagged off-chain</text>
+  <text class="state-sub"   x="640" y="618">no further phase transitions or payout proofs signed.</text>
+  <text class="state-sub"   x="640" y="634">trader's loss bounded to the evaluation fee paid.</text>
+  <text class="state-trigger" x="640" y="654">triggered by rule breach in Phase 1 · Phase 2 · Funded</text>
+
+  <!-- ── Legend ──────────────────────────────────────────────────── -->
+  <rect class="legend-bg" x="64" y="700" width="1152" height="44" rx="8"/>
+  <line class="edge-p" x1="84" y1="722" x2="124" y2="722" marker-end="url(#ahp-svg-phase-state-machine)"/>
+  <text class="legend-text" x="132" y="726">primary transition · on-chain (multisig-signed)</text>
+  <line class="edge-fail" x1="540" y1="722" x2="580" y2="722" marker-end="url(#ahr)"/>
+  <text class="legend-text" x="588" y="726">off-chain failure flag</text>
+  <line class="edge" x1="900" y1="722" x2="940" y2="722" marker-end="url(#ah-svg-phase-state-machine)"/>
+  <text class="legend-text" x="948" y="726">on-chain re-registration loop</text>
+</svg>
+<figcaption>Figure 3 · Challenge phase state machine</figcaption></figure></div>
+</section>
+<section id="lp-mechanics" class="body"><p class="section-num">§ 07</p><h1 class="section-h1">LP mechanics</h1>
+<p>A liquidity provider deposits USDC into <code>ChainFundedPool</code> and
+receives <code>CFNDToken</code> (<code>CFND</code>) — an ERC-20 share token whose
+balance encodes a pro-rata claim against (i) the pool&#39;s LP
+capital reserve and (ii) the per-CFND share of the LP profit
+pool. <code>CFND</code> is owned and minted exclusively by the pool;
+<code>mint(to, amount)</code> and <code>burn(from, amount)</code> are restricted to
+<code>Ownable.owner()</code> which is set to the pool&#39;s address at
+deployment.</p>
+<div class="keep-together"><h2>Deposit</h2><pre><code>USDC.approve(pool, amount)
+pool.deposit(amount, gasReimbursementUsdc)
+</code></pre></div>
+<p>The pool pulls <code>amount</code> USDC, mints <code>amount</code> CFND to the LP
+(1:1 at NAV), and updates <code>lastDepositBlock[lp] = block.number</code>.
+The <code>lastDepositBlock</code> mapping is consulted by <code>withdraw</code>:
+withdrawals from the same block as the depositor&#39;s most recent
+deposit revert with <code>SameBlockDeposit</code>. This blocks the
+deposit-then-withdraw flash pattern that would otherwise
+permit a same-block round-trip through the per-CFND profit
+accumulator.</p>
+<p>Reverts: <code>InvalidAmount</code> (<code>amount == 0</code>),
+<code>PoolMustHaveDeposits</code> (n/a — first deposit creates the
+deposit-pool invariant; this revert is on <code>registerChallenge</code>
+when the pool has zero LPs).</p>
+<h2>Yield accrual</h2>
+<p>Two USDC streams accrue to the LP profit pool, separately from
+the LP capital reserve:</p>
+<ul>
+<li><code>(feeAmount * FEE_PROFIT_POOL_BPS) / BPS = 6%</code> of every
+challenge fee credited at <code>registerChallenge</code>.</li>
+<li><code>(firmCut * (BPS - FIRM_CUT_PROTOCOL_BPS)) / BPS = 20%</code> of
+every funded-trader payout firm cut credited at <code>claimPayout</code>.</li>
+</ul>
+<p>The pool tracks this credit via <code>accProfitPerToken</code> — a
+fixed-point per-token accumulator updated whenever the profit
+pool gains or loses USDC. Each LP carries <code>rewardDebt[lp]</code> =
+<code>balance × accProfitPerToken</code> at the time of their last
+state-changing operation (deposit, withdraw, claim,
+<code>transferCfnd</code>). Pending profit at any time is:</p>
+<pre><code>pendingProfit(lp) = balance(lp) × accProfitPerToken − rewardDebt(lp)
+</code></pre>
+<p>This is the per-share-accumulator pattern used in MasterChef
+and its derivatives; it is <code>O(1)</code> per claim and exact under
+fixed-point arithmetic.</p>
+<div class="keep-together"><h2>Claim profit</h2><pre><code>pool.claimProfit(gasReimbursementUsdc)
+</code></pre></div>
+<p>Transfers <code>pendingProfit(msg.sender)</code> USDC to the LP and
+resets <code>rewardDebt[msg.sender]</code> to the new
+<code>balance × accProfitPerToken</code>. CFND balance is unchanged. The
+LP capital reserve is unchanged. Reverts on <code>NoProfitToClaim</code>
+if <code>pendingProfit == 0</code>.</p>
+<div class="keep-together"><h2>Withdraw capital</h2><pre><code>pool.withdraw(cfndAmount, gasReimbursementUsdc)
+</code></pre></div>
+<p>Burns <code>cfndAmount</code> CFND from the LP and transfers
+<code>cfndAmount × NAV</code> USDC. The function first auto-claims any
+pending profit (so <code>claimProfit</code> is not required as a
+prerequisite), then computes and transfers the capital share at
+the current NAV. Reverts: <code>InsufficientCFND</code>
+(<code>balance &lt; cfndAmount</code>), <code>NoCapitalAvailable</code>
+(<code>lpCapitalBalance() == 0</code>), <code>SameBlockDeposit</code>
+(<code>lastDepositBlock[lp] == block.number</code>).</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-lp-lifecycle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1320" width="1280" height="1320" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah-svg-lp-lifecycle" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp-svg-lp-lifecycle" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="ahd-svg-lp-lifecycle" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a89b"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-lp-lifecycle .bg { fill: #f7faf8; }
+#svg-lp-lifecycle .step-band { fill: #eef4f0; }
+#svg-lp-lifecycle .lifeline { stroke: #c4d4cb; stroke-width: 1.5; stroke-dasharray: 3 5; fill: none; }
+#svg-lp-lifecycle .p-box { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+#svg-lp-lifecycle .p-onchain { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+#svg-lp-lifecycle .p-label { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+#svg-lp-lifecycle .p-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-lp-lifecycle .icon-stroke { stroke: #15803d; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+#svg-lp-lifecycle .step-num { fill: #15803d; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
+#svg-lp-lifecycle .step-title { fill: #142019; font-size: 15px; font-weight: 700; }
+#svg-lp-lifecycle .arrow { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+#svg-lp-lifecycle .arrow-p { stroke: #15803d; stroke-width: 2.25; fill: none; }
+#svg-lp-lifecycle .arrow-ret { stroke: #94a89b; stroke-width: 1.25; fill: none; stroke-dasharray: 4 3; }
+#svg-lp-lifecycle .arrow-label { fill: #2a3d34; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-lp-lifecycle .arrow-label-p { fill: #15803d; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; font-weight: 700; }
+#svg-lp-lifecycle .callout-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+#svg-lp-lifecycle .callout-title { fill: #15803d; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+#svg-lp-lifecycle .callout-text { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-lp-lifecycle .note-bg { fill: #fef7e6; stroke: #b88a00; stroke-width: 1.5; }
+#svg-lp-lifecycle .note-title { fill: #b88a00; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+#svg-lp-lifecycle .note-text { fill: #4a3a00; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-lp-lifecycle .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-lp-lifecycle .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="1320"/>
+
+  <!-- Title -->
+  <text class="subtitle" x="64" y="56">Figure 4 · Liquidity Provider flow</text>
+  <text class="title"    x="64" y="88">LP lifecycle — deposit, yield, withdraw</text>
+
+  <!-- Step bands -->
+  <rect class="step-band" x="0" y="290" width="1280" height="290"/>
+  <rect class="step-band" x="0" y="600" width="1280" height="180" opacity="0.5"/>
+  <rect class="step-band" x="0" y="800" width="1280" height="160"/>
+  <rect class="step-band" x="0" y="980" width="1280" height="320" opacity="0.5"/>
+
+  <!-- ── Participant headers ─────────────────────────────────────── -->
+  <!-- LP -->
+  <rect class="p-box" x="140" y="160" width="120" height="100" rx="8"/>
+  <g transform="translate(186, 178) scale(1.167)">
+    <path class="icon-stroke" d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+    <circle class="icon-stroke" cx="12" cy="7" r="4"/>
+  </g>
+  <text class="p-label" x="200" y="230">LP</text>
+  <text class="p-sub"   x="200" y="248">EOA</text>
+
+  <!-- USDC -->
+  <rect class="p-onchain" x="380" y="160" width="120" height="100" rx="8"/>
+  <g transform="translate(426, 178) scale(1.167)">
+    <line class="icon-stroke" x1="12" x2="12" y1="2" y2="22"/>
+    <path class="icon-stroke" d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+  </g>
+  <text class="p-label" x="440" y="230">USDC</text>
+  <text class="p-sub"   x="440" y="248">ERC-20</text>
+
+  <!-- ChainFundedPool -->
+  <rect class="p-onchain" x="640" y="160" width="160" height="100" rx="8"/>
+  <g transform="translate(706, 178) scale(1.167)">
+    <path class="icon-stroke" d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/>
+    <path class="icon-stroke" d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/>
+    <path class="icon-stroke" d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/>
+  </g>
+  <text class="p-label" x="720" y="230">ChainFundedPool</text>
+  <text class="p-sub"   x="720" y="248">on-chain · UUPS</text>
+
+  <!-- CFND token -->
+  <rect class="p-onchain" x="940" y="160" width="120" height="100" rx="8"/>
+  <g transform="translate(986, 178) scale(1.167)">
+    <circle class="icon-stroke" cx="8" cy="8" r="6"/>
+    <path class="icon-stroke" d="M18.09 10.37A6 6 0 1 1 10.34 18"/>
+    <path class="icon-stroke" d="M7 6h1v4"/>
+    <path class="icon-stroke" d="m16.71 13.88.7.71-2.82 2.82"/>
+  </g>
+  <text class="p-label" x="1000" y="230">CFND</text>
+  <text class="p-sub"   x="1000" y="248">LP share token</text>
+
+  <!-- Lifelines -->
+  <line class="lifeline" x1="200"  y1="270" x2="200"  y2="1170"/>
+  <line class="lifeline" x1="440"  y1="270" x2="440"  y2="1170"/>
+  <line class="lifeline" x1="720"  y1="270" x2="720"  y2="1170"/>
+  <line class="lifeline" x1="1000" y1="270" x2="1000" y2="1170"/>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 01 — Deposit capital · mint CFND
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="312">STEP 01</text>
+  <text class="step-title" x="64" y="332">Deposit capital, mint CFND</text>
+
+  <!-- LP → USDC: approve -->
+  <line class="arrow" x1="200" y1="368" x2="440" y2="368" marker-end="url(#ah-svg-lp-lifecycle)"/>
+  <text class="arrow-label" x="212" y="360">approve(Pool, amount)</text>
+
+  <!-- LP → Pool: deposit -->
+  <line class="arrow" x1="200" y1="406" x2="720" y2="406" marker-end="url(#ah-svg-lp-lifecycle)"/>
+  <text class="arrow-label" x="212" y="398">deposit(amount, gasReimbursementUsdc)</text>
+
+  <!-- Pool → USDC: transferFrom (primary) -->
+  <line class="arrow-p" x1="720" y1="444" x2="440" y2="444" marker-end="url(#ahp-svg-lp-lifecycle)"/>
+  <text class="arrow-label-p" x="460" y="436">transferFrom(LP → Pool, amount)</text>
+
+  <!-- Pool → CFND: mint -->
+  <line class="arrow" x1="720" y1="482" x2="1000" y2="482" marker-end="url(#ah-svg-lp-lifecycle)"/>
+  <text class="arrow-label" x="732" y="474">mint(LP, amount) · CFND priced 1:1 at NAV</text>
+
+  <!-- Pool → LP: receipt (dotted) -->
+  <line class="arrow-ret" x1="720" y1="520" x2="200" y2="520" marker-end="url(#ahd-svg-lp-lifecycle)"/>
+  <text class="arrow-label" x="212" y="512">Deposited event · LP holds amount × CFND</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 02 — Yield accrual (passive)
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="622">STEP 02</text>
+  <text class="step-title" x="64" y="642">Yield accrual — passive, tracked per-CFND</text>
+
+  <rect class="callout-bg" x="200" y="668" width="900" height="96" rx="8"/>
+  <text class="callout-title" x="220" y="692">YIELD SOURCES · ACC'D AS USDC IN PROFIT POOL</text>
+  <text class="callout-text"  x="220" y="714">  · 6% of every challenge fee (FEE_PROFIT_POOL_BPS)</text>
+  <text class="callout-text"  x="220" y="732">  · 20% of every funded-payout firm cut</text>
+  <text class="callout-text"  x="220" y="750">  → split pro-rata across all CFND holders via accProfitPerToken accumulator</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 03 — Claim profit
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="822">STEP 03</text>
+  <text class="step-title" x="64" y="842">Claim profit — capital stays deposited</text>
+
+  <!-- LP → Pool: claimProfit -->
+  <line class="arrow" x1="200" y1="888" x2="720" y2="888" marker-end="url(#ah-svg-lp-lifecycle)"/>
+  <text class="arrow-label" x="212" y="880">claimProfit(gasReimbursementUsdc)</text>
+
+  <!-- Pool → USDC → LP: transfer (primary) -->
+  <line class="arrow-p" x1="720" y1="926" x2="200" y2="926" marker-end="url(#ahp-svg-lp-lifecycle)"/>
+  <text class="arrow-label-p" x="212" y="918">transfer(Pool → LP, pendingProfit USDC)</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 04 — Withdraw capital
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="1002">STEP 04</text>
+  <text class="step-title" x="64" y="1022">Withdraw capital — burn CFND for USDC at current NAV</text>
+
+  <!-- LP → Pool: withdraw -->
+  <line class="arrow" x1="200" y1="1062" x2="720" y2="1062" marker-end="url(#ah-svg-lp-lifecycle)"/>
+  <text class="arrow-label" x="212" y="1054">withdraw(cfndAmount, gasReimbursementUsdc)</text>
+
+  <!-- Pool → CFND: burn -->
+  <line class="arrow" x1="720" y1="1098" x2="1000" y2="1098" marker-end="url(#ah-svg-lp-lifecycle)"/>
+  <text class="arrow-label" x="732" y="1090">burn(LP, cfndAmount)</text>
+
+  <!-- Pool → USDC → LP: transfer (primary) -->
+  <line class="arrow-p" x1="720" y1="1136" x2="200" y2="1136" marker-end="url(#ahp-svg-lp-lifecycle)"/>
+  <text class="arrow-label-p" x="212" y="1128">transfer(Pool → LP, cfndAmount × NAV)</text>
+
+  <!-- NAV-risk note — moved BELOW the step-4 arrows so it doesn't
+       overlap the burn / transfer arrows that span the lifelines.
+       Spans the full width of the lifeline area for visual weight. -->
+  <rect class="note-bg" x="80" y="1190" width="1120" height="100" rx="10"/>
+  <text class="note-title" x="100" y="1216">NAV-RISK NOTE</text>
+  <text class="note-text"  x="100" y="1240">NAV can fall below 1.00 if cumulative trader payouts exceed cumulative challenge fees +</text>
+  <text class="note-text"  x="100" y="1260">funded-payout firm cuts in the LP's holding window. LPs carry the residual trader-PnL exposure.</text>
+  <text class="note-text"  x="100" y="1280">claimPayout reverts with InsufficientLPCapital once lpCapitalBalance() falls to zero.</text>
+</svg>
+<figcaption>Figure 4 · LP lifecycle</figcaption></figure></div>
+</section>
+<section id="nav-mechanics" class="body"><p class="section-num">§ 08</p><h1 class="section-h1">NAV mechanics</h1>
+<p>The CFND net asset value is computed deterministically from
+public pool state at any block:</p>
+<pre><code>NAV(t) = ( totalUSDC(t) − profitPoolBalance(t) ) / cfndTotalSupply(t)
+</code></pre>
+<p>where <code>totalUSDC(t)</code> = <code>IERC20(USDC).balanceOf(pool)</code> at block t,
+<code>profitPoolBalance(t)</code> = <code>pool.profitPoolBalance()</code>, and
+<code>cfndTotalSupply(t)</code> = <code>cfndToken.totalSupply()</code>.</p>
+<p>Excluding <code>profitPoolBalance</code> from the numerator is the
+mechanical guarantee of <code>claimProfit</code> NAV-neutrality:
+<code>claimProfit</code> debits both the pool&#39;s USDC balance and the
+profit pool by the same amount, so the ratio is invariant.</p>
+<div class="keep-together"><h2>Operations that change NAV</h2><table>
+<thead>
+<tr>
+<th>Operation</th>
+<th>NAV impact</th>
+<th>Mechanism</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>registerChallenge</code></td>
+<td>NAV ↑ by the LP-capital share of the fee</td>
+<td>LP-capital share = <code>feeAmount × (BPS − FEE_PROTOCOL_BPS − FEE_PROFIT_POOL_BPS − affiliateRateBps) / BPS</code>. For an unreferred trade at default constants this is 70% of the fee.</td>
+</tr>
+<tr>
+<td><code>claimPayout</code> (trader share)</td>
+<td>NAV ↓ by <code>traderShare</code></td>
+<td><code>traderShare</code> is transferred out of the pool&#39;s USDC balance; LP capital reserve = <code>totalUSDC − profitPool</code> decreases.</td>
+</tr>
+<tr>
+<td><code>claimPayout</code> (LP-yield slice of firm cut)</td>
+<td>NAV ↑ by 20% of firm cut</td>
+<td>This slice credits the profit pool, not capital, so it cancels out of the NAV numerator (numerator unchanged) — but <code>totalUSDC</code> rises, so the numerator&#39;s preserving property holds without exception.</td>
+</tr>
+</tbody></table></div>
+<p>Aggregated over time, NAV is a martingale on (cumulative
+challenge fees + firm-cut LP slice − cumulative trader payouts).
+For periods in which the sum is positive, NAV monotonically
+appreciates. For periods in which it is negative, NAV
+depreciates — bounded below by <code>0</code> because the pool cannot
+transfer more USDC than it holds. <code>claimPayout</code> reverts with
+<code>InsufficientLPCapital</code> if the requested <code>traderShare</code> exceeds
+<code>lpCapitalBalance() = totalUSDC − profitPool</code>.</p>
+<h2>Worked examples</h2>
+<p>The relationship between <code>totalUSDC</code>, <code>profitPool</code>, NAV, and per-CFND
+yield is easiest to see with concrete numbers. Both scenarios assume
+<code>cfndTotalSupply = 1,000,000 CFND</code>.</p>
+<p><strong>Healthy state.</strong> Pool has accrued fees beyond the original LP
+deposits, with $50,000 of that earmarked as LP yield:</p>
+<pre><code>totalUSDC        = $1,050,000
+profitPool       =    $50,000
+lpCapitalBalance = $1,000,000   (totalUSDC − profitPool)
+NAV              =    $1.00     ($1M / 1M CFND)
+profit per CFND  =    $0.05     ($50k / 1M CFND)
+total claim/CFND =    $1.05     (NAV + earned yield)
+</code></pre>
+<p>NAV is unchanged from launch — LP <em>capital</em> is whole. The $0.05
+per CFND of yield sits in the profit pool and is claimable via
+<code>claimProfit()</code> without moving NAV (both numerator and denominator
+of the NAV equation are independent of the profit-pool
+withdrawal).</p>
+<p><strong>Stress state.</strong> A large funded-trader payout has eaten into LP
+capital faster than fees have replenished it:</p>
+<pre><code>totalUSDC        = $1,000,000
+profitPool       =    $50,000
+lpCapitalBalance =   $950,000
+NAV              =    $0.95     ($950k / 1M CFND)
+profit per CFND  =    $0.05
+total claim/CFND =    $1.00     (NAV + earned yield = breakeven)
+</code></pre>
+<p>NAV has depreciated; LP capital backing per CFND is below $1.
+The accumulated yield brings each CFND back to breakeven on a
+total-claim basis, but withdrawing capital now would crystallise
+the NAV loss. This is the trader-PnL exposure LPs underwrite by
+participating in the pool.</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-nav-over-time" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" width="1280" height="800" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah-svg-nav-over-time" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-nav-over-time .bg { fill: #f7faf8; }
+#svg-nav-over-time .axis { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+#svg-nav-over-time .grid { stroke: #c4d4cb; stroke-width: 0.75; stroke-dasharray: 2 4; fill: none; }
+#svg-nav-over-time .baseline { stroke: #94a89b; stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
+#svg-nav-over-time .axis-label { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-nav-over-time .axis-tick { fill: #142019; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-nav-over-time .axis-tick-y { fill: #142019; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: end; }
+#svg-nav-over-time .line-steady { stroke: #15803d; stroke-width: 2.5; fill: none; }
+#svg-nav-over-time .line-stress { stroke: #b88a00; stroke-width: 2.5; fill: none; stroke-dasharray: 6 4; }
+#svg-nav-over-time .point { fill: #15803d; stroke: #f7faf8; stroke-width: 1.5; }
+#svg-nav-over-time .point-stress { fill: #b88a00; stroke: #f7faf8; stroke-width: 1.5; }
+#svg-nav-over-time .point-bad { fill: #b91c1c; stroke: #f7faf8; stroke-width: 1.5; }
+#svg-nav-over-time .annot-line { stroke: #5a6b62; stroke-width: 1; fill: none; stroke-dasharray: 2 3; }
+#svg-nav-over-time .annot { fill: #2a3d34; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-nav-over-time .annot-warn { fill: #b88a00; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-nav-over-time .legend-box { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1; }
+#svg-nav-over-time .legend-text { fill: #142019; font-size: 12px; }
+#svg-nav-over-time .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-nav-over-time .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+#svg-nav-over-time .equation-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.5; }
+#svg-nav-over-time .equation-text { fill: #142019; font-size: 13px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="800"/>
+
+  <text class="subtitle" x="64" y="56">Figure 5 · NAV mechanics</text>
+  <text class="title"    x="64" y="88">CFND NAV over time — illustrative</text>
+
+  <!-- Plot area: x = 140..1180, y = 160..560 -->
+  <!-- 0,0 = bottom-left of plot at (140, 560); right is t increasing; up is NAV increasing -->
+
+  <!-- Y-axis ticks at NAV = 0.94, 0.98, 1.00, 1.04, 1.08, 1.12 -->
+  <!-- Map NAV → y: 1.00 = y=400 (centre), each 0.02 unit = 50px -->
+  <!-- 1.12 = 100 · 1.08 = 200 · 1.04 = 300 · 1.00 = 400 · 0.98 = 450 · 0.94 = 550 -->
+
+  <!-- Gridlines -->
+  <line class="grid" x1="140" y1="100" x2="1180" y2="100"/>
+  <line class="grid" x1="140" y1="200" x2="1180" y2="200"/>
+  <line class="grid" x1="140" y1="300" x2="1180" y2="300"/>
+  <line class="baseline" x1="140" y1="400" x2="1180" y2="400"/>
+  <line class="grid" x1="140" y1="500" x2="1180" y2="500"/>
+
+  <!-- Axes -->
+  <line class="axis" x1="140" y1="160" x2="140" y2="560" marker-end="url(#ah-svg-nav-over-time)"/>
+  <line class="axis" x1="140" y1="560" x2="1180" y2="560" marker-end="url(#ah-svg-nav-over-time)"/>
+
+  <!-- Axis labels -->
+  <text class="axis-label" x="148" y="148">NAV · USDC per CFND</text>
+  <text class="axis-label" x="1190" y="556">time</text>
+
+  <!-- Y ticks -->
+  <text class="axis-tick-y" x="130" y="105">1.12</text>
+  <text class="axis-tick-y" x="130" y="205">1.08</text>
+  <text class="axis-tick-y" x="130" y="305">1.04</text>
+  <text class="axis-tick-y" x="130" y="405">1.00</text>
+  <text class="axis-tick-y" x="130" y="505">0.96</text>
+
+  <!-- X ticks (months) -->
+  <text class="axis-tick" x="140" y="580">M0</text>
+  <text class="axis-tick" x="348" y="580">M3</text>
+  <text class="axis-tick" x="556" y="580">M6</text>
+  <text class="axis-tick" x="764" y="580">M9</text>
+  <text class="axis-tick" x="972" y="580">M12</text>
+  <text class="axis-tick" x="1180" y="580">M15</text>
+
+  <!-- ── Steady-accumulation scenario (primary green) ──────────── -->
+  <!-- Mostly upward with small step ticks (each tick is a fee inflow) -->
+  <polyline class="line-steady"
+    points="140,400 200,395 260,388 320,378 380,372 440,360 500,355 560,343 620,340 680,328 740,322 800,308 860,302 920,290 980,283 1040,272 1100,265 1180,253"/>
+
+  <!-- Steady scenario marker (end point). Label anchored to the marker
+       so it stays inside the chart — the previous "@ M15 · steady
+       scenario" version overran the SVG viewBox at x=1280. -->
+  <circle class="point" cx="1180" cy="253" r="5"/>
+  <text class="annot" x="1170" y="244" text-anchor="end">~1.075 NAV @ M15</text>
+
+  <!-- ── Stress scenario (amber dashed) ────────────────────────── -->
+  <!-- Same path until M9, then a big payout dip below 1.00 -->
+  <polyline class="line-stress"
+    points="140,400 200,395 260,388 320,378 380,372 440,360 500,355 560,343 620,340 680,328 740,322 800,308 860,302 880,475 920,460 980,440 1040,400 1100,378 1180,355"/>
+
+  <!-- Stress event marker -->
+  <circle class="point-bad" cx="880" cy="475" r="6"/>
+  <line class="annot-line" x1="880" y1="475" x2="780" y2="640"/>
+  <text class="annot-warn" x="600" y="660">STRESS EVENT — large funded-trader payout</text>
+  <text class="annot" x="600" y="678">NAV falls to ~0.985 in a single block.</text>
+  <text class="annot" x="600" y="696">recovers as fees + future firm cuts flow in.</text>
+
+  <!-- Recovery point -->
+  <circle class="point-stress" cx="1180" cy="355" r="5"/>
+  <text class="annot-warn" x="1010" y="350">recovered to ~1.04 by M15</text>
+
+  <!-- ── 1.00 NAV baseline annotation ──────────────────────────── -->
+  <text class="annot" x="148" y="394">NAV = 1.00 — initial deposit ratio · LP capital + earned yield breakeven</text>
+
+  <!-- ── Equation block ─────────────────────────────────────────── -->
+  <rect class="equation-bg" x="80" y="710" width="1120" height="64" rx="10"/>
+  <text class="equation-text" x="100" y="738">  NAV(t) = ( totalUSDC(t) − profitPoolBalance(t) ) / cfndTotalSupply(t)</text>
+  <text class="equation-text" x="100" y="760">  Profit pool is the LP-yield accumulator — kept separate from capital so claimProfit() doesn't move NAV.</text>
+
+  <!-- ── Legend ─────────────────────────────────────────────────── -->
+  <rect class="legend-box" x="940" y="120" width="240" height="86" rx="8"/>
+  <line class="line-steady" x1="956" y1="142" x2="996" y2="142"/>
+  <text class="legend-text" x="1004" y="146">Steady accumulation</text>
+  <line class="line-stress" x1="956" y1="166" x2="996" y2="166"/>
+  <text class="legend-text" x="1004" y="170">Stress + recovery</text>
+  <line class="baseline"    x1="956" y1="190" x2="996" y2="190"/>
+  <text class="legend-text" x="1004" y="194">NAV = 1.00 baseline</text>
+</svg>
+<figcaption>Figure 5 · CFND NAV over time — illustrative</figcaption></figure></div>
+<h2>Properties</h2>
+<ul>
+<li><strong>NAV is observable.</strong> Any participant can compute current
+NAV from <code>IERC20(USDC).balanceOf(pool)</code>,
+<code>pool.profitPoolBalance()</code>, and <code>cfndToken.totalSupply()</code>
+using a single multicall.</li>
+<li><strong>NAV is monotone in fee inflows.</strong> A <code>registerChallenge</code>
+call cannot decrease NAV; a successful <code>claimPayout</code> cannot
+increase it (the LP-yield slice credits a profit-pool slot
+outside the NAV numerator).</li>
+<li><strong>NAV does not encode unrealised trader P&amp;L.</strong> Because trade
+execution is off-chain (§6), the pool has no view of unsettled
+funded-trader gains until <code>claimPayout</code> is invoked. NAV
+reflects only on-chain state: the protocol&#39;s actual USDC
+balance net of LP yield earmarks, divided by the supply of
+CFND.</li>
+</ul>
+<p>LPs are taking a long position on the aggregate distribution of
+trader outcomes net of fee revenue and firm cuts. The exposure
+is denominated in USDC and computable from public state at every
+block. There is no contract-side mechanism that obscures this
+exposure.</p>
+</section>
+<section id="fee-economics" class="body"><p class="section-num">§ 09</p><h1 class="section-h1">Fee economics</h1>
+<p>The challenge fee paid at <code>registerChallenge(feeAmount, ...)</code> is
+partitioned in the same transaction. Three constants and one
+mapping govern the partition:</p>
+<table>
+<thead>
+<tr>
+<th>Identifier</th>
+<th>Value</th>
+<th>Destination</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FEE_PROTOCOL_BPS</code></td>
+<td><code>2400</code> (24%)</td>
+<td><code>labsWallet</code> (protocol revenue)</td>
+</tr>
+<tr>
+<td><code>FEE_PROFIT_POOL_BPS</code></td>
+<td><code>600</code> (6%)</td>
+<td>LP profit pool (yield to CFND holders)</td>
+</tr>
+<tr>
+<td><code>MAX_AFFILIATE_BPS</code></td>
+<td><code>2000</code> (20%)</td>
+<td>hard ceiling on affiliate share</td>
+</tr>
+<tr>
+<td><code>affiliateRateBps(monthlyVolume)</code></td>
+<td><code>0</code>–<code>2000</code> (per ladder)</td>
+<td>affiliate wallet, when <code>affiliate != address(0)</code></td>
+</tr>
+<tr>
+<td>(residual)</td>
+<td><code>5000</code>–<code>7000</code></td>
+<td>LP capital reserve (backs payouts)</td>
+</tr>
+</tbody></table>
+<p>Constants are immutable in the implementation; modifying them
+requires a UUPS upgrade and triggers the storage-layout baseline
+check in CI. The affiliate rate is the single variable
+component, set per-call by the contract&#39;s <code>_affiliateRateBps</code>
+function against the affiliate&#39;s rolling-30-day volume; see §13
+for the ladder configuration.</p>
+<h2>Funded-trader payout splits</h2>
+<p><code>claimPayout</code> partitions the asserted profit between the trader
+and the firm using the per-challenge <code>traderShareBps</code> recorded
+at <code>registerChallenge</code> (default <code>8000</code> — 80% to trader). The
+remaining 20% (the firm cut) is then split:</p>
+<table>
+<thead>
+<tr>
+<th>Identifier</th>
+<th>Value</th>
+<th>Destination</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>FIRM_CUT_PROTOCOL_BPS</code></td>
+<td><code>8000</code> (80% of firm cut)</td>
+<td><code>labsWallet</code></td>
+</tr>
+<tr>
+<td>(residual)</td>
+<td><code>2000</code> (20% of firm cut)</td>
+<td>LP profit pool</td>
+</tr>
+</tbody></table>
+<p>Composing: of every USDC of trader profit, the trader receives
+80%; <code>labsWallet</code> receives 80% × 20% = 16%; the LP profit pool
+receives 20% × 20% = 4%.</p>
+<h2>Worked example — a $50 challenge fee</h2>
+<p>For a trader buying the $2,500-tier challenge at the $50 launch-sale
+price, with no referring affiliate:</p>
+<pre><code>feeAmount                = $50.00
+protocol (24%)           = $12.00  → labsWallet
+LP yield pool (6%)       =  $3.00  → accProfitPerToken updated
+affiliate (0%)           =  $0.00  → no transfer (affiliate=address(0))
+LP capital reserve (70%) = $35.00  → stays in pool
+</code></pre>
+<p>For the same trader referred by a Tier-3 affiliate (12%):</p>
+<pre><code>feeAmount                = $50.00
+protocol (24%)           = $12.00  → labsWallet
+LP yield pool (6%)       =  $3.00  → accProfitPerToken
+affiliate (12%)          =  $6.00  → affiliate wallet
+LP capital reserve (58%) = $29.00  → stays in pool
+</code></pre>
+<p>The affiliate share is the only variable component; the protocol and
+LP-yield slices are fixed by <code>FEE_PROTOCOL_BPS</code> and
+<code>FEE_PROFIT_POOL_BPS</code>. Worst case for LP capital is a maximum-tier
+affiliate at the <code>MAX_AFFILIATE_BPS = 2000</code> cap, leaving 50% of
+the fee as LP-capital reserves.</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-fee-split" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah-svg-fee-split" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-fee-split .bg { fill: #f7faf8; }
+#svg-fee-split .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-fee-split .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+#svg-fee-split .pill { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+#svg-fee-split .pool-box { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+#svg-fee-split .dest-box { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+#svg-fee-split .dest-affil { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; stroke-dasharray: 6 4; }
+#svg-fee-split .pill-text { fill: #142019; font-size: 18px; font-weight: 700; text-anchor: middle; }
+#svg-fee-split .pool-text { fill: #15803d; font-size: 16px; font-weight: 800; text-anchor: middle; }
+#svg-fee-split .pool-sub { fill: #15803d; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-fee-split .dest-pct { fill: #15803d; font-size: 26px; font-weight: 800; text-anchor: middle; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-fee-split .dest-label { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+#svg-fee-split .dest-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-fee-split .arrow { stroke: #15803d; stroke-width: 2.25; fill: none; }
+#svg-fee-split .arrow-label { fill: #15803d; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-fee-split .arrow-aff { stroke: #15803d; stroke-width: 2.25; fill: none; stroke-dasharray: 6 4; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="720"/>
+
+  <!-- Title -->
+  <text class="subtitle" x="64" y="56">Figure 6 · Evaluation fee allocation</text>
+  <text class="title"    x="64" y="88">Where every USDC of a challenge fee goes</text>
+
+  <!-- ─── Source pill — Trader fee 100% ─────────────────────────────── -->
+  <rect class="pill" x="500" y="130" width="280" height="64" rx="32"/>
+  <text class="pill-text" x="640" y="170">Trader fee · 100%</text>
+
+  <!-- Flow down -->
+  <line class="arrow" x1="640" y1="194" x2="640" y2="240" marker-end="url(#ah-svg-fee-split)"/>
+
+  <!-- ─── ChainFundedPool ───────────────────────────────────────────── -->
+  <rect class="pool-box" x="460" y="248" width="360" height="78" rx="6"/>
+  <text class="pool-text" x="640" y="280">ChainFundedPool</text>
+  <text class="pool-sub"  x="640" y="304">registerChallenge() · splits at settlement</text>
+
+  <!-- Fan-out lines from Pool bottom (640,326) to destination box tops -->
+  <!-- Destinations evenly spaced: 150, 460, 770, 1080 (centers) -->
+  <path class="arrow"     d="M 640 326 C 640 380 200 380 200 470" marker-end="url(#ah-svg-fee-split)"/>
+  <path class="arrow"     d="M 640 326 C 640 380 510 380 510 470" marker-end="url(#ah-svg-fee-split)"/>
+  <path class="arrow-aff" d="M 640 326 C 640 380 820 380 820 470" marker-end="url(#ah-svg-fee-split)"/>
+  <path class="arrow"     d="M 640 326 C 640 380 1130 380 1130 470" marker-end="url(#ah-svg-fee-split)"/>
+
+  <!-- Flow labels on the curves -->
+  <text class="arrow-label" x="195"  y="395">24%</text>
+  <text class="arrow-label" x="510"  y="395">6%</text>
+  <text class="arrow-label" x="820"  y="395">0–20%</text>
+  <text class="arrow-label" x="1130" y="395">remainder</text>
+
+  <!-- ─── Destination 1 · Protocol revenue ─────────────────────────── -->
+  <rect class="dest-box" x="80" y="478" width="240" height="160" rx="6"/>
+  <text class="dest-pct"   x="200" y="525">24%</text>
+  <text class="dest-label" x="200" y="555">Protocol revenue</text>
+  <text class="dest-sub"   x="200" y="580">labsWallet</text>
+  <text class="dest-sub"   x="200" y="600">FEE_PROTOCOL_BPS</text>
+  <text class="dest-sub"   x="200" y="620">funds Labs operations</text>
+
+  <!-- ─── Destination 2 · LP yield ─────────────────────────────────── -->
+  <rect class="dest-box" x="390" y="478" width="240" height="160" rx="6"/>
+  <text class="dest-pct"   x="510" y="525">6%</text>
+  <text class="dest-label" x="510" y="555">LP yield pool</text>
+  <text class="dest-sub"   x="510" y="580">distributed per-CFND</text>
+  <text class="dest-sub"   x="510" y="600">FEE_PROFIT_POOL_BPS</text>
+  <text class="dest-sub"   x="510" y="620">claimable via claimProfit()</text>
+
+  <!-- ─── Destination 3 · Affiliate (optional) ─────────────────────── -->
+  <rect class="dest-affil" x="700" y="478" width="240" height="160" rx="6"/>
+  <text class="dest-pct"   x="820" y="525">0–20%</text>
+  <text class="dest-label" x="820" y="555">Affiliate wallet</text>
+  <text class="dest-sub"   x="820" y="580">only if referrer set</text>
+  <text class="dest-sub"   x="820" y="600">tiered by monthly volume</text>
+  <text class="dest-sub"   x="820" y="620">cap MAX_AFFILIATE_BPS</text>
+
+  <!-- ─── Destination 4 · LP capital ───────────────────────────────── -->
+  <rect class="dest-box" x="1010" y="478" width="240" height="160" rx="6"/>
+  <text class="dest-pct"   x="1130" y="525">50–70%</text>
+  <text class="dest-label" x="1130" y="555">LP capital reserves</text>
+  <text class="dest-sub"   x="1130" y="580">backs trader payouts</text>
+  <text class="dest-sub"   x="1130" y="600">stays inside Pool</text>
+  <text class="dest-sub"   x="1130" y="620">withdrawable by LPs</text>
+
+  <!-- Caption -->
+  <text class="subtitle" x="64" y="685">Source · contracts/contracts/ChainFundedPool.sol — FEE_PROTOCOL_BPS=2400 · FEE_PROFIT_POOL_BPS=600 · MAX_AFFILIATE_BPS=2000</text>
+</svg>
+<figcaption>Figure 6 · Where every USDC of a challenge fee goes</figcaption></figure></div>
+<h2>Properties</h2>
+<ul>
+<li><strong>Allocation is atomic.</strong> Fee partitioning happens inside
+<code>registerChallenge</code> in a single transaction; there is no
+separate &quot;settle&quot; step that could leave the splits in an
+inconsistent state. The same property holds for firm-cut
+splits inside <code>claimPayout</code>.</li>
+<li><strong>Splits are public and grep-able.</strong> Each split is a public
+constant or a publicly-readable mapping (<code>challengeTierFee</code>,
+<code>affiliateTierThresholds</code>, <code>affiliateTierRates</code>).</li>
+<li><strong>Tier prices are owner-configurable; splits are not.</strong> The
+owner can update <code>challengeTierFee[size]</code> per tier via
+<code>setChallengeTiers</code>, but the percentage allocation
+(<code>FEE_PROTOCOL_BPS</code> etc.) is hard-coded into the
+implementation.</li>
+</ul>
+<p>The 24%-protocol / 6%-LP-yield ratio is front-loaded by design:
+protocol operating costs (signer infrastructure, audits,
+ongoing development) are funded at challenge purchase, not at
+payout settlement. This decouples revenue from trader-pass
+rates, which is the relevant property for sizing protocol-level
+runway.</p>
+</section>
+<section id="payout-enforcement" class="body"><p class="section-num">§ 10</p><h1 class="section-h1">Payout enforcement</h1>
+<p>The <code>claimPayout</code> function is the protocol&#39;s settlement entry
+point. It is <code>external nonReentrant whenNotPaused</code>, takes a payout
+identifier, an aggregated signature set, and a struct describing
+the asserted trading result, and produces — atomically — either a
+USDC transfer plus a <code>PayoutClaimed</code> event, or a transaction-level
+revert.</p>
+<h2>Function pre-conditions</h2>
+<p>The function reverts on any of the following conditions before any
+state mutation:</p>
+<table>
+<thead>
+<tr>
+<th>Pre-condition violated</th>
+<th>Custom error</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>settledPayouts[payoutId] == true</code></td>
+<td><code>PayoutAlreadySettled</code></td>
+</tr>
+<tr>
+<td><code>block.timestamp &gt; deadline</code></td>
+<td><code>SignatureExpired</code></td>
+</tr>
+<tr>
+<td><code>signatures.length &lt; signatureThreshold</code></td>
+<td><code>InsufficientSignatures</code></td>
+</tr>
+<tr>
+<td>any signer ∉ <code>authorisedSigners[]</code></td>
+<td><code>UnauthorizedSigner</code></td>
+</tr>
+<tr>
+<td>signatures unsorted or contain a duplicate signer</td>
+<td><code>DuplicateOrUnsortedSignature</code></td>
+</tr>
+<tr>
+<td><code>worstDailyLoss &gt; challenge.maxDailyLossBps</code></td>
+<td><code>RuleBreachedDailyLoss</code></td>
+</tr>
+<tr>
+<td><code>maxDrawdown &gt; challenge.maxTotalLossBps</code></td>
+<td><code>RuleBreachedTotalLoss</code></td>
+</tr>
+<tr>
+<td><code>tradingDays &lt; challenge.minTradingDays</code></td>
+<td><code>RuleBreachedMinDays</code></td>
+</tr>
+<tr>
+<td><code>grossProfit &lt; challenge.profitTarget</code> (where applicable)</td>
+<td><code>RuleBreachedProfitTarget</code></td>
+</tr>
+<tr>
+<td><code>bestDay &gt; challenge.maxBestDayBps</code></td>
+<td><code>RuleBreachedBestDay</code></td>
+</tr>
+<tr>
+<td><code>lpCapitalBalance() &lt; traderShare</code></td>
+<td><code>InsufficientLPCapital</code></td>
+</tr>
+</tbody></table>
+<p>Each error is a distinct named custom error type; the failing
+condition is identifiable from the transaction receipt without
+reference to off-chain logs.</p>
+<h2>Independence of off-chain attestation and on-chain re-verification</h2>
+<p>The signed payout proof is produced off-chain by N of M signers,
+each of whom independently re-derives the trader&#39;s P&amp;L from the
+trade ledger and re-checks the rule set. The signers&#39; role is
+attestation: they produce a typed message hash signed with their
+private keys, asserting that the supplied P&amp;L is consistent with
+the asserted account state.</p>
+<p><code>claimPayout</code> then re-runs the same rule evaluation on-chain,
+against the rule parameters snapshotted in <code>challenges[accountId]</code>
+at the time the trader paid the fee. The on-chain evaluation does
+not consume or trust the signers&#39; assertion of P&amp;L beyond what is
+inside the message hash they signed. If the signers attest to a
+P&amp;L that, when applied to the snapshotted rule set, would breach a
+rule, the contract reverts irrespective of signature validity.</p>
+<p>This independence rules out the failure mode in which a compromised
+signer set produces a valid signature aggregate over a fraudulent
+P&amp;L: such an aggregate either does not breach the snapshotted rules
+(in which case the payout is correct by construction) or does
+breach them (in which case the on-chain check catches it).</p>
+<h2>Out of scope</h2>
+<p><code>claimPayout</code> does not arbitrate disputes about the underlying
+trade ledger. It does not verify market data correctness, exchange
+uptime, or the temporal ordering of off-chain trades. These are
+operational concerns of the trading engine and the signer set; the
+contract&#39;s guarantee terminates at the boundary &quot;the supplied P&amp;L,
+re-evaluated against the registered rules, does not breach any of
+them&quot;.</p>
+<p>A trading-engine bug that mis-records a trade as profitable when it
+was unprofitable would produce a P&amp;L that the on-chain check
+accepts. Mitigating this class of failure is the subject of §17
+(security posture).</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-failure-paths" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1000" width="1280" height="1000" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah-svg-failure-paths" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp-svg-failure-paths" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+    <marker id="ahr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-failure-paths .bg { fill: #f7faf8; }
+#svg-failure-paths .node { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+#svg-failure-paths .node-fail { fill: #fef2f2; stroke: #b91c1c; stroke-width: 1.75; }
+#svg-failure-paths .node-pass { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+#svg-failure-paths .node-warn { fill: #fef7e6; stroke: #b88a00; stroke-width: 1.75; }
+#svg-failure-paths .node-title { fill: #142019; font-size: 15px; font-weight: 700; text-anchor: middle; }
+#svg-failure-paths .node-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-failure-paths .outcome-tag-fail { fill: #b91c1c; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+#svg-failure-paths .outcome-tag-pass { fill: #15803d; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+#svg-failure-paths .outcome-tag-warn { fill: #b88a00; font-size: 10px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.12em; }
+#svg-failure-paths .edge { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+#svg-failure-paths .edge-fail { stroke: #b91c1c; stroke-width: 1.5; fill: none; }
+#svg-failure-paths .edge-pass { stroke: #15803d; stroke-width: 2; fill: none; }
+#svg-failure-paths .edge-label { fill: #2a3d34; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-failure-paths .edge-label-fail { fill: #b91c1c; font-size: 12px; font-weight: 600; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-failure-paths .edge-label-pass { fill: #15803d; font-size: 12px; font-weight: 600; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-failure-paths .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-failure-paths .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+#svg-failure-paths .caption-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.5; }
+#svg-failure-paths .caption-title { fill: #15803d; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+#svg-failure-paths .caption-text { fill: #142019; font-size: 13px; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="1000"/>
+
+  <!-- Title -->
+  <text class="subtitle" x="64" y="56">Figure 7 · Failure paths</text>
+  <text class="title"    x="64" y="88">Where a challenge can end — three terminal outcomes</text>
+
+  <!-- ── Root: Active challenge ───────────────────────────────────── -->
+  <rect class="node" x="460" y="130" width="360" height="74" rx="10"/>
+  <text class="node-title" x="640" y="160">Trader holds an active challenge</text>
+  <text class="node-sub"   x="640" y="184">fee paid, account in phase 1 or 2</text>
+
+  <line class="edge" x1="640" y1="204" x2="640" y2="248" marker-end="url(#ah-svg-failure-paths)"/>
+
+  <!-- ── Trade simulated capital ──────────────────────────────────── -->
+  <rect class="node" x="460" y="250" width="360" height="74" rx="10"/>
+  <text class="node-title" x="640" y="280">Trades simulated capital</text>
+  <text class="node-sub"   x="640" y="304">off-chain engine tracks rules in real-time</text>
+
+  <!-- First branch arrows -->
+  <path class="edge-fail" d="M 580 324 C 580 360 240 360 240 388" marker-end="url(#ahr)"/>
+  <text class="edge-label-fail" x="260" y="368">rule breached during trading</text>
+
+  <path class="edge-pass" d="M 700 324 C 700 360 1040 360 1040 388" marker-end="url(#ahp-svg-failure-paths)"/>
+  <text class="edge-label-pass" x="800" y="368">profit target hit · no breach</text>
+
+  <!-- ── Left branch — failure during trading ─────────────────────── -->
+  <rect class="node-fail" x="60" y="390" width="360" height="74" rx="10"/>
+  <text class="node-title" x="240" y="420">Trading engine flags account</text>
+  <text class="node-sub"   x="240" y="444">no further phase / payout proofs signed</text>
+
+  <line class="edge-fail" x1="240" y1="464" x2="240" y2="508" marker-end="url(#ahr)"/>
+
+  <!-- Outcome A — neutral / loss bounded -->
+  <rect class="node-warn" x="60" y="510" width="360" height="110" rx="10"/>
+  <text class="outcome-tag-warn" x="240" y="538">OUTCOME · LOSS BOUNDED</text>
+  <text class="node-title" x="240" y="566">Trader loses only the evaluation fee</text>
+  <text class="node-sub"   x="240" y="588">no real money at risk beyond step 1.</text>
+  <text class="node-sub"   x="240" y="606">no on-chain action required.</text>
+
+  <!-- ── Right branch — pass + claim ──────────────────────────────── -->
+  <rect class="node" x="860" y="390" width="360" height="74" rx="10"/>
+  <text class="node-title" x="1040" y="420">Signers produce a payout proof</text>
+  <text class="node-sub"   x="1040" y="444">N-of-M multisig · verifies P&amp;L &amp; rules</text>
+
+  <line class="edge" x1="1040" y1="464" x2="1040" y2="508" marker-end="url(#ah-svg-failure-paths)"/>
+
+  <rect class="node" x="860" y="510" width="360" height="74" rx="10"/>
+  <text class="node-title" x="1040" y="540">Trader calls claimPayout</text>
+  <text class="node-sub"   x="1040" y="564">submits the proof on-chain</text>
+
+  <!-- Sub-branch from claimPayout -->
+  <path class="edge-fail" d="M 980 584 C 980 620 740 620 740 658" marker-end="url(#ahr)"/>
+  <text class="edge-label-fail" x="760" y="640">on-chain rule re-check fails</text>
+
+  <path class="edge-pass" d="M 1100 584 C 1100 620 1100 620 1100 658" marker-end="url(#ahp-svg-failure-paths)"/>
+  <text class="edge-label-pass" x="1120" y="640">all rules pass</text>
+
+  <!-- Outcome B — destructive / revert -->
+  <rect class="node-fail" x="560" y="660" width="360" height="110" rx="10"/>
+  <text class="outcome-tag-fail" x="740" y="688">OUTCOME · POOL REVERTS</text>
+  <text class="node-title" x="740" y="716">No USDC moves · proof is invalid</text>
+  <text class="node-sub"   x="740" y="738">on-chain belt: contract is the final</text>
+  <text class="node-sub"   x="740" y="756">word, signers can't override it.</text>
+
+  <!-- Outcome C — success / paid -->
+  <rect class="node-pass" x="940" y="660" width="280" height="110" rx="10"/>
+  <text class="outcome-tag-pass" x="1080" y="688">OUTCOME · PAID</text>
+  <text class="node-title" x="1080" y="716">USDC settles to trader</text>
+  <text class="node-sub"   x="1080" y="738">final · non-reversible · public</text>
+  <text class="node-sub"   x="1080" y="756">on every block explorer</text>
+
+  <!-- ── Belt &amp; Braces caption ────────────────────────────────────── -->
+  <rect class="caption-bg" x="60" y="830" width="1160" height="118" rx="10"/>
+  <text class="caption-title" x="80" y="860">BELT &amp; BRACES — TWO INDEPENDENT GATES BEFORE USDC MOVES</text>
+  <text class="caption-text"  x="80" y="888">  ·  Off-chain — Trading Engine refuses to forward a passing P&amp;L to the signers if any rule was breached during trading.</text>
+  <text class="caption-text"  x="80" y="910">  ·  On-chain — ChainFundedPool re-checks every rule inside claimPayout and reverts the whole tx if any one fails.</text>
+  <text class="caption-text"  x="80" y="932">A USDC payout requires both gates to agree. Either one alone is sufficient to stop a breached account being paid.</text>
+</svg>
+<figcaption>Figure 7 · Failure paths · three terminal outcomes</figcaption></figure></div>
+</section>
+<section id="multisig-payouts" class="body"><p class="section-num">§ 11</p><h1 class="section-h1">Multi-signature payouts</h1>
+<p><code>ChainFundedPool</code> maintains an <code>authorisedSigners</code> set
+(<code>mapping(address =&gt; bool)</code>) and a <code>signatureThreshold</code> (default
+<code>3</code> of <code>M=5</code> at launch). Every state-changing payout-related
+function — <code>registerPhase2</code>, <code>registerFunded</code>, <code>claimPayout</code>,
+<code>registerPostPayout</code> — requires N ECDSA signatures from
+authorised signers over an EIP-712 typed message hash whose
+fields include <code>(accountId, payoutId, claimedRules, deadline, chainId, contractAddress)</code>.</p>
+<h2>Set management</h2>
+<p>Three owner-only functions mutate the signer set:</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Pre-condition</th>
+<th>Post-condition</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>addSigner(address)</code></td>
+<td><code>!authorisedSigners[addr]</code> (else <code>DuplicateSigner</code>) · <code>addr != address(0)</code> (else <code>InvalidAddress</code>)</td>
+<td><code>authorisedSigners[addr] = true</code>; <code>signerCount += 1</code></td>
+</tr>
+<tr>
+<td><code>removeSigner(address)</code></td>
+<td><code>authorisedSigners[addr]</code> (else <code>NotASigner</code>) · <code>signerCount − 1 ≥ signatureThreshold</code> (else <code>WouldBreachThreshold</code>)</td>
+<td><code>authorisedSigners[addr] = false</code>; <code>signerCount −= 1</code></td>
+</tr>
+<tr>
+<td><code>setSignatureThreshold(uint256)</code></td>
+<td><code>newThreshold &gt; 0</code> · <code>newThreshold ≤ signerCount</code> (else <code>InvalidThreshold</code>)</td>
+<td><code>signatureThreshold = newThreshold</code></td>
+</tr>
+</tbody></table>
+<p>The <code>WouldBreachThreshold</code> guard is the central safety property:
+it is impossible to remove a signer in a way that leaves the
+remaining set unable to produce a valid signature aggregate.</p>
+<h2>Signature validation</h2>
+<p>Each signature is recovered via <code>ECDSA.recover(messageHash, signature)</code> (OpenZeppelin v5). The pool requires:</p>
+<pre><code>sigs.length &gt;= signatureThreshold                       (else InsufficientSignatures)
+recovered_addr ∈ authorisedSigners[]   for each sig     (else UnauthorizedSigner)
+sigs sorted ascending by recovered_addr, no duplicates  (else DuplicateOrUnsortedSignature)
+block.timestamp &lt;= deadline                             (else SignatureExpired)
+</code></pre>
+<p>The sorted-by-recovered-address requirement makes duplicate
+detection <code>O(N)</code> and removes ambiguity in signer-aggregate
+canonicalisation: the same (rule-state, signer-set) pair
+produces exactly one valid <code>signatures[]</code> ordering.</p>
+<h2>Independence of attestation paths</h2>
+<p>Each signer operates an independent verification environment.
+The protocol does not specify a shared signing ceremony; each
+signer&#39;s stack is isolated by design. Compromise of one signer
+key gives the attacker zero ability to forge a payout proof
+unless they can also compromise <code>signatureThreshold − 1</code>
+additional keys.</p>
+<p>The on-chain re-verification at <code>claimPayout</code> (§4, §11) is
+independent of signer compromise. A complete signer-set
+compromise that produces a valid signature aggregate over a
+fraudulent P&amp;L either does not breach the on-chain rules (in
+which case the payout is correct under the rules at
+registration) or does breach them (in which case the contract
+reverts on the matching <code>RuleBreached*</code> error).</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-multisig-signing" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 1100" width="1280" height="1100" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <defs>
+    <marker id="ah-svg-multisig-signing" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6b62"/>
+    </marker>
+    <marker id="ahp-svg-multisig-signing" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#15803d"/>
+    </marker>
+  </defs>
+
+  <style><![CDATA[
+#svg-multisig-signing .bg { fill: #f7faf8; }
+#svg-multisig-signing .step-band { fill: #eef4f0; }
+#svg-multisig-signing .actor { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+#svg-multisig-signing .signer-active { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.75; }
+#svg-multisig-signing .signer-idle { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; stroke-dasharray: 4 4; }
+#svg-multisig-signing .pool { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+#svg-multisig-signing .actor-title { fill: #142019; font-size: 14px; font-weight: 700; text-anchor: middle; }
+#svg-multisig-signing .actor-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-multisig-signing .actor-sub-idle { fill: #94a89b; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-multisig-signing .step-num { fill: #15803d; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
+#svg-multisig-signing .step-title { fill: #142019; font-size: 15px; font-weight: 700; }
+#svg-multisig-signing .edge { stroke: #5a6b62; stroke-width: 1.5; fill: none; }
+#svg-multisig-signing .edge-thick { stroke: #5a6b62; stroke-width: 2.5; fill: none; }
+#svg-multisig-signing .edge-p { stroke: #15803d; stroke-width: 2.5; fill: none; }
+#svg-multisig-signing .edge-label { fill: #2a3d34; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-multisig-signing .edge-label-p { fill: #15803d; font-size: 12px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-multisig-signing .broadcast-tag { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.5; }
+#svg-multisig-signing .broadcast-text { fill: #15803d; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; letter-spacing: 0.06em; }
+#svg-multisig-signing .sig-pill { fill: #ecfdf5; stroke: #15803d; stroke-width: 1.5; }
+#svg-multisig-signing .sig-text { fill: #15803d; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; }
+#svg-multisig-signing .none-text { fill: #94a89b; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: middle; font-style: italic; }
+#svg-multisig-signing .threshold-bg { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+#svg-multisig-signing .threshold-title { fill: #15803d; font-size: 12px; font-weight: 800; letter-spacing: 0.14em; }
+#svg-multisig-signing .threshold-text { fill: #142019; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-multisig-signing .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-multisig-signing .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+#svg-multisig-signing .legend-key { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="1100"/>
+
+  <text class="subtitle" x="64" y="56">Figure 8 · Multi-signature payouts</text>
+  <text class="title"    x="64" y="88">N-of-M payout signing — example with N=3, M=5</text>
+
+  <!-- Step bands -->
+  <rect class="step-band" x="0" y="170" width="1280" height="270"/>
+  <rect class="step-band" x="0" y="460" width="1280" height="200" opacity="0.5"/>
+  <rect class="step-band" x="0" y="680" width="1280" height="220"/>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 01 — Broadcast payout request to all M signers
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="200">STEP 01</text>
+  <text class="step-title" x="64" y="220">Trader broadcasts a payout request to the signer set</text>
+
+  <!-- Trader -->
+  <rect class="actor" x="80" y="290" width="160" height="80" rx="10"/>
+  <text class="actor-title" x="160" y="326">Trader</text>
+  <text class="actor-sub"   x="160" y="346">EOA · funded account</text>
+
+  <!-- Single broadcast arrow with broadcast tag -->
+  <line class="edge-thick" x1="240" y1="330" x2="332" y2="330" marker-end="url(#ah-svg-multisig-signing)"/>
+  <rect class="broadcast-tag" x="340" y="312" width="160" height="40" rx="20"/>
+  <text class="broadcast-text" x="420" y="337">BROADCAST · 1 TX</text>
+
+  <!-- Signer row — 5 cards, top edge at y=290 -->
+  <!-- Each card 130px wide, 80px tall, with 22px gaps between -->
+  <!-- Active set (3): Signers 1–3, green border -->
+  <!-- Idle set (2):   Signers 4–5, dashed grey border -->
+
+  <rect class="signer-active" x="540" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="605" y="326">Signer 1</text>
+  <text class="actor-sub"   x="605" y="346">authorised</text>
+
+  <rect class="signer-active" x="690" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="755" y="326">Signer 2</text>
+  <text class="actor-sub"   x="755" y="346">authorised</text>
+
+  <rect class="signer-active" x="840" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="905" y="326">Signer 3</text>
+  <text class="actor-sub"   x="905" y="346">authorised</text>
+
+  <rect class="signer-idle" x="990" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="1055" y="326">Signer 4</text>
+  <text class="actor-sub-idle" x="1055" y="346">offline</text>
+
+  <rect class="signer-idle" x="1140" y="290" width="130" height="80" rx="10"/>
+  <text class="actor-title" x="1205" y="326">Signer 5</text>
+  <text class="actor-sub-idle" x="1205" y="346">declined</text>
+
+  <!-- Legend below cards -->
+  <rect class="signer-active" x="80" y="402" width="14" height="14" rx="3"/>
+  <text class="legend-key" x="100" y="414">authorised &amp; participating</text>
+  <rect class="signer-idle" x="320" y="402" width="14" height="14" rx="3"/>
+  <text class="legend-key" x="340" y="414">authorised but did not sign this round</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 02 — Each active signer independently re-checks rules
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="490">STEP 02</text>
+  <text class="step-title" x="64" y="510">Each active signer independently re-derives P&amp;L and signs</text>
+
+  <!-- Sig pills under active signers -->
+  <rect class="sig-pill" x="540" y="540" width="130" height="36" rx="8"/>
+  <text class="sig-text" x="605" y="563">sig₁ · ECDSA</text>
+
+  <rect class="sig-pill" x="690" y="540" width="130" height="36" rx="8"/>
+  <text class="sig-text" x="755" y="563">sig₂ · ECDSA</text>
+
+  <rect class="sig-pill" x="840" y="540" width="130" height="36" rx="8"/>
+  <text class="sig-text" x="905" y="563">sig₃ · ECDSA</text>
+
+  <text class="none-text" x="1055" y="563">no signature</text>
+  <text class="none-text" x="1205" y="563">no signature</text>
+
+  <rect class="threshold-bg" x="80" y="600" width="1190" height="50" rx="10"/>
+  <text class="threshold-title" x="100" y="622">EACH SIGNER VERIFIES OFF-CHAIN</text>
+  <text class="threshold-text"  x="100" y="640">P&amp;L from trading engine · accountId active in pool · payout amount within tier · rules not breached</text>
+
+  <!-- ════════════════════════════════════════════════════════════
+       STEP 03 — Trader submits aggregated proof to claimPayout
+       ════════════════════════════════════════════════════════════ -->
+  <text class="step-num"   x="64" y="710">STEP 03</text>
+  <text class="step-title" x="64" y="730">Trader submits the aggregated signature set in a single tx</text>
+
+  <!-- Trader -->
+  <rect class="actor" x="80" y="780" width="160" height="80" rx="10"/>
+  <text class="actor-title" x="160" y="816">Trader</text>
+  <text class="actor-sub"   x="160" y="836">submits in 1 tx</text>
+
+  <!-- Pool -->
+  <rect class="pool" x="1010" y="780" width="240" height="80" rx="12"/>
+  <text class="actor-title" x="1130" y="808">ChainFundedPool</text>
+  <text class="actor-sub"   x="1130" y="826">verifies threshold + sig validity</text>
+  <text class="actor-sub"   x="1130" y="844">reverts on either failure</text>
+
+  <!-- Single primary arrow -->
+  <line class="edge-p" x1="240" y1="820" x2="1010" y2="820" marker-end="url(#ahp-svg-multisig-signing)"/>
+  <text class="edge-label-p" x="300" y="804">claimPayout(payoutId, [sig₁, sig₂, sig₃], …)</text>
+  <text class="edge-label" x="300" y="846">N=3 ≥ signatureThreshold · all sigs ∈ authorisedSigners[]</text>
+
+  <!-- ── Threshold callout (final) ──────────────────────────── -->
+  <rect class="threshold-bg" x="80" y="920" width="1190" height="100" rx="10"/>
+  <text class="threshold-title" x="100" y="944">ON-CHAIN VERIFICATION · CONTRACT REVERTS IF</text>
+  <text class="threshold-text"  x="100" y="966">  · sigs.length &lt; signatureThreshold      → InsufficientSignatures</text>
+  <text class="threshold-text"  x="100" y="986">  · any signer ∉ authorizedSigners[]      → UnauthorizedSigner</text>
+  <text class="threshold-text"  x="100" y="1006">  · duplicate or unsorted sigs             → DuplicateOrUnsortedSignature</text>
+</svg>
+<figcaption>Figure 8 · N-of-M payout signing</figcaption></figure></div>
+<h2>Threshold parameter selection</h2>
+<p>For an N-of-M signer set, the protocol tolerates up to
+<code>k = M − N</code> simultaneous signer outages before payout liveness
+is impaired, and requires the attacker to compromise at least
+<code>N</code> keys to forge a valid signature aggregate.</p>
+<table>
+<thead>
+<tr>
+<th>Configuration</th>
+<th>N-of-M</th>
+<th>Outage tolerance (<code>M − N</code>)</th>
+<th>Min keys to compromise</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Launch</td>
+<td>3-of-5</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Hardened (post-audit)</td>
+<td>4-of-5</td>
+<td>1</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Conservative</td>
+<td>5-of-7</td>
+<td>2</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Maximum redundancy</td>
+<td>4-of-7</td>
+<td>3</td>
+<td>4</td>
+</tr>
+</tbody></table>
+<p><code>signatureThreshold = 3</code> of <code>M = 5</code> at launch tolerates two
+simultaneous signer outages or compromises before payout
+liveness is impaired. Raising the threshold (say to <code>4</code> of <code>5</code>)
+hardens the protocol against signer compromise but tightens the
+liveness window. Threshold changes are a single
+<code>setSignatureThreshold</code> call, gated by the
+<code>WouldBreachThreshold</code> invariant.</p>
+</section>
+<section id="affiliate-programme" class="body"><p class="section-num">§ 12</p><h1 class="section-h1">Affiliate programme</h1>
+<p><code>registerChallenge</code> accepts an <code>affiliate</code> parameter. When
+<code>affiliate != address(0)</code> and <code>affiliate != msg.sender</code> (else
+<code>SelfReferral</code>), the pool computes the affiliate&#39;s commission
+share via <code>_affiliateRateBps(affiliateMonthlyVolume[affiliate] [currentEpoch])</code> and transfers that share of the fee to the
+affiliate&#39;s wallet in the same transaction. Settlement is
+atomic; there is no separate claim function.</p>
+<div class="keep-together"><h2>State</h2><pre><code>mapping(address =&gt; mapping(uint256 =&gt; uint256)) affiliateMonthlyVolume;
+mapping(address =&gt; mapping(address =&gt; bool))    affiliateHasReferred;
+uint256[] affiliateTierThresholds;   // ascending
+uint256[] affiliateTierRates;        // each ≤ MAX_AFFILIATE_BPS, non-decreasing
+uint256 constant MAX_AFFILIATE_BPS = 2000;
+</code></pre></div>
+<p><code>currentEpoch = block.timestamp / 30 days</code>. The
+<code>affiliateMonthlyVolume[a][e]</code> mapping accumulates referred fee
+volume for affiliate <code>a</code> in epoch <code>e</code>. The window is sliding
+over time without explicit cleanup; the mapping is only read
+for the current epoch when computing a tier rate.</p>
+<p><code>affiliateHasReferred[affiliate][trader]</code> is set on first
+referral and consulted to gate the affiliate-rate path: a
+trader&#39;s first registration referred by an affiliate counts
+toward the affiliate&#39;s volume; subsequent registrations by the
+same trader do not, regardless of whether they pass <code>affiliate</code>
+again.</p>
+<h2>Tier evaluation</h2>
+<p><code>_affiliateRateBps(monthlyVolume)</code> performs a linear search
+over <code>affiliateTierThresholds[]</code> and returns the corresponding
+rate from <code>affiliateTierRates[]</code>. Worst-case cost is <code>O(T)</code> per
+call where <code>T = affiliateTierThresholds.length</code>; in practice
+<code>T ≤ 5</code> and the cost is dominated by storage reads (warm slots
+after the first iteration).</p>
+<div class="keep-together"><h2>Configuration</h2><pre><code>function setAffiliateTiers(uint256[] calldata thresholds,
+                            uint256[] calldata rates) external onlyOwner
+</code></pre></div>
+<p>Pre-conditions:</p>
+<ul>
+<li><code>thresholds.length == rates.length</code> (else <code>LengthMismatch</code>)</li>
+<li><code>thresholds[]</code> strictly ascending (else <code>ThresholdsNotAscending</code>)</li>
+<li><code>rates[]</code> non-decreasing (else <code>RatesNotNonDecreasing</code>)</li>
+<li>each <code>rate ≤ MAX_AFFILIATE_BPS</code> (else <code>RateExceedsCap</code>)</li>
+</ul>
+<p>The owner can re-tier the ladder per call, but cannot raise an
+individual rate above the protocol-level cap without redeploying
+the implementation. Re-tierings do not retroactively re-rate
+already-registered challenges; they affect only future
+<code>registerChallenge</code> calls.</p>
+<div class="keep-together"><h2>Diagram</h2><figure><svg id="svg-affiliate-ladder" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 760" width="1280" height="760" font-family="'Inter','Helvetica Neue',system-ui,sans-serif">
+  <style><![CDATA[
+#svg-affiliate-ladder .bg { fill: #f7faf8; }
+#svg-affiliate-ladder .row { fill: #ffffff; stroke: #c4d4cb; stroke-width: 1.5; }
+#svg-affiliate-ladder .row-active { fill: #ecfdf5; stroke: #15803d; stroke-width: 2; }
+#svg-affiliate-ladder .tier { fill: #15803d; font-size: 12px; font-weight: 800; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.12em; }
+#svg-affiliate-ladder .vol { fill: #142019; font-size: 16px; font-weight: 700; }
+#svg-affiliate-ladder .vol-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-affiliate-ladder .rate { fill: #15803d; font-size: 36px; font-weight: 800; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: end; }
+#svg-affiliate-ladder .rate-sub { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; text-anchor: end; }
+#svg-affiliate-ladder .fill-bar { fill: #15803d; opacity: 0.18; }
+#svg-affiliate-ladder .col-h { fill: #536b5e; font-size: 11px; font-weight: 700; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.12em; }
+#svg-affiliate-ladder .title { fill: #142019; font-size: 22px; font-weight: 700; letter-spacing: -0.01em; }
+#svg-affiliate-ladder .subtitle { fill: #536b5e; font-size: 12px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.18em; text-transform: uppercase; }
+#svg-affiliate-ladder .cap-bg { fill: #fef7e6; stroke: #b88a00; stroke-width: 1.5; }
+#svg-affiliate-ladder .cap-tag { fill: #b88a00; font-size: 11px; font-weight: 800; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; letter-spacing: 0.14em; }
+#svg-affiliate-ladder .cap-text { fill: #4a3a00; font-size: 13px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+#svg-affiliate-ladder .footnote { fill: #536b5e; font-size: 11px; font-family: 'JetBrains Mono','SF Mono',ui-monospace,monospace; }
+  ]]></style>
+
+  <rect class="bg" x="0" y="0" width="1280" height="760"/>
+
+  <text class="subtitle" x="64" y="56">Figure 9 · Affiliate commission ladder</text>
+  <text class="title"    x="64" y="88">Tiered by rolling 30-day referral volume — example schedule</text>
+
+  <!-- Column headers -->
+  <text class="col-h" x="100" y="148">TIER · 30-DAY VOLUME</text>
+  <text class="col-h" x="800" y="148">COMMISSION RATE</text>
+  <text class="col-h" x="1180" y="148" text-anchor="end">FEE-PROPORTIONAL FILL</text>
+
+  <!-- ── Row 1 — Tier 1 ─────────────────────────────────────────── -->
+  <rect class="row" x="80" y="170" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="170" width="224" height="80" rx="10"/>
+  <text class="tier" x="100" y="200">TIER 01</text>
+  <text class="vol"  x="100" y="226">$0 – $10k</text>
+  <text class="vol-sub" x="100" y="244">starter</text>
+  <text class="rate" x="1080" y="225">8%</text>
+  <text class="rate-sub" x="1080" y="244">800 BPS</text>
+
+  <!-- Row 2 -->
+  <rect class="row" x="80" y="260" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="260" width="280" height="80" rx="10"/>
+  <text class="tier" x="100" y="290">TIER 02</text>
+  <text class="vol"  x="100" y="316">$10k – $50k</text>
+  <text class="vol-sub" x="100" y="334">growing</text>
+  <text class="rate" x="1080" y="315">10%</text>
+  <text class="rate-sub" x="1080" y="334">1000 BPS</text>
+
+  <!-- Row 3 -->
+  <rect class="row" x="80" y="350" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="350" width="336" height="80" rx="10"/>
+  <text class="tier" x="100" y="380">TIER 03</text>
+  <text class="vol"  x="100" y="406">$50k – $200k</text>
+  <text class="vol-sub" x="100" y="424">active</text>
+  <text class="rate" x="1080" y="405">12%</text>
+  <text class="rate-sub" x="1080" y="424">1200 BPS</text>
+
+  <!-- Row 4 -->
+  <rect class="row" x="80" y="440" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="440" width="420" height="80" rx="10"/>
+  <text class="tier" x="100" y="470">TIER 04</text>
+  <text class="vol"  x="100" y="496">$200k – $1M</text>
+  <text class="vol-sub" x="100" y="514">power affiliate</text>
+  <text class="rate" x="1080" y="495">15%</text>
+  <text class="rate-sub" x="1080" y="514">1500 BPS</text>
+
+  <!-- Row 5 — at cap -->
+  <rect class="row-active" x="80" y="530" width="1120" height="80" rx="10"/>
+  <rect class="fill-bar" x="80" y="530" width="560" height="80" rx="10"/>
+  <text class="tier" x="100" y="560">TIER 05 · AT CAP</text>
+  <text class="vol"  x="100" y="586">$1M+</text>
+  <text class="vol-sub" x="100" y="604">institutional · bound by MAX_AFFILIATE_BPS</text>
+  <text class="rate" x="1080" y="585">20%</text>
+  <text class="rate-sub" x="1080" y="604">2000 BPS · cap</text>
+
+  <!-- ── Cap-rule note ──────────────────────────────────────────── -->
+  <rect class="cap-bg" x="80" y="640" width="1120" height="80" rx="10"/>
+  <text class="cap-tag" x="100" y="664">CONTRACT-ENFORCED CEILING</text>
+  <text class="cap-text" x="100" y="686">  · MAX_AFFILIATE_BPS = 2000 — owner cannot raise the cap without redeploying the pool implementation</text>
+  <text class="cap-text" x="100" y="706">  · ladder thresholds + rates set via setAffiliateTiers(thresholds, rates) — adjustable, but each rate ≤ MAX</text>
+
+  <text class="footnote" x="64" y="744">Numbers above are illustrative. The on-chain ladder is set by the pool owner via setAffiliateTiers(); thresholds and rates may differ at launch.</text>
+</svg>
+<figcaption>Figure 9 · Affiliate commission ladder · example schedule</figcaption></figure></div>
+</section>
+<section id="cfnd-token" class="body"><p class="section-num">§ 13</p><h1 class="section-h1">CFND token</h1>
+<p><code>CFNDToken</code> is the LP share ERC-20. It is a thin wrapper over
+OpenZeppelin&#39;s <code>ERC20</code> and <code>Ownable</code>; <code>mint(to, amount)</code> and
+<code>burn(from, amount)</code> are restricted to <code>Ownable.owner()</code>, which
+is set to <code>ChainFundedPool</code>&#39;s address at deployment.</p>
+<div class="keep-together"><h2>Properties</h2><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Symbol</td>
+<td><code>CFND</code></td>
+</tr>
+<tr>
+<td>Decimals</td>
+<td><code>6</code> (matches USDC)</td>
+</tr>
+<tr>
+<td>Owner / mint authority</td>
+<td><code>ChainFundedPool</code> proxy address (immutable post-deployment)</td>
+</tr>
+<tr>
+<td>Initial NAV</td>
+<td><code>1.00 USDC per CFND</code> at first deposit</td>
+</tr>
+<tr>
+<td>Transfer</td>
+<td>standard ERC-20 <code>transfer</code> and <code>transferFrom</code></td>
+</tr>
+</tbody></table></div>
+<h2>Whitelisted profit-aware transfer</h2>
+<p>The pool maintains <code>cfndTransferWhitelist</code> (<code>mapping(address =&gt; bool)</code>) for staking endpoints — <code>CFGLPRewards</code> is the canonical
+example — that need to move CFND between holders while
+preserving per-CFND profit-accumulator correctness. Whitelisted
+endpoints call:</p>
+<pre><code>pool.transferCfnd(from, to, amount)
+</code></pre>
+<p>which (i) settles any pending profit for both <code>from</code> and <code>to</code>
+into their respective <code>rewardDebt</code> slots, then (ii) executes the
+transfer at the underlying ERC-20 layer. Direct ERC-20
+<code>transfer</code> and <code>transferFrom</code> calls remain functional for
+non-whitelisted endpoints but bypass the accumulator
+synchronisation; staking integrations must use <code>transferCfnd</code>
+to avoid stranded yield.</p>
+<p><code>setCfndTransferWhitelist(addr, enabled)</code> is <code>onlyOwner</code> and
+emits <code>CfndTransferWhitelistUpdated</code>.</p>
+<h2>NAV invariant</h2>
+<p>The pool enforces <code>cfndToken.totalSupply() &gt; 0</code> at the entry
+to <code>registerChallenge</code> (else <code>PoolMustHaveDeposits</code>). This rules
+out the degenerate state in which a trader pays a fee into a
+pool with no LP capital backing the eventual payout obligation.
+The first LP deposit creates the supply and unlocks challenge
+purchases; subsequent challenge fees flow into LP capital and
+LP yield without affecting <code>totalSupply</code>.</p>
+<p><code>cfndTotalSupply</code> changes only on:</p>
+<ul>
+<li><code>deposit</code> → <code>mint(to, amount)</code></li>
+<li><code>withdraw</code> → <code>burn(from, amount)</code></li>
+</ul>
+<p><code>claimProfit</code> does not change supply. <code>claimPayout</code> does not
+change supply. <code>transferCfnd</code> does not change supply (transfer
+between holders).</p>
+<h2>Why a fungible ERC-20 over an LP-NFT</h2>
+<p>LP positions in the pool are homogeneous: every CFND represents
+the same per-unit claim on capital and the per-share accumulator.
+Heterogeneous-position protocols (Uniswap V3 concentrated
+liquidity, etc.) require NFT positions to encode per-position
+parameters. ChainFunded&#39;s pool has no such per-position state;
+fungibility is the natural fit and removes special-casing in
+downstream integrations (staking, lending, secondary markets).</p>
+</section>
+<section id="cfg-and-dao" class="body"><p class="section-num">§ 14</p><h1 class="section-h1">CFG token &amp; DAO</h1>
+<p>The CFG governance token, vesting schedule, distribution
+contracts, governance configuration, and treasury topology are
+out of scope for this document. They are the subject of a
+separate publication maintained at
+<a href="https://chainfundeddao.org" target="_blank" rel="noopener noreferrer">chainfundeddao.org</a>.</p>
+<p>The boundary is drawn deliberately: this document specifies the
+deterministic on-chain behaviour of <code>ChainFundedPool</code> and its
+satellites. Token-economic parameters and governance state are
+mutable under DAO action and have a different cadence of
+revision than the protocol surface itself.</p>
+<h2>Pointer</h2>
+<p>The DAO documentation covers, at minimum:</p>
+<ul>
+<li><code>CFGToken</code> — supply, vesting cliffs, initial mint distribution</li>
+<li><code>CFGVesting</code> — per-recipient vesting contracts (founder,
+contributor, investor)</li>
+<li><code>CFGDistributor</code> — trader-rewards programme: CFG distributed
+per registered challenge, sourced from a fixed allocation</li>
+<li><code>CFGLPRewards</code> — LP staking: CFND staked → CFG yield + USDC
+profit-pool yield via the whitelisted <code>transferCfnd</code> path</li>
+<li><code>CFGGovernor</code> + <code>Timelock</code> — voting, proposal threshold,
+voting delay, voting period, execution delay</li>
+<li>Treasury composition, signer topology, and on-chain spend
+reporting</li>
+</ul>
+<p>→ <a href="https://chainfundeddao.org" target="_blank" rel="noopener noreferrer">chainfundeddao.org</a></p>
+<h2>What this means for protocol-only readers</h2>
+<p>A reader who only requires the protocol&#39;s settlement and LP
+mechanics does not need to read the DAO publication. The
+protocol contracts are not dependencies of CFG; CFG-side
+contracts are dependencies of the protocol only via
+<code>cfndTransferWhitelist</code> (granting <code>CFGLPRewards</code> permission to
+move CFND on behalf of stakers). The grant is reversible by
+<code>setCfndTransferWhitelist(addr, false)</code>; the protocol continues
+to function with the whitelist empty.</p>
+</section>
+<section id="risk-surface" class="body"><p class="section-num">§ 15</p><h1 class="section-h1">Risk surface</h1>
+<p>This section enumerates the protocol&#39;s risk surface by carrier:
+the trader, the LP, and shared risks borne by both via the
+contract.</p>
+<div class="keep-together"><h2>Trader risk</h2><table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation / mechanism</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Maximum monetary loss bounded to <code>feeAmount</code></td>
+<td>Simulated trading P&amp;L cannot inflict additional cash loss. There is no on-chain margin or collateral call against the trader beyond the fee paid at <code>registerChallenge</code>.</td>
+</tr>
+<tr>
+<td>Payout liveness — N signers must be online</td>
+<td>N-of-M = 3-of-5 at launch tolerates two simultaneous outages. A funded trader&#39;s signed payout proof is valid until its <code>deadline</code>; signers may produce a proof at any time within the window without the trader losing standing.</td>
+</tr>
+<tr>
+<td>Trading-engine fault that mis-records P&amp;L</td>
+<td>Out of scope of on-chain re-verification. Mitigation is operational: independent signer environments cross-check P&amp;L derivations off-chain. A trading-engine fault that overstates trader profit produces an attested P&amp;L the contract cannot detect.</td>
+</tr>
+</tbody></table></div>
+<div class="keep-together"><h2>LP risk</h2><table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation / mechanism</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NAV depreciation below 1.00</td>
+<td>Cumulative trader payouts that exceed (cumulative challenge fees + firm-cut LP slice) reduce LP capital. Bounded by <code>lpCapitalBalance() ≥ 0</code>; <code>claimPayout</code> reverts with <code>InsufficientLPCapital</code> once reserves are exhausted.</td>
+</tr>
+<tr>
+<td>Withdrawal contention</td>
+<td>All LP withdrawals draw from the shared USDC reserve. Concurrent large withdrawals near a pending payout can cause <code>claimPayout</code> to revert until fresh fees flow in. This is queue contention rather than insolvency, but is observable as payout latency.</td>
+</tr>
+<tr>
+<td>Smart-contract risk on UUPS upgrade</td>
+<td><code>_authorizeUpgrade</code> is <code>onlyOwner</code>. Owner is a 2-of-2 multisig at launch (Labs + independent guardian). An emergency withdrawal by the owner is gated by <code>EMERGENCY_DELAY = 48 hours</code>. See §17.</td>
+</tr>
+<tr>
+<td>Same-block deposit / withdraw cycling</td>
+<td>Blocked by <code>lastDepositBlock[lp] == block.number</code> check on <code>withdraw</code>, reverting <code>SameBlockDeposit</code>.</td>
+</tr>
+</tbody></table></div>
+<div class="keep-together"><h2>Shared risk</h2><table>
+<thead>
+<tr>
+<th>Risk</th>
+<th>Mitigation / mechanism</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>USDC peg break or Circle blacklist of pool address</td>
+<td>The pool supports only USDC. A peg break or address-level blacklist halts protocol functionality. Concentration is deliberate: supporting multiple stable assets would multiply contract surface and per-asset risk-management complexity.</td>
+</tr>
+<tr>
+<td>Regulatory action against trader-evaluation accounts</td>
+<td>External to the protocol. Jurisdictional access to the in-app trading engine is operational and may change. The on-chain protocol itself is permissionless to read and call; it cannot be unilaterally taken offline by a single jurisdiction.</td>
+</tr>
+<tr>
+<td>Multi-signer compromise</td>
+<td>A <code>signatureThreshold</code>-or-more compromise produces a valid signature aggregate. The on-chain re-verification (§4, §11) catches false rule attestations independent of signature validity; it does not catch a false P&amp;L attestation that does not breach any rule. Mitigation in signer key-management: HSM custody, geographically distributed signing environments, post-hoc audit.</td>
+</tr>
+<tr>
+<td>Owner key compromise</td>
+<td>Owner is <code>Ownable2Step</code> — transfers require <code>acceptOwnership</code> from the new owner, blocking single-tx transfer attacks. The 48-hour emergency-withdrawal timelock provides a window during which a malicious owner action can be observed and LPs can withdraw.</td>
+</tr>
+</tbody></table></div>
+</section>
+<section id="security-posture" class="body"><p class="section-num">§ 16</p><h1 class="section-h1">Security posture</h1>
+<p>The protocol&#39;s security model has four components: bounded
+on-chain surface, multi-signature signer set over payout state
+transitions, owner-only configuration with a 48-hour
+emergency-withdrawal timelock, and append-only storage layout
+across UUPS upgrades. Each is enforced in code rather than by
+operational policy.</p>
+<h2>Audit status</h2>
+<ul>
+<li><strong>AI-driven security reviews</strong> are finalised against the
+current implementations of <code>ChainFundedPool.sol</code>,
+<code>CFNDToken</code>, and the supporting CFG / vesting contracts.
+Findings have been remediated; the
+post-remediation codebase is the version deployed to Sepolia
+and slated for mainnet.</li>
+<li><strong>Independent third-party audit</strong> is in progress as of
+mainnet preparation. The audit report will be published at the
+canonical URL on completion. Until then the operational
+posture is pre-third-party-audit: a TVL cap may be enforced
+operationally, and early participants are advised to size
+positions accordingly.</li>
+</ul>
+<div class="keep-together"><h2>Owner + multisig topology</h2><table>
+<thead>
+<tr>
+<th>Role</th>
+<th>Held by</th>
+<th>Powers</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pool owner (<code>Ownable.owner()</code>)</td>
+<td>2-of-2 multisig (Labs key + independent guardian key)</td>
+<td><code>setChallengeTiers</code>, <code>setDefaultRules</code>, <code>setAffiliateTiers</code>, <code>addSigner</code> / <code>removeSigner</code>, <code>setSignatureThreshold</code>, <code>updateGuardian</code>, <code>updateLabsWallet</code>, <code>_authorizeUpgrade</code>, emergency withdrawal request / execute / cancel</td>
+</tr>
+<tr>
+<td>Payout signer set</td>
+<td>M=5 EOAs (3-of-5 threshold at launch), each in an isolated environment</td>
+<td>Sign EIP-712 typed messages required by <code>claimPayout</code>, <code>registerPhase2</code>, <code>registerFunded</code>, <code>registerPostPayout</code></td>
+</tr>
+<tr>
+<td>Guardian</td>
+<td>Single role, currently a Labs operational key</td>
+<td><code>pause()</code> (cannot <code>unpause</code>)</td>
+</tr>
+</tbody></table></div>
+<p>The guardian/owner asymmetry is deliberate: a single
+compromised guardian key can pause the protocol but cannot
+unilaterally resume it. <code>unpause</code> requires owner action.</p>
+<h2>Reentrancy + pause guards</h2>
+<p>All public state-changing entry points carry both
+<code>nonReentrant</code> (OpenZeppelin&#39;s <code>ReentrancyGuard</code>) and
+<code>whenNotPaused</code> (OpenZeppelin&#39;s <code>PausableUpgradeable</code>):</p>
+<table>
+<thead>
+<tr>
+<th>Function</th>
+<th><code>nonReentrant</code></th>
+<th><code>whenNotPaused</code></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>deposit</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>withdraw</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>claimProfit</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>registerChallenge</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>registerPhase2</code> / <code>registerFunded</code> / <code>registerPostPayout</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td><code>claimPayout</code></td>
+<td>yes</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>owner config (<code>setChallengeTiers</code>, <code>setDefaultRules</code>, signer mgmt, etc.)</td>
+<td>n/a</td>
+<td>no — callable when paused so the owner can respond to an incident</td>
+</tr>
+</tbody></table>
+<h2>UUPS upgradeability</h2>
+<p><code>_authorizeUpgrade(address newImplementation)</code> is <code>onlyOwner</code>.
+Storage layout is append-only and the
+<code>contracts/storage-layout-baseline.json</code> file is checked against
+the to-be-deployed implementation by the deploy script. An
+upgrade that would shift any existing slot fails the check and
+cannot be deployed without an explicit baseline update.</p>
+<div class="keep-together"><h2>Emergency withdrawal</h2><pre><code>requestEmergencyWithdrawal(to, amount, isCapital)
+   → emits EmergencyWithdrawalRequested with executeAfter = block.timestamp + EMERGENCY_DELAY
+
+[ 48h elapses, observable by all participants ]
+
+executeEmergencyWithdrawal(requestId)
+   → moves USDC, emits EmergencyWithdrawalExecuted
+</code></pre></div>
+<p><code>cancelEmergencyWithdrawal(requestId)</code> is available during the
+delay window and emits <code>EmergencyWithdrawalCancelled</code>.
+<code>EMERGENCY_DELAY = 48 hours</code>. The delay is the central
+operational guarantee: any withdrawal request is publicly
+observable for 48 hours before execution, providing LPs and
+external observers a window to react — withdrawing their own
+positions, alerting the community, or initiating governance
+counter-action against the owner.</p>
+</section>
+<section id="roadmap-references" class="body"><p class="section-num">§ 17</p><h1 class="section-h1">Roadmap</h1>
+<h2>Q2 2026 — mainnet</h2>
+<ul>
+<li><code>ChainFundedPool</code> UUPS proxy deployment to Ethereum mainnet</li>
+<li>AI-driven security reviews finalised; third-party audit in
+progress</li>
+<li>Signer set initialised at <code>M = 5</code>, <code>signatureThreshold = 3</code></li>
+</ul>
+<h2>Q3 2026 — audit, governance handover, APAC</h2>
+<ul>
+<li>Third-party audit publication</li>
+<li>Operational TVL caps relaxed contingent on audit closure</li>
+<li>Affiliate ladder activated via <code>setAffiliateTiers</code> with
+on-chain referral attribution</li>
+<li><strong>Governance handover</strong> — pool owner transfer from the launch
+2-of-2 multisig to a Timelock-controlled governance contract
+via <code>Ownable2Step</code> (<code>transferOwnership</code> + <code>acceptOwnership</code>).
+Stage-1 governance is a Timelock + admin multisig pending CFG
+activation; Stage-2 swaps the admin role for <code>CFGGovernor</code>
+once the Q4 exchange launch puts CFG into circulation</li>
+<li><strong>CFG token contract deployed</strong> alongside the governance
+Timelock. The token is on-chain but non-tradeable until Q4 —
+no liquidity, no exchange listings, vesting and distributor
+contracts paused</li>
+<li><strong>Singapore (APAC) customer service office</strong> stood up to
+cover APAC trading hours, signer monitoring, and on-shore
+participant support. Off-chain function only — no contract
+surface change</li>
+</ul>
+<h2>Q4 2026 — CFG exchange launch</h2>
+<ul>
+<li><strong>CFG public exchange listings</strong> — token enters circulation
+via initial CEX / DEX listings (separate publication —
+see <a href="https://chainfundeddao.org" target="_blank" rel="noopener noreferrer">chainfundeddao.org</a>)</li>
+<li>Vesting and distribution contracts activated against the
+now-circulating supply</li>
+<li><strong><code>CFGGovernor</code> activation</strong> — voting takes over from the
+admin multisig per Stage-2 of the Q3 handover. From this
+point, pool-owner state changes are gated by token-weighted
+on-chain votes through the existing Timelock</li>
+</ul>
+<h2>2027 — multi-asset</h2>
+<ul>
+<li>Multi-asset collateral evaluation — adding additional stable
+collaterals expands contract surface and per-asset risk
+surface; subject to its own audit cycle and a separate
+amendment to this paper</li>
+</ul>
+<hr>
+<h1>References</h1>
+<ul>
+<li>ChainFunded protocol source ·
+<a href="https://github.com/Mezfinance/ChainFunded" target="_blank" rel="noopener noreferrer">github.com/Mezfinance/ChainFunded</a></li>
+<li>ChainFunded DAO documentation ·
+<a href="https://chainfundeddao.org" target="_blank" rel="noopener noreferrer">chainfundeddao.org</a></li>
+<li>OpenZeppelin Contracts (v5) — <code>Ownable2StepUpgradeable</code>,
+<code>PausableUpgradeable</code>, <code>ReentrancyGuard</code>, <code>UUPSUpgradeable</code>,
+<code>SafeERC20</code>, <code>ECDSA</code>, <code>MessageHashUtils</code></li>
+<li>EIP-712 — typed structured data hashing and signing</li>
+<li>ERC-20 — fungible token standard (USDC, CFND)</li>
+<li>Sushi MasterChef — per-token reward accumulator pattern used
+by <code>accProfitPerToken</code> / <code>rewardDebt</code></li>
+</ul>
+<hr>
+<h1>Disclosures</h1>
+<p>ChainFunded is software. It is not a regulated financial
+product and this document is not investment advice. Trading
+evaluation accounts is high-risk; participants may lose the
+fees they pay.</p>
+<p>The protocol is in an early operational phase. TVL caps,
+signer-set parameters, fee splits exposed via constants,
+challenge tier prices, and governance topology may change with
+operational decision or DAO action. The on-chain source is the
+canonical specification; this document describes the protocol
+as deployed at the version stated on the cover.</p>
+<p>Participants should review the on-chain contract source
+directly before participating, and should consult their own
+counsel where applicable. Past performance of the simulated
+trading environment, of the LP profit pool, or of any
+referenced third-party prop firm is not predictive of future
+outcomes.</p>
+</section>
+<section id="appendix-a-threat-model" class="body"><p class="section-num">§ 18</p><h1 class="section-h1">Appendix A · Threat model</h1>
+<p>Enumerates the adversaries the protocol&#39;s design takes seriously,
+the capabilities each holds, and the on-chain mechanisms that
+constrain them. Complements the risk-by-carrier framing of §16 —
+this appendix is adversary-by-adversary, which is the framing an
+auditor or security reviewer is most likely to use.</p>
+<h2>A · Malicious trader</h2>
+<p><strong>Capability.</strong> Any EOA can pay an evaluation fee and trade. A
+malicious trader optimises trade execution against the rule set,
+or attempts to extract funds beyond the fee paid.</p>
+<table>
+<thead>
+<tr>
+<th>Attempt</th>
+<th>Constrained by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Withdraw funds without satisfying rules</td>
+<td><code>claimPayout</code> re-verifies every rule snapshotted at registration against the asserted P&amp;L. Any breach → named <code>RuleBreached*</code> revert (§11).</td>
+</tr>
+<tr>
+<td>Submit a stale or already-claimed payout proof</td>
+<td><code>settledPayouts[payoutId]</code> flag is set on success → <code>PayoutAlreadySettled</code> on replay. <code>deadline</code> field checked against <code>block.timestamp</code> → <code>SignatureExpired</code>.</td>
+</tr>
+<tr>
+<td>Forge signatures</td>
+<td><code>ECDSA.recover</code> on every signature, each must be in <code>authorizedSigners[]</code> → <code>UnauthorizedSigner</code>.</td>
+</tr>
+<tr>
+<td>Register a free / zero-fee challenge to bypass economic cost</td>
+<td><code>feeAmount</code> must equal <code>challengeTierFee[accountSize]</code> exactly → <code>TierNotEnabled</code> otherwise.</td>
+</tr>
+</tbody></table>
+<p><strong>Residual.</strong> Maximum monetary loss to the protocol from a
+malicious trader is bounded by zero — the trader can never extract
+more than they could legitimately earn under the snapshotted rules.</p>
+<h2>B · Malicious LP</h2>
+<p><strong>Capability.</strong> Any EOA can deposit USDC and receive <code>CFND</code>. A
+malicious LP attempts to game the profit accumulator, grief
+withdrawal liveness, or extract more than their pro-rata share.</p>
+<table>
+<thead>
+<tr>
+<th>Attempt</th>
+<th>Constrained by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Deposit-then-withdraw in a single block to capture accrued yield without taking risk</td>
+<td><code>lastDepositBlock[lp] == block.number</code> check on <code>withdraw</code> → <code>SameBlockDeposit</code> revert.</td>
+</tr>
+<tr>
+<td>Withdraw a CFND amount they don&#39;t hold</td>
+<td>Standard ERC-20 balance check → <code>InsufficientCFND</code>.</td>
+</tr>
+<tr>
+<td>Front-run a <code>claimPayout</code> to drain capital before settlement</td>
+<td>All paths through the pool are <code>nonReentrant</code> and <code>whenNotPaused</code>; LP withdrawals and claim-payouts are serialised by the EVM&#39;s single-tx model. Withdrawal contention exists but does not exceed pro-rata.</td>
+</tr>
+<tr>
+<td>Manipulate <code>accProfitPerToken</code> accumulator</td>
+<td>Accumulator is internal state updated by the pool on every profit-pool credit; LP-callable functions only read it via <code>rewardDebt</code> reconciliation. No external setter.</td>
+</tr>
+</tbody></table>
+<p><strong>Residual.</strong> LP cannot extract more than their <code>cfndAmount × NAV</code>
+plus their pending profit. NAV is determined entirely by pool state
+they cannot directly write.</p>
+<h2>C · Compromised signer subset (&lt; threshold)</h2>
+<p><strong>Capability.</strong> Attacker controls fewer than <code>signatureThreshold</code>
+of the <code>M</code> authorised signer keys.</p>
+<table>
+<thead>
+<tr>
+<th>Attempt</th>
+<th>Constrained by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Forge a valid payout signature aggregate</td>
+<td><code>signatures.length &gt;= signatureThreshold</code> check → <code>InsufficientSignatures</code>. Cannot meet threshold with fewer keys.</td>
+</tr>
+<tr>
+<td>Submit a partial signature set with replays of the same compromised key</td>
+<td>Signatures must be sorted ascending by recovered signer address with no duplicates → <code>DuplicateOrUnsortedSignature</code>.</td>
+</tr>
+<tr>
+<td>Coerce a non-compromised signer to sign</td>
+<td>Off-chain. Mitigation: independent signer environments, HSM key custody.</td>
+</tr>
+</tbody></table>
+<p><strong>Residual.</strong> No on-chain harm. Compromise of fewer than threshold
+keys is operationally observable (signature flow stops working)
+and rotatable (<code>removeSigner(addr)</code> then <code>addSigner(newAddr)</code>).</p>
+<h2>D · Compromised signer set (≥ threshold)</h2>
+<p><strong>Capability.</strong> Attacker controls at least <code>signatureThreshold</code>
+keys and can produce valid signature aggregates over arbitrary
+typed messages.</p>
+<table>
+<thead>
+<tr>
+<th>Attempt</th>
+<th>Constrained by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Sign a payout for an account that breached a rule</td>
+<td><code>claimPayout</code> re-verifies all rules against the snapshotted challenge state. The signature is valid; the rule check fails independently → <code>RuleBreached*</code> revert (§4, §11).</td>
+</tr>
+<tr>
+<td>Sign a payout for an account whose registration the attacker fabricated</td>
+<td>The pool&#39;s <code>challenges[accountId]</code> mapping is only writable through <code>registerChallenge</code> / <code>adminRegisterChallenge</code>. Fabrication requires either a fee payment (no economic gain) or admin-key compromise (separate threat).</td>
+</tr>
+<tr>
+<td>Sign a P&amp;L that consistent with the snapshotted rules but doesn&#39;t match the trader&#39;s actual trades</td>
+<td><strong>Residual risk.</strong> The on-chain check has no view of the trade ledger; a false P&amp;L that satisfies the rule set is a valid payout from the contract&#39;s perspective. Mitigation is operational (per-signer independent replay) and detective (post-hoc audit of off-chain attestations against trade history).</td>
+</tr>
+</tbody></table>
+<p><strong>Residual.</strong> A coordinated full-set compromise can extract a
+single fraudulent payout of any size within <code>lpCapitalBalance()</code>.
+Mitigation is in signer-key custody discipline (HSM, geographic
+distribution, distinct operational environments) and in raising
+the threshold post-launch.</p>
+<h2>E · Compromised pool owner</h2>
+<p><strong>Capability.</strong> Attacker controls the <code>Ownable2Step</code> owner key
+(2-of-2 governance multisig at launch).</p>
+<table>
+<thead>
+<tr>
+<th>Attempt</th>
+<th>Constrained by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Drain capital via emergency withdrawal</td>
+<td><code>requestEmergencyWithdrawal</code> → <code>EmergencyWithdrawalRequested</code> event → 48h <code>EMERGENCY_DELAY</code> → <code>executeEmergencyWithdrawal</code>. LPs and external observers see the request and have 48 hours to withdraw their own positions.</td>
+</tr>
+<tr>
+<td>Upgrade pool to a malicious implementation</td>
+<td><code>_authorizeUpgrade</code> is <code>onlyOwner</code>. The deploy pipeline checks <code>storage-layout-baseline.json</code> and aborts on any non-appending change, blocking the obvious &quot;swap implementation to drain funds&quot; path. Even with an upgrade, the new implementation must be deployed and the upgrade tx is publicly observable before LPs need to react.</td>
+</tr>
+<tr>
+<td>Single-tx ownership grab from a leaked old key</td>
+<td><code>Ownable2Step</code> requires <code>acceptOwnership()</code> from the new owner — single-key transfer attacks fail.</td>
+</tr>
+<tr>
+<td>Adjust tier fees, rules, or signer set to extract value</td>
+<td>Owner can update <code>challengeTierFee</code>, <code>setDefaultRules</code>, <code>addSigner</code> etc. These changes do not affect already-registered challenges (rules are snapshotted at registration) and are publicly logged. No path to retroactive rule change.</td>
+</tr>
+<tr>
+<td>Disable <code>paused</code> indefinitely after malicious pause</td>
+<td><code>unpause</code> is <code>onlyOwner</code>, but <code>pause</code> itself is callable by either owner or guardian. The pause asymmetry means a single compromised guardian can stop the protocol but cannot keep it stopped past governance action.</td>
+</tr>
+</tbody></table>
+<p><strong>Residual.</strong> A complete owner-key compromise can attempt an
+emergency withdrawal; the 48-hour timelock is the LP&#39;s defence
+window. Future migration to a <code>CFGGovernor</code> + <code>Timelock</code>
+(§18, Q3 2026) extends this from a 2-of-2 multisig to
+token-weighted governance.</p>
+<h2>F · External attacker (no privilege)</h2>
+<p><strong>Capability.</strong> Any address with no protocol-level role.</p>
+<table>
+<thead>
+<tr>
+<th>Attempt</th>
+<th>Constrained by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Reentrancy into state-changing functions</td>
+<td>OpenZeppelin <code>ReentrancyGuard</code> on every public state-changing entry point.</td>
+</tr>
+<tr>
+<td>Manipulate state during a pause</td>
+<td><code>whenNotPaused</code> modifier blocks deposit / withdraw / claim / register paths during pause. Owner config calls remain available for incident response.</td>
+</tr>
+<tr>
+<td>Drain funds via smart-contract bug</td>
+<td>Mitigated by audit posture: AI audits finalised, full third-party audit in progress (§17). The protocol&#39;s surface is a single core contract — concentration is deliberate to make this mitigation tractable.</td>
+</tr>
+<tr>
+<td>Front-run a profit claim to extract LP yield</td>
+<td><code>claimProfit</code> operates only on the calling LP&#39;s <code>rewardDebt</code> and balance — there is no MEV-extractable state in the call.</td>
+</tr>
+</tbody></table>
+<p><strong>Residual.</strong> Smart-contract risk is the load-bearing mitigation
+gap until the third-party audit publishes. TVL caps are
+operationally enforced during the pre-audit phase to bound
+exposure.</p>
+</section>
+<section id="appendix-b-notation" class="body"><p class="section-num">§ 19</p><h1 class="section-h1">Appendix B · Notation reference</h1>
+<p>A glossary of the typed conventions the document and the
+contracts use. Grep aid for readers cross-referencing the
+on-chain source.</p>
+<div class="keep-together"><h2>Units</h2><table>
+<thead>
+<tr>
+<th>Unit</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>USDC</code></td>
+<td>Circle USD Coin, 6 decimals on Ethereum mainnet. Every USDC figure in this paper is in human units (<code>$50.00</code>); on-chain the same value is <code>50_000_000</code> (<code>50 * 10^6</code>).</td>
+</tr>
+<tr>
+<td><code>BPS</code> (basis points)</td>
+<td>One ten-thousandth of a whole. <code>BPS = 10_000</code> is the contract constant. <code>2400 BPS = 24%</code>. Percent-of-percent calculations multiply BPS values then divide by <code>BPS</code>.</td>
+</tr>
+<tr>
+<td><code>seconds</code></td>
+<td>Unix timestamp, no time zone. <code>block.timestamp</code> is the canonical clock for <code>deadline</code> checks.</td>
+</tr>
+<tr>
+<td><code>wei</code></td>
+<td>Solidity native — used only for ETH gas reimbursement amounts (<code>gasReimbursementUsdc</code> is in USDC units, not wei).</td>
+</tr>
+</tbody></table></div>
+<div class="keep-together"><h2>Identifier conventions</h2><table>
+<thead>
+<tr>
+<th>Convention</th>
+<th>Example</th>
+<th>Where used</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>UPPER_SNAKE_CASE</code></td>
+<td><code>FEE_PROTOCOL_BPS</code>, <code>FEE_PROFIT_POOL_BPS</code>, <code>EMERGENCY_DELAY</code></td>
+<td>Solidity <code>constant</code> and <code>immutable</code> values. Implementation-fixed; changing requires a UUPS upgrade.</td>
+</tr>
+<tr>
+<td><code>camelCase</code></td>
+<td><code>traderShareBps</code>, <code>accountId</code>, <code>gasReimbursementUsdc</code></td>
+<td>Function parameters and local variables.</td>
+</tr>
+<tr>
+<td><code>camelCase</code> (state)</td>
+<td><code>labsWallet</code>, <code>signatureThreshold</code>, <code>accProfitPerToken</code></td>
+<td>Public storage variables. Readable from any block via the auto-generated getter.</td>
+</tr>
+<tr>
+<td><code>camelCase()</code></td>
+<td><code>claimPayout()</code>, <code>claimProfit()</code>, <code>registerChallenge()</code></td>
+<td>Function references. Parentheses indicate this is a function, not a state slot.</td>
+</tr>
+<tr>
+<td><code>accountId</code> (24-char string)</td>
+<td><code>&quot;a1b2c3d4e5f6789012345678&quot;</code></td>
+<td>All challenge identifiers. Length is enforced (<code>bytes(accountId).length == 24</code>) at registration.</td>
+</tr>
+<tr>
+<td><code>payoutId</code> (variable string)</td>
+<td>any non-empty string</td>
+<td>Per-payout replay-protection key. Set by the backend, length-unconstrained, must be unique per <code>claimPayout</code>.</td>
+</tr>
+<tr>
+<td><code>bytes32 indexed</code></td>
+<td>event topic</td>
+<td>Indexed event field — searchable on Etherscan via log filter.</td>
+</tr>
+</tbody></table></div>
+<div class="keep-together"><h2>Math / formula style</h2><table>
+<thead>
+<tr>
+<th>Style</th>
+<th>Example</th>
+<th>Use case</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Code-block formula</td>
+<td><code>NAV = (totalUSDC − profitPool) / cfndTotalSupply</code></td>
+<td>Core protocol formulas. Always uses the on-chain state names.</td>
+</tr>
+<tr>
+<td>Inline backtick</td>
+<td><code>(feeAmount × FEE_PROTOCOL_BPS) / BPS = 24%</code></td>
+<td>Per-line ratio derivations inside prose.</td>
+</tr>
+<tr>
+<td>Table row</td>
+<td>tier · rate · destination</td>
+<td>When a formula has more than two parameters or branches by condition.</td>
+</tr>
+<tr>
+<td>Comparison operators</td>
+<td><code>≥</code> <code>≤</code> <code>=</code> <code>&gt;</code> <code>&lt;</code></td>
+<td>Standard Unicode, not the ASCII <code>&gt;=</code> etc.</td>
+</tr>
+</tbody></table></div>
+<div class="keep-together"><h2>Cross-reference style</h2><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>§N</code></td>
+<td>Section N of this paper (e.g. <code>§11</code> = Payout enforcement).</td>
+</tr>
+<tr>
+<td><code>Fig. N</code></td>
+<td>Figure N (e.g. <code>Fig. 6</code> = fee split diagram).</td>
+</tr>
+<tr>
+<td><code>(§4, §11)</code></td>
+<td>Multiple section references inside a parenthetical.</td>
+</tr>
+<tr>
+<td><code>[link text](url)</code></td>
+<td>External link, always rendered in primary green.</td>
+</tr>
+</tbody></table></div>
+<div class="keep-together"><h2>Token symbols</h2><table>
+<thead>
+<tr>
+<th>Symbol</th>
+<th>Spelling</th>
+<th>When in backticks</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>USDC</strong></td>
+<td>bold, no backticks in prose; <code>USDC</code> with backticks when referring to the contract identifier or an <code>IERC20(USDC)</code> cast</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>CFND</strong></td>
+<td>bold in prose, <code>CFND</code> in backticks when referring to the <code>CFNDToken</code> contract or the symbol as a code identifier</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>CFG</strong></td>
+<td>bold in prose, <code>CFGToken</code> in backticks for the contract</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>ETH</strong></td>
+<td>bold in prose, never in backticks — never used as a code identifier</td>
+<td></td>
+</tr>
+</tbody></table></div>
+<div class="keep-together"><h2>Address style</h2><table>
+<thead>
+<tr>
+<th>Form</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>0xfbdc2592f7d8ae59d1abebb88cf33b2ac70383fc</code></td>
+<td>Full mainnet address, lowercased for hash-friendliness.</td>
+</tr>
+<tr>
+<td><code>0xfbdc…83fc</code></td>
+<td>Truncated address — first 6 + last 4 chars, joined by an ellipsis. Used in prose where the full address would be visually heavy.</td>
+</tr>
+<tr>
+<td><code>address(0)</code></td>
+<td>The zero address. Used in contract conditions like <code>if (affiliate != address(0))</code>.</td>
+</tr>
+</tbody></table></div>
+<h2>Error names</h2>
+<p>Custom errors are referenced inline as bare identifiers — e.g.,
+<code>RuleBreachedDailyLoss</code>, <code>PayoutAlreadySettled</code>,
+<code>InsufficientSignatures</code>. They are not prefixed with the contract
+name; the contract context is implicit from the calling function
+referenced in the same sentence.</p>
+<p>The complete list of errors is in
+<code>contracts/contracts/ChainFundedPool.sol</code> lines 149–213.</p>
+</section>
+</body>
+</html>

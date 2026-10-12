@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Variant 2: Wider shield, thicker stroke, bold bolt -->
+  <rect width="512" height="512" rx="80" fill="#e6f5ec"/>
+  <path d="M256 56C168 56 80 104 80 104v160c0 88 176 192 176 192s176-104 176-192V104S344 56 256 56z" fill="none" stroke="#1a9e4a" stroke-width="24" stroke-linejoin="round"/>
+  <polygon points="280 120 148 280 236 280 212 408 352 244 264 244 280 120" fill="#1a9e4a"/>
+</svg>

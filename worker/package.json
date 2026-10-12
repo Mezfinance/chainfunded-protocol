@@ -1,0 +1,20 @@
+{
+  "name": "chainfunded-worker",
+  "version": "1.0.0",
+  "description": "Persistent position monitor worker for ChainFunded — executes limit orders, SL/TP, and drawdown enforcement in real time.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@base44/sdk": "^0.8.0",
+    "@supabase/supabase-js": "^2.49.4",
+    "discord.js": "^14.16.3",
+    "ethers": "^6.13.5",
+    "eventsource": "^2.0.2",
+    "ws": "^8.18.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
